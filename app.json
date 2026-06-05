@@ -7,19 +7,68 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.gardenpulse.app",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "GardenPulse uses location to provide hyper-local planting recommendations and weather-aware care alerts.",
+        "NSCameraUsageDescription": "GardenPulse needs camera access to analyze leaf diagnostics and scan plant labels/QR codes.",
+        "NSMicrophoneUsageDescription": "GardenPulse uses microphone access for voice-logging soil metrics and hands-free logging.",
+        "NSPhotoLibraryUsageDescription": "GardenPulse needs access to your library to import photos for growth tracking.",
+        "NSPhotoLibraryAddUsageDescription": "GardenPulse saves progress timelapses and growth reels to your photo library."
+      }
     },
     "android": {
+      "package": "com.gardenpulse.app",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION",
+        "CAMERA",
+        "RECORD_AUDIO",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "GardenPulse uses location to provide hyper-local planting recommendations and weather-aware care alerts."
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "GardenPulse needs camera access to analyze leaf diagnostics and scan plant labels/QR codes.",
+          "microphonePermission": "GardenPulse uses microphone access for voice-logging soil metrics and hands-free logging."
+        }
+      ],
+      [
+        "expo-media-library",
+        {
+          "photosPermission": "GardenPulse needs access to your library to import photos for growth tracking.",
+          "savePhotosPermission": "GardenPulse saves progress timelapses and growth reels to your photo library."
+        }
+      ],
+      [
+        "expo-av",
+        {
+          "microphonePermission": "GardenPulse uses microphone access for voice-logging soil metrics and hands-free logging."
+        }
+      ]
+    ],
+    "react-native-google-mobile-ads": {
+      "android_app_id": "ca-app-pub-3940256099942544~3347511713",
+      "ios_app_id": "ca-app-pub-3940256099942544~1458002511"
     }
   }
 }

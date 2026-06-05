@@ -1,0 +1,42 @@
+PRIMARY TECHNOLOGY STACK
+
+Frontend:
+
+React Native
+Expo
+TypeScript
+
+Backend:
+
+Firebase Authentication
+Firestore Database
+Firebase Storage
+Cloud Functions
+Firebase Analytics
+Firebase Crashlytics
+Firebase Cloud Messaging
+
+AI Layer:
+
+Google AI Studio
+Gemini API
+Gemini Vision
+Gemini Multimodal Models
+
+Location Services:
+
+Google Maps Platform
+Google Geolocation APIs
+
+Weather Services:
+
+OpenWeather API
+Weather Intelligence Layer
+
+Monetization:
+
+Mobile App  with Admob account
+Google AdMob
+Native Ads
+Rewarded Video Ads
+Interstitial Ads
