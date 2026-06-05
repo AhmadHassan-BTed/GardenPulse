@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/banner-app-logo.png" alt="GardenPulse — Grow Smarter, Anywhere" width="100%" />
+  <img src="assets/banner-app-logo.png" alt="GardenPulse - Grow Smarter, Anywhere" width="100%" />
 </p>
 
 <p align="center">
@@ -11,17 +11,17 @@
   <img src="https://img.shields.io/badge/License-MIT-22C55E?style=for-the-badge" alt="License MIT" />
 </p>
 
-<h3 align="center">The first method-agnostic garden assistant — soil, hydro, container, or indoor — with location-aware intelligence, on-device AI diagnostics, and privacy-first automation.</h3>
+<h3 align="center">The first method-agnostic garden assistant - soil, hydro, container, or indoor - with location-aware intelligence, on-device AI diagnostics, and privacy-first automation.</h3>
 
 ---
 
 ## 🌿 What is GardenPulse?
 
-**GardenPulse** is a smart urban garden companion that eliminates the guesswork out of growing. Whether you're tending windowsill herbs, managing a balcony container garden, running a hydroponic setup, or maintaining 50+ houseplants — GardenPulse adapts every recommendation to your specific growing method, your local climate, and your live weather conditions.
+**GardenPulse** is a smart urban garden companion that eliminates the guesswork out of growing. Whether you're tending windowsill herbs, managing a balcony container garden, running a hydroponic setup, or maintaining 50+ houseplants - GardenPulse adapts every recommendation to your specific growing method, your local climate, and your live weather conditions.
 
 > **Tagline:** *Grow Smarter, Anywhere.*
 
-Unlike generic plant apps, GardenPulse is **method-agnostic**: the entire UI, care schedule, and AI guidance adapts based on how *you* grow — not a one-size-fits-all template. Core tools are **100% free, forever**, with a privacy-first, offline-capable architecture.
+Unlike generic plant apps, GardenPulse is **method-agnostic**: the entire UI, care schedule, and AI guidance adapts based on how *you* grow - not a one-size-fits-all template. Core tools are **100% free, forever**, with a privacy-first, offline-capable architecture.
 
 ---
 
@@ -33,7 +33,7 @@ Unlike generic plant apps, GardenPulse is **method-agnostic**: the entire UI, ca
 | **Method-Agnostic Plant ID** | Snap a leaf → AI detects plant species, growing method, and likely issues (deficiency, pest, overwatering) |
 | **Localized AI Agronomist** | On-device ML evaluates leaf patterns against user-logged metrics and regional climate data |
 | **Smart Weather Integration** | Auto-adjusts care schedules based on live forecast (e.g., *"Rain tomorrow → skip watering today"*) |
-| **Gemini Vision Diagnostics** | All leaf-scan diagnostics run on-device — photos are never uploaded to the cloud |
+| **Gemini Vision Diagnostics** | All leaf-scan diagnostics run on-device - photos are never uploaded to the cloud |
 
 ### 📍 Location & Context Intelligence
 | Feature | Description |
@@ -44,35 +44,35 @@ Unlike generic plant apps, GardenPulse is **method-agnostic**: the entire UI, ca
 | **Local Community Maps** | Opt-in anonymized data shows what's thriving in your ZIP code right now |
 
 ### 📅 Smart Scheduling & Automation
-- **Adaptive Reminders** — Adjusts timing based on user behavior, live weather forecasts, and seasonal changes
-- **Sunrise/Sunset Tracking** — Schedules grow-tent light cycles and outdoor watering relative to solar events
-- **Timezone-Aware Engine** — Daylight saving auto-adjust included; travel-friendly reminder controls
+- **Adaptive Reminders** - Adjusts timing based on user behavior, live weather forecasts, and seasonal changes
+- **Sunrise/Sunset Tracking** - Schedules grow-tent light cycles and outdoor watering relative to solar events
+- **Timezone-Aware Engine** - Daylight saving auto-adjust included; travel-friendly reminder controls
 
 ### 📸 Camera & Media Tools
-- **Leaf Diagnostics Camera** — On-device AI analyzes discoloration without any cloud upload
-- **Progress Timelapse Generator** — Auto-compiles photos into shareable growth reels with method-specific overlays
-- **QR / Label Scanner** — Scan nutrient bottles, seed packets, or Bluetooth sensor IDs for auto-logging
-- **Voice Logging** — Hands-free operation via microphone for users with mobility challenges
+- **Leaf Diagnostics Camera** - On-device AI analyzes discoloration without any cloud upload
+- **Progress Timelapse Generator** - Auto-compiles photos into shareable growth reels with method-specific overlays
+- **QR / Label Scanner** - Scan nutrient bottles, seed packets, or Bluetooth sensor IDs for auto-logging
+- **Voice Logging** - Hands-free operation via microphone for users with mobility challenges
 
 ### 📊 Analytics & Personalization
-- **Garden Health Score™** — Tracks 8 metrics (soil moisture, light exposure, pH stability, growth rate) with plain-English insights
-- **Adaptive Growing Profiles** — Toggle between *"Low-Light Apartment"*, *"Sunny Balcony"*, *"Hydro Tent"*, *"Raised Bed"*
-- **Cross-Method Insights** — e.g., *"Your hydro basil grew 20% faster than soil → try adjusting nutrient strength"*
-- **Cemetery Log** — Historical log of failed grows to identify root causes (pH spikes, root rot) over time
+- **Garden Health Score™** - Tracks 8 metrics (soil moisture, light exposure, pH stability, growth rate) with plain-English insights
+- **Adaptive Growing Profiles** - Toggle between *"Low-Light Apartment"*, *"Sunny Balcony"*, *"Hydro Tent"*, *"Raised Bed"*
+- **Cross-Method Insights** - e.g., *"Your hydro basil grew 20% faster than soil → try adjusting nutrient strength"*
+- **Cemetery Log** - Historical log of failed grows to identify root causes (pH spikes, root rot) over time
 
 ### 💰 Monetization (AdMob Optimized)
 | Ad Type | Trigger | Target eCPM |
 |---|---|---|
 | High-Intent Interstitial | Triggered at dosing calculation / export moments | $25–45 (Tier 1) |
-| Contextual Native Ads | Styled as "Garden Tips" within the activity timeline | — |
-| Rewarded Videos | Unlock PDF garden plans, compliance logs, advanced calculators | — |
-| Supporter Badge | $2.99 one-time to remove interstitials only | — |
+| Contextual Native Ads | Styled as "Garden Tips" within the activity timeline | - |
+| Rewarded Videos | Unlock PDF garden plans, compliance logs, advanced calculators | - |
+| Supporter Badge | $2.99 one-time to remove interstitials only | - |
 
 ### 🌍 Community & Viral Features
-- **Garden Clusters** — Join location or interest-based groups; share tips, swap seeds, compare progress
-- **Growth Streaks + Method Badges** — Unlock *"Hydro Master"*, *"Balcony Boss"*, *"Zero-Waste Gardener"*
-- **Shareable Progress Reels** — Auto-generated before/after timelapses and *"My Garden Setup"* infographics for Instagram/TikTok
-- **Weekly Bloom Report** — Push/email digest with weather correlation, progress stats, and contextual tips
+- **Garden Clusters** - Join location or interest-based groups; share tips, swap seeds, compare progress
+- **Growth Streaks + Method Badges** - Unlock *"Hydro Master"*, *"Balcony Boss"*, *"Zero-Waste Gardener"*
+- **Shareable Progress Reels** - Auto-generated before/after timelapses and *"My Garden Setup"* infographics for Instagram/TikTok
+- **Weekly Bloom Report** - Push/email digest with weather correlation, progress stats, and contextual tips
 
 ---
 
@@ -85,12 +85,12 @@ Unlike generic plant apps, GardenPulse is **method-agnostic**: the entire UI, ca
 | **UI Components** | React Native Paper (Material Design) | `^5.15.3` |
 | **Icons** | @expo/vector-icons | `^15.0.3` |
 | **Backend & Auth** | Firebase Auth, Firestore, Storage | `^12.14.0` |
-| **AI Engine** | Google AI Studio — Gemini Multimodal & Vision | `^0.24.1` |
+| **AI Engine** | Google AI Studio - Gemini Multimodal & Vision | `^0.24.1` |
 | **Location** | expo-location + Google Maps Platform | `~19.0.8` |
 | **Maps** | react-native-maps | `1.20.1` |
-| **Weather** | OpenWeatherMap One Call API 3.0 | — |
+| **Weather** | OpenWeatherMap One Call API 3.0 | - |
 | **Camera** | expo-camera | `~17.0.10` |
-| **Media** | expo-image-picker, expo-media-library | — |
+| **Media** | expo-image-picker, expo-media-library | - |
 | **Audio** | expo-av | `~16.0.8` |
 | **Offline Storage** | @react-native-async-storage/async-storage | `2.2.0` |
 | **Monetization** | Google AdMob (react-native-google-mobile-ads) | `^16.3.3` |
@@ -117,7 +117,7 @@ GardenPulse/
 │   └── android-icon-monochrome.png
 ├── App.tsx                   # Root application component
 ├── index.ts                  # Expo entry point
-├── app.json                  # Expo config — permissions, plugins, AdMob IDs
+├── app.json                  # Expo config - permissions, plugins, AdMob IDs
 ├── metro.config.js           # Custom Metro bundler configuration
 ├── tsconfig.json             # TypeScript compiler settings
 ├── package.json              # Dependencies & npm scripts
@@ -234,11 +234,11 @@ For full deployment instructions including iOS App Store builds, keystore manage
 
 ## 🎨 UX & Design Philosophy
 
-- **Method-First Onboarding** — *"How do you grow?"* → app adapts its entire UI to soil / container / hydro / indoor
-- **Instant Open** — Zero required registration; opens directly to the dashboard or calculator
-- **Card-Based Interface** — Max 3 taps to log any action; advanced options progressively disclosed
-- **Adaptive Themes** — *"Balcony Bright"* (light) and *"Grow Tent Dark"* (low-light optimized)
-- **Accessibility** — Full VoiceOver/TalkBack support, dyslexia-friendly font toggle, color-blind mode, metric/imperial auto-detect
+- **Method-First Onboarding** - *"How do you grow?"* → app adapts its entire UI to soil / container / hydro / indoor
+- **Instant Open** - Zero required registration; opens directly to the dashboard or calculator
+- **Card-Based Interface** - Max 3 taps to log any action; advanced options progressively disclosed
+- **Adaptive Themes** - *"Balcony Bright"* (light) and *"Grow Tent Dark"* (low-light optimized)
+- **Accessibility** - Full VoiceOver/TalkBack support, dyslexia-friendly font toggle, color-blind mode, metric/imperial auto-detect
 
 ---
 
@@ -246,12 +246,12 @@ For full deployment instructions including iOS App Store builds, keystore manage
 
 GardenPulse is designed with a **privacy-first** architecture:
 
-- ✅ All AI leaf diagnostics run **on-device** — no photos uploaded to the cloud
+- ✅ All AI leaf diagnostics run **on-device** - no photos uploaded to the cloud
 - ✅ Location data **never shared publicly** without explicit user opt-in
-- ✅ GDPR / UK GDPR compliant — right-to-delete dashboard included
-- ✅ CCPA / PIPEDA compliant — *"Do Not Sell My Info"* toggle in settings
-- ✅ AdMob policies respected — no ads on permission screens; rewarded videos are always optional
-- ✅ Offline-first caching — core app functions work without an internet connection
+- ✅ GDPR / UK GDPR compliant - right-to-delete dashboard included
+- ✅ CCPA / PIPEDA compliant - *"Do Not Sell My Info"* toggle in settings
+- ✅ AdMob policies respected - no ads on permission screens; rewarded videos are always optional
+- ✅ Offline-first caching - core app functions work without an internet connection
 
 ---
 
@@ -260,10 +260,10 @@ GardenPulse is designed with a **privacy-first** architecture:
 | Phase | Feature |
 |---|---|
 | **MVP** | Core logging, AI diagnostics, weather scheduling, AdMob |
-| **Phase 2** | GardenPulse for Schools — STEM curriculum modules |
-| **Phase 3** | Hardware integrations — Bluetooth sensors, smart irrigation |
-| **Phase 4** | B2B white-label — Nurseries & seed brands |
-| **Phase 5** | Certification pathways — Urban ag nonprofit partnerships |
+| **Phase 2** | GardenPulse for Schools - STEM curriculum modules |
+| **Phase 3** | Hardware integrations - Bluetooth sensors, smart irrigation |
+| **Phase 4** | B2B white-label - Nurseries & seed brands |
+| **Phase 5** | Certification pathways - Urban ag nonprofit partnerships |
 
 ---
 
@@ -271,15 +271,15 @@ GardenPulse is designed with a **privacy-first** architecture:
 
 | Document | Description |
 |---|---|
-| [INSTALL.md](./INSTALL.md) | Full setup guide — API keys, Firebase config, AdMob IDs, Play Store deployment |
-| [GARDENPULSE.md](./GARDENPULSE.md) | Complete product blueprint — features, UX flows, monetization model |
+| [INSTALL.md](./INSTALL.md) | Full setup guide - API keys, Firebase config, AdMob IDs, Play Store deployment |
+| [GARDENPULSE.md](./GARDENPULSE.md) | Complete product blueprint - features, UX flows, monetization model |
 | [Architecture.drawio](./Architecture.drawio) | System architecture diagram (open with [draw.io](https://app.diagrams.net)) |
 
 ---
 
 ## 📄 License
 
-This project is licensed under the **MIT License** — see the [LICENSE](./LICENSE) file for details.
+This project is licensed under the **MIT License** - see the [LICENSE](./LICENSE) file for details.
 
 ---
 
