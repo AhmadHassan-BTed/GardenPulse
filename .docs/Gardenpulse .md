@@ -10,13 +10,13 @@
 | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **App Name**     | GardenPulse                                                                                                                                                                                         |
 | **Tagline**      | Grow Smarter, Anywhere.                                                                                                                                                                             |
-| **Core Concept** | The first method-agnostic garden assistant that adapts to soil, container, hydro, or indoor growing — with location-aware intelligence, privacy-first automation, and strategic AdMob monetization. |
+| **Core Concept** | The first method-agnostic garden assistant that adapts to soil, container, hydro, or indoor growing - with location-aware intelligence, privacy-first automation, and strategic AdMob monetization. |
 
 ---
 
 ## 1. Core Problem Solved
 
-Home gardeners juggle conflicting advice across soil, container, hydro, and indoor setups — wasting time on guesswork, killing plants from preventable errors, and abandoning gardens due to overwhelm.
+Home gardeners juggle conflicting advice across soil, container, hydro, and indoor setups - wasting time on guesswork, killing plants from preventable errors, and abandoning gardens due to overwhelm.
 
 GardenPulse eliminates this friction by delivering hyper-personalized, location-aware care guidance that works offline, respects privacy, and scales with the user's journey.
 
@@ -37,7 +37,7 @@ GardenPulse eliminates this friction by delivering hyper-personalized, location-
 
 ## 3. Unique Selling Proposition
 
-> "The first garden app that adapts to YOUR method — soil, hydro, container, or hybrid — with 100% free core tools, offline privacy, location-aware intelligence, and smart automation that actually works."
+> "The first garden app that adapts to YOUR method - soil, hydro, container, or hybrid - with 100% free core tools, offline privacy, location-aware intelligence, and smart automation that actually works."
 
 ---
 
@@ -123,7 +123,7 @@ GardenPulse eliminates this friction by delivering hyper-personalized, location-
 
 **Freemium + AdMob Hybrid (Expanded for Smart Urban Audience)**
 
-### Core Features — 100% Free Forever
+### Core Features - 100% Free Forever
 
 - Unlimited plant logging across all methods
 - Location-aware scheduling and weather integration
@@ -300,10 +300,10 @@ GardenPulse eliminates this friction by delivering hyper-personalized, location-
 
 | Phase   | Description                                                                                          |
 | ------- | ---------------------------------------------------------------------------------------------------- |
-| Phase 2 | GardenPulse for Schools — STEM curriculum modules for urban agriculture education                    |
-| Phase 3 | Hardware-Agnostic Integrations — Bluetooth sensors, smart plugs, irrigation controllers (any brand)  |
-| Phase 4 | B2B White-Label — Garden centers, seed companies, eco-brands offer "Powered by GardenPulse" apps     |
-| Phase 5 | Certification Pathways — Partner with urban ag nonprofits for skill badges and community credentials |
+| Phase 2 | GardenPulse for Schools - STEM curriculum modules for urban agriculture education                    |
+| Phase 3 | Hardware-Agnostic Integrations - Bluetooth sensors, smart plugs, irrigation controllers (any brand)  |
+| Phase 4 | B2B White-Label - Garden centers, seed companies, eco-brands offer "Powered by GardenPulse" apps     |
+| Phase 5 | Certification Pathways - Partner with urban ag nonprofits for skill badges and community credentials |
 
 ### Global Relevance
 
