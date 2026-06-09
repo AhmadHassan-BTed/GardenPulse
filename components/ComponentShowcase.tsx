@@ -118,6 +118,17 @@ import ArticleBodyRenderer from './common/ArticleBodyRenderer';
 import ExportFormatOptions from './common/ExportFormatOptions';
 import PhotoCaptureArea from './common/PhotoCaptureArea';
 
+import ConfettiCelebration from './common/ConfettiCelebration';
+import SwipeableRowMock from './common/SwipeableRowMock';
+import PlantHeroImage from './common/PlantHeroImage';
+import VoiceInputButton from './common/VoiceInputButton';
+import RecentlyUsedBanner from './common/RecentlyUsedBanner';
+import SunriseSunsetRow from './common/SunriseSunsetRow';
+import CustomReminderForm from './common/CustomReminderForm';
+import MapLayerToggleSheet from './common/MapLayerToggleSheet';
+import PendingExportStatusCard from './common/PendingExportStatusCard';
+import WatermarkToggleRow from './common/WatermarkToggleRow';
+
 import AvatarPicker from './common/AvatarPicker';
 import ProfileHeaderCard from './common/ProfileHeaderCard';
 import StreakDisplay from './common/StreakDisplay';
@@ -1582,6 +1593,48 @@ export default function ComponentShowcase() {
         <View style={{ height: 300, borderRadius: Radius.lg, overflow: 'hidden', position: 'relative' }}>
           <Image source={require('../assets/placeholder-plant.png')} style={{ width: '100%', height: '100%' }} />
           <ScanningStateOverlay />
+        </View>
+
+        {/* ════════════════════════════════════════════════════════════
+            THE FINAL 10: MISSING EXTRAS
+        ═══════════════════════════════════════════════════════════════ */}
+        <Section label="The Final 10 Extras" theme={theme} />
+        
+        <PlantHeroImage photoCount={42} onAddPhoto={() => {}} />
+
+        {/* Note: Tap the card below to see the swipe-to-reveal mock */}
+        <SwipeableRowMock onLog={() => {}} onArchive={() => {}}>
+          <CustomCard padding={Spacing.md} style={{ elevation: 2 }}>
+            <Text style={{ fontWeight: 'bold', color: Colors.text.heading }}>← Tap me to simulate swipe</Text>
+            <Text style={{ color: Colors.text.muted }}>Reveals Log and Archive actions underneath.</Text>
+          </CustomCard>
+        </SwipeableRowMock>
+
+        <RecentlyUsedBanner toolName="Nutrient Calculator" icon="droplet" onOpen={() => {}} />
+
+        <SunriseSunsetRow sunrise="06:24 AM" sunset="08:12 PM" />
+
+        <CustomReminderForm />
+
+        <View style={{ borderWidth: 1, borderColor: Colors.border.subtle, borderRadius: Radius.lg, marginBottom: Spacing.md }}>
+          <MapLayerToggleSheet />
+        </View>
+
+        <PendingExportStatusCard />
+
+        <CustomCard padding={Spacing.md}>
+          <Text style={{ fontSize: 16, fontWeight: 'bold', color: Colors.text.heading, marginBottom: Spacing.md }}>Export Settings</Text>
+          <WatermarkToggleRow isSupporter={false} />
+        </CustomCard>
+
+        <View style={{ alignItems: 'center', paddingVertical: Spacing.xl }}>
+          <VoiceInputButton />
+          <Text style={{ marginTop: Spacing.md, color: Colors.text.muted, fontWeight: 'bold' }}>Tap Mic to Test State</Text>
+        </View>
+
+        {/* Confetti renders an absolute overlay, so we wrap it in a mock screen block */}
+        <View style={[styles.miniScreen, { height: 160, position: 'relative' }]}>
+          <ConfettiCelebration />
         </View>
 
         <View style={{ height: Spacing.xl }} />

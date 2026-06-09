@@ -12,7 +12,7 @@ export const PublishedGuideCard = ({ title, status, views, revenue, onEdit }: an
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
         <View style={{ flex: 1, marginRight: Spacing.sm }}>
           <Text style={{ fontSize: Typography.sizes.base, fontWeight: 'bold', color: Colors.text.heading, marginBottom: 4 }}>{title}</Text>
-          <Text style={{ fontSize: Typography.sizes.xs, color: Colors.text.muted, textTransform: 'uppercase', fontWeight: 'bold', color: status === 'Live' ? Colors.green.DEFAULT : '#F59E0B' }}>● {status}</Text>
+          <Text style={{ fontSize: Typography.sizes.xs, textTransform: 'uppercase', fontWeight: 'bold', color: status === 'Live' ? Colors.green.DEFAULT : '#F59E0B' }}>● {status}</Text>
           <View style={{ flexDirection: 'row', gap: Spacing.md, marginTop: Spacing.sm }}>
             <Text style={{ fontSize: Typography.sizes.sm, color: Colors.text.body }}><Feather name="eye" size={12} /> {views}</Text>
             <Text style={{ fontSize: Typography.sizes.sm, color: Colors.text.body }}><Feather name="dollar-sign" size={12} /> {revenue}</Text>
