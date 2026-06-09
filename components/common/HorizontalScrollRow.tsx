@@ -5,7 +5,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import React, { useMemo } from 'react';
-import { ScrollView, StyleSheet, ViewStyle } from 'react-native';
+import { ScrollView, StyleSheet, ViewStyle, StyleProp } from 'react-native';
 import { useTheme } from '../layout/ThemeProvider';
 
 export interface HorizontalScrollRowProps {
@@ -16,9 +16,9 @@ export interface HorizontalScrollRowProps {
   /** Adds padding to the left and right edges of the scrollable content */
   edgePadding?: boolean;
   /** Outer container style */
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   /** Inner scroll content style */
-  contentContainerStyle?: ViewStyle;
+  contentContainerStyle?: StyleProp<ViewStyle>;
   /** Whether to show the native horizontal scrollbar */
   showsScrollIndicator?: boolean;
 }

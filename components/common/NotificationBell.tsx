@@ -1,71 +1,86 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // NotificationBell.tsx — GardenPulse
-// Tappable bell icon with an unread badge count for the AppBar.
+// Bell icon with unread badge count; tappable; lives in AppBar / SCR-01.
 // ─────────────────────────────────────────────────────────────────────────────
 
 import React, { useMemo } from 'react';
-import { View, Text, StyleSheet, ViewStyle } from 'react-native';
+import { View, Text, Pressable, StyleSheet, ViewStyle } from 'react-native';
+import { Feather } from '@expo/vector-icons';
 import { useTheme } from '../layout/ThemeProvider';
-import IconButton from './IconButton';
 
 export interface NotificationBellProps {
-  /** The number of unread notifications. Badge hides if 0. */
-  count: number;
+  /** Number of unread notifications */
+  unreadCount?: number;
   /** Press handler */
-  onPress: () => void;
-  /** Outer container style */
+  onPress?: () => void;
+  /** Icon size */
+  size?: number;
+  /** Outer style override */
   style?: ViewStyle;
 }
 
 const NotificationBell: React.FC<NotificationBellProps> = ({
-  count,
+  unreadCount = 0,
   onPress,
+  size = 22,
   style,
 }) => {
   const theme = useTheme();
-  const { Colors } = theme;
+  const { Colors, Spacing, Radius } = theme;
 
   const styles = useMemo(
     () =>
       StyleSheet.create({
         container: {
-          position: 'relative',
+          width: 40,
+          height: 40,
+          borderRadius: Radius.sm,
+          justifyContent: 'center',
+          alignItems: 'center',
         },
         badge: {
           position: 'absolute',
-          top: -2,
-          right: -2,
-          backgroundColor: Colors.text.error, // Red draws immediate attention
-          minWidth: 18,
-          height: 18,
-          borderRadius: 9,
+          top: 4,
+          right: 4,
+          minWidth: 16,
+          height: 16,
+          borderRadius: 8,
+          backgroundColor: Colors.text.error,
           justifyContent: 'center',
           alignItems: 'center',
           paddingHorizontal: 4,
-          borderWidth: 2,
-          borderColor: Colors.surface.base, // Cuts out a border from the bell behind it
         },
         badgeText: {
-          color: '#FFFFFF',
           fontSize: 9,
-          fontWeight: 'bold',
+          fontWeight: '700',
+          color: '#FFFFFF',
+          lineHeight: 16,
+          textAlign: 'center',
         },
       }),
-    [Colors]
+    [Colors, Radius],
   );
 
-  const displayCount = count > 99 ? '99+' : count;
+  const displayCount = unreadCount > 99 ? '99+' : String(unreadCount);
 
   return (
-    <View style={[styles.container, style]}>
-      <IconButton name="bell" onPress={onPress} size={24} />
-      
-      {count > 0 && (
-        <View style={styles.badge} pointerEvents="none">
-          <Text style={styles.badgeText}>{displayCount}</Text>
+    <Pressable
+      onPress={onPress}
+      style={({ pressed }) => [
+        styles.container,
+        pressed && { opacity: 0.6 },
+        style,
+      ]}
+    >
+      <Feather name="bell" size={size} color={Colors.text.heading} />
+      {unreadCount > 0 && (
+        <View style={styles.badge}>
+          <Text style={styles.badgeText} numberOfLines={1}>
+            {displayCount}
+          </Text>
         </View>
       )}
-    </View>
+    </Pressable>
   );
 };
 

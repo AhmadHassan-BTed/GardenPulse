@@ -15,6 +15,7 @@ import {
   ViewStyle,
   TextStyle,
   GestureResponderEvent,
+  StyleProp,
 } from 'react-native';
 import { useTheme } from '../layout/ThemeProvider';
 
@@ -28,7 +29,7 @@ export interface CustomCardProps {
   variant?: 'default' | 'accent' | 'minimal';
   padding?: number;
   onPress?: (event: GestureResponderEvent) => void;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   titleStyle?: TextStyle;
   subtitleStyle?: TextStyle;
 }
@@ -140,11 +141,11 @@ const CustomCard: React.FC<CustomCardProps> = ({
     </>
   );
 
-  const cardStyle: (ViewStyle | false)[] = [
+  const cardStyle = [
     styles.card,
     isAccent  && styles.cardAccent,
     isMinimal && styles.cardMinimal,
-    style ?? {},
+    style,
   ];
 
   if (onPress) {
