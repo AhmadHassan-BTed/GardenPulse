@@ -8,6 +8,7 @@ import React, { useMemo } from 'react';
 import { View, Pressable, StyleSheet, Platform, Text } from 'react-native';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Feather } from '@expo/vector-icons';
 import { useTheme } from '../layout/ThemeProvider';
 
 export default function BottomNavigationBar({ state, descriptors, navigation }: BottomTabBarProps) {
@@ -43,23 +44,41 @@ export default function BottomNavigationBar({ state, descriptors, navigation }: 
           alignItems: 'center',
           justifyContent: 'center',
           height: '100%',
+          position: 'relative', // Necessary for absolute positioning of the indicator
+        },
+        iconWrapper: {
+          marginBottom: 2,
+          alignItems: 'center',
+          justifyContent: 'center',
         },
         label: {
           fontSize: 10,
           fontWeight: Typography.weights.medium,
-          marginTop: 4,
+          marginTop: 2,
         },
         activeIndicator: {
           position: 'absolute',
-          top: 6,
-          width: 4,
-          height: 4,
-          borderRadius: 2,
+          top: -1, // Rests exactly on the top border of the tab bar
+          width: '35%',
+          height: 3,
           backgroundColor: Colors.green.DEFAULT,
+          borderBottomLeftRadius: 3,
+          borderBottomRightRadius: 3,
         },
       }),
     [Colors, Spacing, Radius, Typography, insets.bottom]
   );
+
+  // Fallback map guarantees an icon renders even if _layout.tsx is missing the tabBarIcon prop
+  const getFallbackIcon = (routeName: string): keyof typeof Feather.glyphMap => {
+    const name = routeName.toLowerCase();
+    if (name.includes('home') || name === 'index') return 'home';
+    if (name.includes('garden')) return 'command';
+    if (name.includes('tool')) return 'grid';
+    if (name.includes('community')) return 'globe';
+    if (name.includes('profile')) return 'user';
+    return 'circle';
+  };
 
   return (
     <View style={styles.container}>
@@ -95,27 +114,31 @@ export default function BottomNavigationBar({ state, descriptors, navigation }: 
 
         const iconColor = isFocused ? Colors.green.DEFAULT : Colors.text.muted;
 
+        // Robust render function catches missing/malformed options
+        const renderIcon = () => {
+          if (typeof options.tabBarIcon === 'function') {
+            return options.tabBarIcon({ focused: isFocused, color: iconColor, size: 22 });
+          }
+          return <Feather name={getFallbackIcon(route.name)} size={22} color={iconColor} />;
+        };
+
         return (
           <Pressable
             key={route.key}
             accessibilityRole="button"
             accessibilityState={isFocused ? { selected: true } : {}}
             accessibilityLabel={options.tabBarAccessibilityLabel}
-            testID={options.tabBarButtonTestID}
             onPress={onPress}
             onLongPress={onLongPress}
             style={styles.tabButton}
             hitSlop={10}
           >
+            {/* Replaced the confusing dot with a sleek top-bar line indicator */}
             {isFocused && <View style={styles.activeIndicator} />}
             
-            {options.tabBarIcon && 
-              options.tabBarIcon({ 
-                focused: isFocused, 
-                color: iconColor, 
-                size: 22 
-              })
-            }
+            <View style={styles.iconWrapper}>
+              {renderIcon()}
+            </View>
             
             <Text 
               style={[

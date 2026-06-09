@@ -73,7 +73,7 @@ const LogTimelineEntry: React.FC<LogTimelineEntryProps> = ({
         tail: {
           position: 'absolute',
           top: 40,
-          bottom: 0,
+          bottom: -Spacing.lg, // <--- Change this from 0 to -Spacing.lg
           width: 2,
           backgroundColor: Colors.border.subtle,
           zIndex: 1,
