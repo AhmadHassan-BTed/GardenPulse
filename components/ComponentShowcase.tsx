@@ -1,7 +1,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // ComponentShowcase.tsx — GardenPulse
 // Drop this screen into your navigator (or swap it into App.tsx temporarily)
-// to preview every component in one scrollable page.
+// to preview EVERY component in one scrollable page.
 //
 // Path: components/ComponentShowcase.tsx
 //   - Sits next to the components it previews
@@ -21,14 +21,38 @@ import {
   Text,
   View,
 } from 'react-native';
+import { Feather } from '@expo/vector-icons';
 
 import { useTheme } from './layout/ThemeProvider';
-import CustomButton      from './common/CustomButton';
-import CustomInput       from './common/CustomInput';
-import CustomCard        from './common/CustomCard';
-import CustomSwitch      from './common/CustomSwitch';
-import BottomSheetModal  from './common/BottomSheetModal';
-import ThemeToggle       from './common/ThemeToggle';
+
+// ── All 27 common components ──────────────────────────────────────────────────
+import AutocompleteSearchInput from './common/AutocompleteSearchInput';
+import BottomNavigationBar from './common/BottomNavigationBar';
+import BottomSheetModal from './common/BottomSheetModal';
+import CameraViewfinder from './common/CameraViewfinder';
+import Checkbox from './common/Checkbox';
+import CustomButton from './common/CustomButton';
+import CustomCard from './common/CustomCard';
+import CustomDateTimePicker from './common/CustomDateTimePicker';
+import CustomHeader from './common/CustomHeader';
+import CustomInput from './common/CustomInput';
+import CustomSlider from './common/CustomSlider';
+import CustomSwitch from './common/CustomSwitch';
+import Divider from './common/Divider';
+import FAB from './common/FAB';
+import FilterChip from './common/FilterChip';
+import HorizontalScrollRow from './common/HorizontalScrollRow';
+import IconButton from './common/IconButton';
+import MetricDial from './common/MetricDial';
+import ModalDialog from './common/ModalDialog';
+import NotesInput from './common/NotesInput';
+import RadioGroup from './common/RadioGroup';
+import ScreenWrapper from './common/ScreenWrapper';
+import SectionHeader from './common/SectionHeader';
+import StatusBadge from './common/StatusBadge';
+import TextLink from './common/TextLink';
+import ThemeToggle from './common/ThemeToggle';
+import ZoneBadge from './common/ZoneBadge';
 
 // ── Section divider ───────────────────────────────────────────────────────────
 const Section = ({ label, theme }: { label: string; theme: ReturnType<typeof useTheme> }) => (
@@ -62,16 +86,42 @@ const sectionStyles = (theme: ReturnType<typeof useTheme>) => {
 // ── Main showcase ─────────────────────────────────────────────────────────────
 export default function ComponentShowcase() {
   const theme = useTheme();
-  const { Colors, Spacing, Typography } = theme;
+  const { Colors, Spacing, Radius, Typography } = theme;
   const isDark = theme.scheme === 'dark';
 
-  const [inputValue,    setInputValue]    = useState('');
+  // ── State for interactive components ──────────────────────────────────────
+  const [inputValue, setInputValue] = useState('');
   const [passwordValue, setPasswordValue] = useState('');
-  const [showPassword,  setShowPassword]  = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [autocompleteValue, setAutocompleteValue] = useState('');
+  const [notesValue, setNotesValue] = useState('');
+  const [isRecording, setIsRecording] = useState(false);
   const [notifications, setNotifications] = useState(true);
   const [weatherAlerts, setWeatherAlerts] = useState(false);
-  const [autoWater,     setAutoWater]     = useState(true);
-  const [sheetVisible,  setSheetVisible]  = useState(false);
+  const [autoWater, setAutoWater] = useState(true);
+  const [sheetVisible, setSheetVisible] = useState(false);
+  const [dialogVisible, setDialogVisible] = useState(false);
+  const [accepted, setAccepted] = useState(false);
+  const [ticked, setTicked] = useState(true);
+  const [unchecked, setUnchecked] = useState(false);
+  const [radioValue, setRadioValue] = useState<string | number>('indoor');
+  const [sliderValue, setSliderValue] = useState(45);
+  const [filter, setFilter] = useState<'all' | 'indoor' | 'outdoor' | 'herbs'>('all');
+  const [flashOn, setFlashOn] = useState(false);
+
+  const plantSuggestions = useMemo(
+    () => [
+      'Monstera Deliciosa',
+      'Snake Plant',
+      'Fiddle Leaf Fig',
+      'Pothos',
+      'Peace Lily',
+      'Aloe Vera',
+      'Spider Plant',
+      'Rubber Plant',
+    ],
+    [],
+  );
 
   const styles = useMemo(
     () =>
@@ -120,7 +170,18 @@ export default function ComponentShowcase() {
         },
 
         spacer: { height: Spacing.sm },
-
+        rowWrap: {
+          flexDirection: 'row',
+          flexWrap: 'wrap',
+          gap: Spacing.sm,
+          alignItems: 'center',
+        },
+        centeredRow: {
+          flexDirection: 'row',
+          gap: Spacing.lg,
+          alignItems: 'center',
+          flexWrap: 'wrap',
+        },
         badge: {
           backgroundColor: Colors.green.tint,
           borderWidth: 1,
@@ -134,21 +195,18 @@ export default function ComponentShowcase() {
           fontWeight: Typography.weights.semibold,
           color: Colors.green.deep,
         },
-
         cardBody: {
           fontSize: Typography.sizes.sm,
           fontWeight: Typography.weights.regular,
           color: Colors.text.body,
           lineHeight: 20,
         },
-
         footerRow: { flexDirection: 'row', gap: Spacing.md, flexWrap: 'wrap' },
         footerStat: {
           fontSize: Typography.sizes.xs,
           color: Colors.text.muted,
           fontWeight: Typography.weights.medium,
         },
-
         switchRow: { paddingVertical: Spacing.sm + 2 },
         switchRowBordered: {
           borderTopWidth: 1,
@@ -156,10 +214,44 @@ export default function ComponentShowcase() {
           marginTop: Spacing.xs,
           paddingTop: Spacing.md,
         },
-
         sheetActions: { paddingBottom: Spacing.md },
+
+        // Camera overlay mock — dark background so the viewfinder reads
+        cameraMock: {
+          height: 360,
+          backgroundColor: '#0A0F0D',
+          borderRadius: Radius.lg,
+          overflow: 'hidden',
+          justifyContent: 'flex-end',
+        },
+
+        // Bottom nav bar mock container so the floating bar is visible
+        navMock: {
+          height: 140,
+          backgroundColor: Colors.surface.elevated,
+          borderRadius: Radius.lg,
+          overflow: 'hidden',
+          justifyContent: 'flex-end',
+        },
+
+        // Mini "screen" used to showcase ScreenWrapper behaviour
+        miniScreen: {
+          height: 220,
+          borderRadius: Radius.lg,
+          borderWidth: 1,
+          borderColor: Colors.border.subtle,
+          overflow: 'hidden',
+        },
+
+        // Layout for the custom header demo
+        headerMock: {
+          borderRadius: Radius.lg,
+          overflow: 'hidden',
+          borderWidth: 1,
+          borderColor: Colors.border.subtle,
+        },
       }),
-    [Colors, Spacing, Typography],
+    [Colors, Spacing, Radius, Typography],
   );
 
   return (
@@ -189,6 +281,68 @@ export default function ComponentShowcase() {
         </View>
 
         {/* ════════════════════════════════════════════════════════════
+            THEME TOGGLE
+        ═══════════════════════════════════════════════════════════════ */}
+        <Section label="Theme Toggle" theme={theme} />
+        <View style={styles.centeredRow}>
+          <ThemeToggle />
+          <ThemeToggle showLabel />
+          <ThemeToggle variant="icon-only" />
+        </View>
+
+        {/* ════════════════════════════════════════════════════════════
+            CUSTOM HEADER
+        ═══════════════════════════════════════════════════════════════ */}
+        <Section label="Custom Header" theme={theme} />
+        <View style={styles.headerMock}>
+          <CustomHeader
+            title="Plant Details"
+            showBack
+            onBack={() => {}}
+            rightNode={
+              <IconButton
+                name="heart"
+                size={20}
+                onPress={() => {}}
+                filled
+              />
+            }
+          />
+        </View>
+        <View style={{ height: Spacing.sm }} />
+        <View style={styles.headerMock}>
+          <CustomHeader
+            title="Transparent"
+            transparent
+            rightNode={
+              <TextLink label="Edit" onPress={() => {}} />
+            }
+          />
+        </View>
+
+        {/* ════════════════════════════════════════════════════════════
+            SECTION HEADER & TEXT LINKS
+        ═══════════════════════════════════════════════════════════════ */}
+        <Section label="Section Header" theme={theme} />
+        <SectionHeader
+          title="Today's Tasks"
+          actionLabel="See All →"
+          onActionPress={() => {}}
+        />
+        <SectionHeader
+          title="My Plants"
+          actionLabel="Manage"
+          onActionPress={() => {}}
+        />
+
+        <Section label="Text Links" theme={theme} />
+        <View style={styles.centeredRow}>
+          <TextLink label="Skip for now" onPress={() => {}} variant="muted" />
+          <TextLink label="Learn more" onPress={() => {}} variant="primary" />
+          <TextLink label="Delete plant" onPress={() => {}} variant="danger" />
+        </View>
+
+        {/* ════════════════════════════════════════════════════════════
             BUTTONS
         ═══════════════════════════════════════════════════════════════ */}
         <Section label="Buttons" theme={theme} />
@@ -197,6 +351,7 @@ export default function ComponentShowcase() {
           label="Start Growing"
           variant="primary"
           fullWidth
+          leftIcon={<Feather name="sun" size={18} color={Colors.button.primaryText} />}
           onPress={() => setSheetVisible(true)}
         />
 
@@ -249,6 +404,29 @@ export default function ComponentShowcase() {
         />
 
         {/* ════════════════════════════════════════════════════════════
+            ICON BUTTONS
+        ═══════════════════════════════════════════════════════════════ */}
+        <Section label="Icon Buttons" theme={theme} />
+        <View style={styles.centeredRow}>
+          <IconButton name="search" onPress={() => {}} />
+          <IconButton name="settings" onPress={() => {}} />
+          <IconButton name="bell" onPress={() => {}} />
+          <IconButton name="heart" onPress={() => {}} />
+          <IconButton name="share-2" onPress={() => {}} />
+          <IconButton name="search" onPress={() => {}} filled />
+          <IconButton name="settings" onPress={() => {}} filled />
+          <IconButton name="trash-2" onPress={() => {}} color={Colors.text.error} />
+        </View>
+
+        {/* ════════════════════════════════════════════════════════════
+            DIVIDERS
+        ═══════════════════════════════════════════════════════════════ */}
+        <Section label="Dividers" theme={theme} />
+        <Divider />
+        <Divider text="OR" />
+        <Divider text="Continue with email" />
+
+        {/* ════════════════════════════════════════════════════════════
             INPUTS
         ═══════════════════════════════════════════════════════════════ */}
         <Section label="Inputs" theme={theme} />
@@ -294,6 +472,164 @@ export default function ComponentShowcase() {
           helperText="Logged entries appear in your weekly Bloom Report"
           multiline
         />
+
+        {/* ════════════════════════════════════════════════════════════
+            AUTOCOMPLETE SEARCH
+        ═══════════════════════════════════════════════════════════════ */}
+        <Section label="Autocomplete Search" theme={theme} />
+        <AutocompleteSearchInput
+          label="Search plants"
+          value={autocompleteValue}
+          onChangeText={setAutocompleteValue}
+          onSelect={(item) => setAutocompleteValue(item)}
+          data={plantSuggestions}
+        />
+
+        {/* ════════════════════════════════════════════════════════════
+            NOTES INPUT
+        ═══════════════════════════════════════════════════════════════ */}
+        <Section label="Notes Input" theme={theme} />
+        <NotesInput
+          label="Voice-enabled note"
+          value={notesValue}
+          onChangeText={setNotesValue}
+          isRecording={isRecording}
+          onMicPress={() => setIsRecording(r => !r)}
+        />
+
+        {/* ════════════════════════════════════════════════════════════
+            CHECKBOXES
+        ═══════════════════════════════════════════════════════════════ */}
+        <Section label="Checkboxes" theme={theme} />
+        <View style={styles.centeredRow}>
+          <Checkbox value={ticked} onValueChange={setTicked} label="Watered" />
+          <Checkbox value={unchecked} onValueChange={setUnchecked} label="Fertilized" />
+          <Checkbox value={false} onValueChange={() => {}} label="Disabled" isDisabled />
+        </View>
+
+        {/* ════════════════════════════════════════════════════════════
+            RADIO GROUP
+        ═══════════════════════════════════════════════════════════════ */}
+        <Section label="Radio Group" theme={theme} />
+        <RadioGroup
+          options={[
+            { label: 'Indoor', value: 'indoor' },
+            { label: 'Outdoor', value: 'outdoor' },
+            { label: 'Greenhouse', value: 'greenhouse' },
+          ]}
+          selectedValue={radioValue}
+          onSelect={setRadioValue}
+        />
+        <View style={{ height: Spacing.sm }} />
+        <RadioGroup
+          horizontal
+          options={[
+            { label: 'Low', value: 'low' },
+            { label: 'Medium', value: 'med' },
+            { label: 'High', value: 'high' },
+          ]}
+          selectedValue="med"
+          onSelect={() => {}}
+        />
+
+        {/* ════════════════════════════════════════════════════════════
+            FILTER CHIPS
+        ═══════════════════════════════════════════════════════════════ */}
+        <Section label="Filter Chips" theme={theme} />
+        <View style={styles.rowWrap}>
+          {(['all', 'indoor', 'outdoor', 'herbs'] as const).map((key) => (
+            <FilterChip
+              key={key}
+              label={key[0].toUpperCase() + key.slice(1)}
+              isSelected={filter === key}
+              onPress={() => setFilter(key)}
+            />
+          ))}
+        </View>
+
+        {/* ════════════════════════════════════════════════════════════
+            SLIDER
+        ═══════════════════════════════════════════════════════════════ */}
+        <Section label="Slider" theme={theme} />
+        <CustomSlider
+          label="Soil moisture"
+          value={sliderValue}
+          onValueChange={setSliderValue}
+        />
+
+        {/* ════════════════════════════════════════════════════════════
+            DATE / TIME PICKER
+        ═══════════════════════════════════════════════════════════════ */}
+        <Section label="Date / Time Picker" theme={theme} />
+        <CustomDateTimePicker
+          label="Next watering"
+          value={new Date()}
+          mode="date"
+          onChange={() => {}}
+        />
+        <CustomDateTimePicker
+          label="Reminder time"
+          value={new Date()}
+          mode="time"
+          onChange={() => {}}
+        />
+
+        {/* ════════════════════════════════════════════════════════════
+            STATUS BADGES
+        ═══════════════════════════════════════════════════════════════ */}
+        <Section label="Status Badges" theme={theme} />
+        <View style={styles.rowWrap}>
+          <StatusBadge label="Healthy" status="success" />
+          <StatusBadge label="Thirsty" status="warning" />
+          <StatusBadge label="Dying" status="error" />
+          <StatusBadge label="Unknown" status="neutral" />
+          <StatusBadge label="Healthy" status="success" variant="dot" />
+          <StatusBadge label="Thirsty" status="warning" variant="dot" />
+        </View>
+
+        {/* ════════════════════════════════════════════════════════════
+            ZONE BADGE
+        ═══════════════════════════════════════════════════════════════ */}
+        <Section label="Zone Badge" theme={theme} />
+        <View style={styles.rowWrap}>
+          <ZoneBadge zone="Zone 7b" />
+          <ZoneBadge zone="Zone 9a" location="Berlin" />
+          <ZoneBadge zone="Zone 5b" location="Toronto" />
+        </View>
+
+        {/* ════════════════════════════════════════════════════════════
+            METRIC DIAL
+        ═══════════════════════════════════════════════════════════════ */}
+        <Section label="Metric Dial" theme={theme} />
+        <View style={styles.centeredRow}>
+          <MetricDial value={92} label="Health" />
+          <MetricDial value={65} label="Moisture" />
+          <MetricDial value={32} label="Light" />
+        </View>
+
+        {/* ════════════════════════════════════════════════════════════
+            HORIZONTAL SCROLL ROW
+        ═══════════════════════════════════════════════════════════════ */}
+        <Section label="Horizontal Scroll Row" theme={theme} />
+        <HorizontalScrollRow edgePadding gap={12}>
+          {['Monstera', 'Pothos', 'Aloe', 'Cactus', 'Basil', 'Mint'].map((name) => (
+            <View
+              key={name}
+              style={{
+                paddingVertical: Spacing.md,
+                paddingHorizontal: Spacing.lg,
+                backgroundColor: Colors.surface.glass,
+                borderWidth: 1,
+                borderColor: Colors.surface.glassBorder,
+                borderRadius: Radius.lg,
+              }}
+            >
+              <Text style={{ color: Colors.text.heading, fontWeight: Typography.weights.semibold }}>
+                {name}
+              </Text>
+            </View>
+          ))}
+        </HorizontalScrollRow>
 
         {/* ════════════════════════════════════════════════════════════
             CARDS
@@ -387,6 +723,72 @@ export default function ComponentShowcase() {
         </CustomCard>
 
         {/* ════════════════════════════════════════════════════════════
+            SCREEN WRAPPER
+        ═══════════════════════════════════════════════════════════════ */}
+        <Section label="Screen Wrapper" theme={theme} />
+        <View style={styles.miniScreen}>
+          <ScreenWrapper scrollable withPadding>
+            <View style={{ paddingVertical: Spacing.md }}>
+              <Text style={{ color: Colors.text.heading, fontWeight: Typography.weights.semibold, marginBottom: Spacing.xs }}>
+                Static + scrollable + padded
+              </Text>
+              <Text style={{ color: Colors.text.body, lineHeight: 20 }}>
+                ScreenWrapper handles safe area, keyboard avoidance, and the theme background.
+                It can swap between a View and a ScrollView.
+              </Text>
+            </View>
+          </ScreenWrapper>
+        </View>
+
+        {/* ════════════════════════════════════════════════════════════
+            FLOATING ACTION BUTTON
+        ═══════════════════════════════════════════════════════════════ */}
+        <Section label="Floating Action Button" theme={theme} />
+        <View
+          style={{
+            height: 140,
+            backgroundColor: Colors.surface.glass,
+            borderRadius: Radius.lg,
+            borderWidth: 1,
+            borderColor: Colors.surface.glassBorder,
+          }}
+        >
+          <FAB onPress={() => {}} iconName="plus" />
+          <FAB onPress={() => {}} iconName="camera" style={{ right: Spacing.lg + 76 }} />
+        </View>
+
+        {/* ════════════════════════════════════════════════════════════
+            BOTTOM NAVIGATION BAR
+        ═══════════════════════════════════════════════════════════════ */}
+        <Section label="Bottom Navigation Bar" theme={theme} />
+        <View style={styles.navMock}>
+          <BottomNavigationBar
+            state={{
+              index: 0,
+              routes: [
+                { key: 'home',     name: 'home' },
+                { key: 'garden',   name: 'garden' },
+                { key: 'tools',    name: 'tools' },
+                { key: 'profile',  name: 'profile' },
+              ],
+            } as any}
+            insets={{ top: 0, right: 0, bottom: 0, left: 0 }}
+            descriptors={
+              {
+                home:    { options: { title: 'Home',    tabBarAccessibilityLabel: 'Home tab' } },
+                garden:  { options: { title: 'Garden',  tabBarAccessibilityLabel: 'Garden tab' } },
+                tools:   { options: { title: 'Tools',   tabBarAccessibilityLabel: 'Tools tab' } },
+                profile: { options: { title: 'Profile', tabBarAccessibilityLabel: 'Profile tab' } },
+              } as any
+            }
+            navigation={{
+              emit: () => ({ defaultPrevented: false }),
+              navigate: () => {},
+            } as any}
+          />
+        </View>
+
+        {/* ════════════════════════════════════════════════════════════
             BOTTOM SHEET
         ═══════════════════════════════════════════════════════════════ */}
         <Section label="Bottom Sheet" theme={theme} />
@@ -435,6 +837,60 @@ export default function ComponentShowcase() {
             />
           </View>
         </BottomSheetModal>
+
+        {/* ════════════════════════════════════════════════════════════
+            MODAL DIALOG
+        ═══════════════════════════════════════════════════════════════ */}
+        <Section label="Modal Dialog" theme={theme} />
+        <CustomButton
+          label="Open Confirmation Dialog"
+          variant="secondary"
+          fullWidth
+          onPress={() => setDialogVisible(true)}
+        />
+
+        <ModalDialog
+          visible={dialogVisible}
+          title="Enable Smart Watering?"
+          description="We'll adjust your schedule using local weather data. You can change this any time in Settings."
+          iconNode={
+            <Feather
+              name="droplet"
+              size={42}
+              color={Colors.green.DEFAULT}
+            />
+          }
+          primaryAction={{
+            label: accepted ? 'Enabled ✓' : 'Enable',
+            onPress: () => {
+              setAccepted(true);
+              setDialogVisible(false);
+            },
+          }}
+          secondaryAction={{
+            label: 'Not now',
+            onPress: () => setDialogVisible(false),
+          }}
+          onClose={() => setDialogVisible(false)}
+        />
+
+        {/* ════════════════════════════════════════════════════════════
+            CAMERA VIEWFINDER
+        ═══════════════════════════════════════════════════════════════ */}
+        <Section label="Camera Viewfinder" theme={theme} />
+        <View style={styles.cameraMock}>
+          <CameraViewfinder
+            mode="leaf"
+            instructionLabel="Frame the affected leaf"
+            isFlashOn={flashOn}
+            onToggleFlash={() => setFlashOn((v) => !v)}
+            onClose={() => {}}
+            onCapture={() => {}}
+            onOpenGallery={() => {}}
+          />
+        </View>
+
+        <View style={{ height: Spacing.xl }} />
       </ScrollView>
     </SafeAreaView>
   );

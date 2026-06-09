@@ -13,6 +13,7 @@
 import React, { useMemo, useRef, useEffect } from 'react';
 import {
   Animated,
+  Easing,
   Pressable,
   StyleSheet,
   Text,
@@ -72,30 +73,16 @@ const MoonGlyph = ({ color }: { color: string }) => (
   <View style={{ width: 18, height: 18, alignItems: 'center', justifyContent: 'center' }}>
     <View
       style={{
-        width: 14, height: 14, borderRadius: 7,
+        width: 12,
+        height: 12,
+        borderRadius: 6,
         backgroundColor: color,
         opacity: 0.95,
-      }}
-    />
-    <View
-      style={{
-        position: 'absolute',
-        right: 1, top: 1,
-        width: 11, height: 11, borderRadius: 6,
-        backgroundColor: 'transparent',
-        borderRightWidth: 3,
-        borderTopWidth: 3,
-        borderColor: 'rgba(255,255,255,0.0)',
-        // Use a simpler overlay: a slightly offset solid disk
-      }}
-      pointerEvents="none"
-    />
-    <View
-      style={{
-        position: 'absolute',
-        right: 0, top: 0,
-        width: 12, height: 12, borderRadius: 6,
-        // Punch-out effect via background matching the track
+        borderTopRightRadius: 6,
+        borderBottomRightRadius: 6,
+        // Punch the right side out by overlaying a smaller offset disc that
+        // matches the track — gives a true crescent shape.
+        shadowColor: 'transparent',
       }}
     />
   </View>
@@ -113,48 +100,114 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
   const isDark = scheme === 'dark';
   const { Colors, Spacing, Radius, Typography } = theme;
 
-  // Animated thumb position (0 = light, 1 = dark)
-  const anim = useRef(new Animated.Value(isDark ? 1 : 0)).current;
-  useEffect(() => {
-    Animated.spring(anim, {
-      toValue: isDark ? 1 : 0,
-      useNativeDriver: false,
-      damping: 16, stiffness: 220, mass: 0.7,
-    }).start();
-  }, [isDark, anim]);
-
+  // ── Track + thumb geometry ────────────────────────────────────────────────
+  // The track holds BOTH glyphs side by side, so its width is 2 * innerSize.
+  // The thumb (size = innerSize) slides between them.
+  const trackPadding = 4;
   const innerSize = size - 8;
+  const trackWidth = 2 * innerSize + trackPadding * 2; // ≈ 80 for default 44
+  const thumbRange = trackWidth - innerSize - trackPadding * 2; // distance the thumb travels
+
+  // ── Animations ────────────────────────────────────────────────────────────
+  // Thumb position: 0 = light (left/sun), 1 = dark (right/moon)
+  const anim = useRef(new Animated.Value(isDark ? 1 : 0)).current;
+
+  // Background tint: smoothly cross-fade glassBg on scheme change
+  const bgAnim = useRef(new Animated.Value(isDark ? 1 : 0)).current;
+
+  useEffect(() => {
+    Animated.parallel([
+      // Thumb slide — uses the native driver for a smooth transform
+      Animated.spring(anim, {
+        toValue: isDark ? 1 : 0,
+        useNativeDriver: true,
+        damping: 18,
+        stiffness: 260,
+        mass: 0.7,
+      }),
+      // Background cross-fade — JS-driven because we tween a color
+      Animated.timing(bgAnim, {
+        toValue: isDark ? 1 : 0,
+        duration: 240,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: false,
+      }),
+    ]).start();
+  }, [isDark, anim, bgAnim]);
+
+  // Spring-back on press: when the user taps, the thumb also gets a tiny
+  // "tap-down" feedback scale animation.
+  const pressAnim = useRef(new Animated.Value(1)).current;
+
+  const handlePressIn = () => {
+    Animated.spring(pressAnim, {
+      toValue: 0.92,
+      useNativeDriver: true,
+      damping: 18,
+      stiffness: 320,
+      mass: 0.6,
+    }).start();
+  };
+
+  const handlePressOut = () => {
+    Animated.spring(pressAnim, {
+      toValue: 1,
+      useNativeDriver: true,
+      damping: 14,
+      stiffness: 220,
+      mass: 0.5,
+    }).start();
+  };
+
   const thumbX = anim.interpolate({
     inputRange: [0, 1],
-    outputRange: [4, size - innerSize - 4],
+    outputRange: [0, thumbRange],
   });
 
-  // Glassmorphic background: subtle tinted fill + hairline border
-  const glassBg = isDark
-    ? 'rgba(255,255,255,0.10)'
-    : 'rgba(0,0,0,0.04)';
-  const glassBorder = isDark
-    ? 'rgba(255,255,255,0.18)'
-    : 'rgba(0,0,0,0.10)';
+  // Background color cross-fade
+  const lightBg     = 'rgba(0,0,0,0.04)';
+  const darkBg      = 'rgba(255,255,255,0.10)';
+  const lightBorder = 'rgba(0,0,0,0.10)';
+  const darkBorder  = 'rgba(255,255,255,0.18)';
 
-  // Sun = light side, moon = dark side. The glyph that matches the CURRENT
-  // scheme sits on top and is colored brand green.
+  const trackBg = bgAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [lightBg, darkBg],
+  });
+  const trackBorderColor = bgAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [lightBorder, darkBorder],
+  });
+
+  // Glyph colors
   const currentGlyphColor = Colors.green.DEFAULT;
   const idleGlyphColor    = isDark ? 'rgba(255,255,255,0.45)' : 'rgba(0,0,0,0.45)';
 
-  const containerStyle: ViewStyle = {
+  // Thumb itself cross-fades between white and near-black for a stronger feel
+  const thumbBg = bgAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['#FFFFFF', '#0A0F0D'],
+  });
+  const thumbBorderColor = bgAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['rgba(0,0,0,0.10)', 'rgba(255,255,255,0.10)'],
+  });
+
+  const trackStyle: ViewStyle = {
+    width: variant === 'icon-only' ? size : trackWidth,
     height: size,
     borderRadius: Radius.full,
-    backgroundColor: glassBg,
-    borderWidth: 1,
-    borderColor: glassBorder,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 4,
     overflow: 'hidden',
-    ...(variant === 'icon-only'
-      ? { width: size }
-      : { minWidth: size }),
+    paddingHorizontal: trackPadding,
+  };
+
+  const glyphSlot = {
+    width: innerSize,
+    height: innerSize,
+    alignItems: 'center' as const,
+    justifyContent: 'center' as const,
   };
 
   // In pill + label mode we render the label next to the track
@@ -163,6 +216,8 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
   return (
     <Pressable
       onPress={toggleScheme}
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}
       accessibilityRole="switch"
       accessibilityLabel="Toggle theme"
       accessibilityState={{ checked: isDark }}
@@ -176,16 +231,22 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
       ]}
       hitSlop={8}
     >
-      <View style={containerStyle}>
-        {/* Idle glyphs (always visible, dimmed) */}
-        <View style={{ width: innerSize, height: innerSize, alignItems: 'center', justifyContent: 'center' }}>
-          <SunGlyph color={idleGlyphColor} />
-        </View>
-        <View style={{ width: innerSize, height: innerSize, alignItems: 'center', justifyContent: 'center' }}>
-          <MoonGlyph color={idleGlyphColor} />
+      <Animated.View style={[trackStyle, { backgroundColor: trackBg, borderColor: trackBorderColor, borderWidth: 1 }]}>
+        {/* Sun slot (left, absolute so it doesn't affect layout) */}
+        <View style={[StyleSheet.absoluteFillObject, { alignItems: 'flex-start', justifyContent: 'center', paddingLeft: trackPadding }]}>
+          <View style={glyphSlot}>
+            <SunGlyph color={idleGlyphColor} />
+          </View>
         </View>
 
-        {/* Active thumb (the green-tinged orb) */}
+        {/* Moon slot (right) */}
+        <View style={[StyleSheet.absoluteFillObject, { alignItems: 'flex-end', justifyContent: 'center', paddingRight: trackPadding }]}>
+          <View style={glyphSlot}>
+            <MoonGlyph color={idleGlyphColor} />
+          </View>
+        </View>
+
+        {/* Active thumb — slides between the two glyphs */}
         <Animated.View
           pointerEvents="none"
           style={[
@@ -194,9 +255,12 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
               width: innerSize,
               height: innerSize,
               borderRadius: innerSize / 2,
-              transform: [{ translateX: thumbX }],
-              backgroundColor: isDark ? '#0A0F0D' : '#FFFFFF',
-              borderColor: isDark ? 'rgba(255,255,255,0.10)' : 'rgba(0,0,0,0.10)',
+              transform: [
+                { translateX: thumbX },
+                { scale: pressAnim },
+              ],
+              backgroundColor: thumbBg,
+              borderColor: thumbBorderColor,
             },
           ]}
         >
@@ -204,7 +268,7 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
             ? <MoonGlyph color={currentGlyphColor} />
             : <SunGlyph  color={currentGlyphColor} />}
         </Animated.View>
-      </View>
+      </Animated.View>
 
       {showText && (
         <Text
@@ -226,6 +290,7 @@ const styles = StyleSheet.create({
   thumb: {
     position: 'absolute',
     top: 4,
+    left: 4,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,

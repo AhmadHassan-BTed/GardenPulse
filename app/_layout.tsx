@@ -1,57 +1,42 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// app/(tabs)/_layout.tsx
-// Usage implementation for your Expo Router
+// app/_layout.tsx — GardenPulse
+// Root layout. Wraps the entire app in <ThemeProvider> so every screen
+// (tabs, modals, the showcase route, etc.) can call useTheme() /
+// useThemeController() without crashing.
 // ─────────────────────────────────────────────────────────────────────────────
 
-import { Tabs } from 'expo-router';
-import { Feather } from '@expo/vector-icons';
-import BottomNavigationBar from '@/components/common/BottomNavigationBar';
+import { Stack } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-export default function TabsLayout() {
+import { ThemeProvider, useThemeController } from '../components/layout/ThemeProvider';
+
+function RootStack() {
+  const { scheme, theme } = useThemeController();
+  const isDark = scheme === 'dark';
+
   return (
-    <Tabs
-      tabBar={(props) => <BottomNavigationBar {...props} />}
-      screenOptions={{
-        headerShown: false,
-        // Hide the default background so our custom floating bar shines
-        tabBarBackground: () => null,
-      }}
-    >
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color, size }) => <Feather name="home" size={size} color={color} />,
+    <>
+      <StatusBar
+        style={isDark ? 'light' : 'dark'}
+        backgroundColor={theme.Colors.surface.base}
+      />
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          contentStyle: { backgroundColor: theme.Colors.surface.base },
         }}
       />
-      <Tabs.Screen
-        name="garden"
-        options={{
-          title: 'Garden',
-          tabBarIcon: ({ color, size }) => <Feather name="command" size={size} color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="tools"
-        options={{
-          title: 'Tools',
-          tabBarIcon: ({ color, size }) => <Feather name="grid" size={size} color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="community"
-        options={{
-          title: 'Community',
-          tabBarIcon: ({ color, size }) => <Feather name="globe" size={size} color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="profile"
-        options={{
-          title: 'Profile',
-          tabBarIcon: ({ color, size }) => <Feather name="user" size={size} color={color} />,
-        }}
-      />
-    </Tabs>
+    </>
+  );
+}
+
+export default function RootLayout() {
+  return (
+    <SafeAreaProvider>
+      <ThemeProvider>
+        <RootStack />
+      </ThemeProvider>
+    </SafeAreaProvider>
   );
 }

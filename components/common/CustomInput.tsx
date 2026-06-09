@@ -11,60 +11,8 @@ import {
   ViewStyle,
   Platform,
 } from 'react-native';
+import { useTheme } from '../layout/ThemeProvider';
 import { Colors, Spacing, Radius, Typography } from '../../constants/theme';
-
-// ── Surface colour used for both the field bg and the label chip bg ───────────
-// Must be the same value so the floating label "cuts" the border cleanly.
-const SURFACE = Colors.surface.elevated; // '#141414'
-
-// ── Global CSS injection (web only, runs once at module load) ─────────────────
-if (Platform.OS === 'web' && typeof document !== 'undefined') {
-  const STYLE_ID = 'gpulse-input-reset-v4';
-  if (!document.getElementById(STYLE_ID)) {
-    const tag = document.createElement('style');
-    tag.id = STYLE_ID;
-    tag.textContent = `
-      /*
-       * GardenPulse — CustomInput web reset
-       *
-       * Target: every <input> / <textarea> stamped with data-gpulse-input.
-       *
-       * The critical line is color-scheme: light.
-       * In dark mode the browser UA sheet sets color-scheme: light dark on
-       * all form elements, causing their system colour "Field" to resolve to
-       * white. !important on background-color alone cannot override a UA
-       * system colour. Setting color-scheme: light forces the UA to resolve
-       * "Field" to white-mode (which we then replace), and from that point
-       * our background-color: transparent !important wins cleanly.
-       */
-      input[data-gpulse-input="true"],
-      textarea[data-gpulse-input="true"] {
-        color-scheme:       light !important;
-        background-color:   transparent !important;
-        outline:            none !important;
-        outline-width:      0 !important;
-        box-shadow:         none !important;
-        border:             none !important;
-        -webkit-appearance: none !important;
-        appearance:         none !important;
-        caret-color:        #4ADE80 !important;
-        color:              #E2E8F0 !important;
-      }
-      input[data-gpulse-input="true"]:focus,
-      textarea[data-gpulse-input="true"]:focus {
-        color-scheme:     light !important;
-        background-color: transparent !important;
-        outline:          none !important;
-        box-shadow:       none !important;
-      }
-      input[data-gpulse-input="true"]::selection,
-      textarea[data-gpulse-input="true"]::selection {
-        background-color: rgba(74, 222, 128, 0.28) !important;
-      }
-    `;
-    document.head.appendChild(tag);
-  }
-}
 
 // ── Prop Interface ────────────────────────────────────────────────────────────
 export interface CustomInputProps extends Omit<TextInputProps, 'style'> {
@@ -86,10 +34,12 @@ export interface CustomInputProps extends Omit<TextInputProps, 'style'> {
   onChangeText?: (text: string) => void;
 }
 
-// ── Layout ────────────────────────────────────────────────────────────────────
+// ── Layout constants ──────────────────────────────────────────────────────────
 const FIELD_HEIGHT       = 56;
 const LABEL_RESTING_TOP  = 18;   // vertically centred inside the field
 const LABEL_FLOATING_TOP = -9;   // sits just above the top border
+const LABEL_RESTING_X    = 0;    // small indent inside the field
+const LABEL_FLOATING_X   = 4;    // tiny leftward shift when floating
 const ANIM_MS            = 200;
 
 // ── Component ─────────────────────────────────────────────────────────────────
@@ -112,6 +62,13 @@ const CustomInput = React.forwardRef<TextInput, CustomInputProps>(
     },
     ref,
   ) => {
+    const theme = useTheme();
+    const isDark = theme.scheme === 'dark';
+
+    // Light: transparent so there's no visible "grey box".
+    // Dark: rgb(20,20,20) — opaque surface matching other dark components.
+    const fieldSurface = isDark ? theme.Colors.surface.elevated : 'transparent';
+
     const [isFocused, setIsFocused] = useState(false);
     const isActive = isFocused || value.length > 0;
 
@@ -141,29 +98,46 @@ const CustomInput = React.forwardRef<TextInput, CustomInputProps>(
       inputRange:  [0, 1],
       outputRange: [LABEL_RESTING_TOP, LABEL_FLOATING_TOP],
     });
+    const labelLeft = anim.interpolate({
+      inputRange:  [0, 1],
+      outputRange: [LABEL_RESTING_X, LABEL_FLOATING_X],
+    });
     const labelFontSize = anim.interpolate({
       inputRange:  [0, 1],
       outputRange: [Typography.sizes.base, Typography.sizes.xs],
     });
-    // Color only — background is always SURFACE (static, never animated)
+
+    // Color only — background is animated, not static.
     const labelColor = error
-      ? Colors.text.error
+      ? theme.Colors.text.error
       : anim.interpolate({
           inputRange:  [0, 1],
-          outputRange: [Colors.text.muted, Colors.green.DEFAULT],
+          outputRange: [theme.Colors.text.muted, theme.Colors.green.DEFAULT],
         });
+
+    // Light: always transparent (no grey box).
+    // Dark: transparent at rest, fieldSurface when floating so the label
+    // "cuts" through the top border cleanly.
+    const labelBg = isDark
+      ? anim.interpolate({
+          inputRange:  [0, 1],
+          outputRange: ['transparent', fieldSurface],
+        })
+      : 'transparent';
 
     // ── Border & glow ─────────────────────────────────────────────────────
     const borderColor = error
-      ? Colors.border.error
+      ? theme.Colors.border.error
       : isFocused
-      ? Colors.border.focus
-      : Colors.border.muted;
+      ? theme.Colors.border.focus
+      : theme.Colors.border.muted;
 
     const borderWidth = isFocused || !!error ? 1.5 : 1;
 
     const glowColor = error
       ? 'rgba(248,113,113,0.28)'
+      : isDark
+      ? 'rgba(52,211,153,0.28)'
       : 'rgba(74,222,128,0.20)';
 
     // ── Web inline style safety net ───────────────────────────────────────
@@ -186,11 +160,16 @@ const CustomInput = React.forwardRef<TextInput, CustomInputProps>(
 
         {/* ── Floating label ──────────────────────────────────────────────
             Sibling of the field (not a child) → never clipped.
-            Background is always SURFACE (#141414):
-             • Resting inside the field: invisible (same colour as field bg)
-             • Floating above:           masks the border line cleanly       */}
+            Background is animated:
+             • Resting (0): transparent — label sits in the field without
+               covering the icon or typed text.
+             • Floating (1): same colour as the field — masks the border
+               line so the label appears to "cut" through it.              */}
         <Animated.View
-          style={[styles.labelSlot, { top: labelTop }]}
+          style={[
+            styles.labelSlot,
+            { top: labelTop, left: labelLeft },
+          ]}
           pointerEvents="none"
         >
           <Animated.Text
@@ -200,7 +179,7 @@ const CustomInput = React.forwardRef<TextInput, CustomInputProps>(
               fontWeight:        Typography.weights.medium,
               letterSpacing:     0.3,
               color:             labelColor as any,
-              backgroundColor:   SURFACE,    // static — never animated
+              backgroundColor:   labelBg as any,
               paddingHorizontal: 4,
             }}
           >
@@ -213,6 +192,7 @@ const CustomInput = React.forwardRef<TextInput, CustomInputProps>(
           style={[
             styles.field,
             {
+              backgroundColor: fieldSurface,
               borderColor,
               borderWidth,
               shadowColor:   isFocused || !!error ? glowColor : 'transparent',
@@ -236,9 +216,9 @@ const CustomInput = React.forwardRef<TextInput, CustomInputProps>(
               // Android: remove system underline / focus rectangle
               underlineColorAndroid="transparent"
               // All platforms: brand-green text selection highlight
-              selectionColor="rgba(74,222,128,0.38)"
+              selectionColor={isDark ? 'rgba(52,211,153,0.38)' : 'rgba(74,222,128,0.38)'}
               // Android 10+: green caret
-              cursorColor={Colors.green.DEFAULT}
+              cursorColor={theme.Colors.green.DEFAULT}
               placeholderTextColor="transparent"
               // Web: data attribute lets our CSS selector apply !important
               // overrides including color-scheme: light to defeat UA dark-mode.
@@ -250,6 +230,7 @@ const CustomInput = React.forwardRef<TextInput, CustomInputProps>(
               style={[
                 styles.input,
                 multiline && styles.inputMultiline,
+                { color: theme.Colors.text.body },
                 webInputStyle,
               ]}
               {...rest}
@@ -288,7 +269,6 @@ const styles = StyleSheet.create({
 
   labelSlot: {
     position: 'absolute',
-    left:     Spacing.md - 4,
     zIndex:   10,
   },
 
@@ -297,7 +277,7 @@ const styles = StyleSheet.create({
     alignItems:        'center',
     minHeight:         FIELD_HEIGHT,
     borderRadius:      Radius.md,
-    backgroundColor:   SURFACE,        // '#141414' — explicit opaque dark
+    // Field bg is theme-aware — set inline above so light/dark both look right.
     paddingHorizontal: Spacing.md,
     overflow:          'hidden',
   },
@@ -325,15 +305,13 @@ const styles = StyleSheet.create({
   },
 
   input: {
-    color:             Colors.text.body,        // '#E2E8F0'
+    color:             Colors.text.body,  // overridden inline by theme
     fontSize:          Typography.sizes.base,
     fontWeight:        Typography.weights.regular,
     paddingVertical:   0,
     paddingHorizontal: 0,
     margin:            0,
     minHeight:         FIELD_HEIGHT - 2,
-    // Transparent: inherits the field's SURFACE visually.
-    // On web the global CSS + color-scheme:light ensure this sticks.
     backgroundColor:   'transparent',
   },
 
@@ -349,7 +327,7 @@ const styles = StyleSheet.create({
     lineHeight: 16,
   },
 
-  helperText: { color: Colors.text.muted },
+  helperText: { color: Colors.text.muted },  // overridden inline by theme
   errorText:  { color: Colors.text.error, fontWeight: Typography.weights.medium },
 });
 

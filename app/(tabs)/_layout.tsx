@@ -1,40 +1,69 @@
-import { NativeTabs, Icon, Label } from "expo-router/unstable-native-tabs";
-import { Stack } from "expo-router";
-import { PlatformColor } from "react-native";
+// ─────────────────────────────────────────────────────────────────────────────
+// app/(tabs)/_layout.tsx — GardenPulse
+// Tabs layout using the custom floating <BottomNavigationBar />.
+// Lives inside app/(tabs)/ so any sibling folder in the route group
+// (community, garden, profile, tools) automatically gets the bar.
+// ─────────────────────────────────────────────────────────────────────────────
+
+import { Tabs } from 'expo-router';
+import { Feather } from '@expo/vector-icons';
+import BottomNavigationBar from '@/components/common/BottomNavigationBar';
 
 export default function TabsLayout() {
   return (
-    <NativeTabs
+    <Tabs
+      tabBar={(props) => <BottomNavigationBar {...props} />}
       screenOptions={{
-        inactiveColor: "#8E8E93",
-        activeColor: "#4CAF50",
-        indicatorStyle: { backgroundColor: "transparent" },
+        headerShown: false,
+        // Hide the default background so our custom floating bar shines
+        tabBarBackground: () => null,
       }}
     >
-      <NativeTabs.Trigger name="index" layout="split">
-        <Icon sf="house.fill" />
-        <Label>Home</Label>
-      </NativeTabs.Trigger>
-      
-      <NativeTabs.Trigger name="garden" layout="split">
-        <Icon sf="leaf.fill" />
-        <Label>Garden</Label>
-      </NativeTabs.Trigger>
-      
-      <NativeTabs.Trigger name="tools" layout="split">
-        <Icon sf="wrench.and.screwdriver.fill" />
-        <Label>Tools</Label>
-      </NativeTabs.Trigger>
-      
-      <NativeTabs.Trigger name="community" layout="split">
-        <Icon sf="person.3.fill" />
-        <Label>Community</Label>
-      </NativeTabs.Trigger>
-      
-      <NativeTabs.Trigger name="profile" layout="split">
-        <Icon sf="person.circle.fill" />
-        <Label>Profile</Label>
-      </NativeTabs.Trigger>
-    </NativeTabs>
+      <Tabs.Screen
+        name="index"
+        options={{
+          title: 'Home',
+          tabBarIcon: ({ color, size }) => (
+            <Feather name="home" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="garden"
+        options={{
+          title: 'Garden',
+          tabBarIcon: ({ color, size }) => (
+            <Feather name="command" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="tools"
+        options={{
+          title: 'Tools',
+          tabBarIcon: ({ color, size }) => (
+            <Feather name="grid" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="community"
+        options={{
+          title: 'Community',
+          tabBarIcon: ({ color, size }) => (
+            <Feather name="globe" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: 'Profile',
+          tabBarIcon: ({ color, size }) => (
+            <Feather name="user" size={size} color={color} />
+          ),
+        }}
+      />
+    </Tabs>
   );
 }
