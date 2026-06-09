@@ -1,0 +1,16 @@
+
+> gardenpulse@1.0.0 web
+> expo start --web
+
+Starting project at P:\GardenPulse
+Starting Metro Bundler
+The following packages should be updated for best compatibility with the installed expo version:
+  typescript@5.7.3 - expected version: ~5.9.2
+Your project may not work correctly until you install the expected versions of the packages.
+Waiting on http://localhost:8081
+Logs for your project will appear below.
+Web node_modules\expo-router\entry.js ░░░░░░░░░░░░░░░░  0.0% (0/1)
+Web Bundled 3140ms node_modules\expo-router\entry.js (863 modules)
+ LOG  [web] Logs will appear in the browser console
+
+P:\GardenPulse>More? More? More? More? More? More? More? More? More? More? More? More? More? More? More? More? More? More? More? More? More? More? More? 

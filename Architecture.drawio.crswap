@@ -955,7 +955,7 @@
     </mxGraphModel>
   </diagram>
   <diagram id="HFu2ES_crLp1PhjWgXiu" name="Page-4">
-    <mxGraphModel dx="1389" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="6945" dy="4500" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -1556,625 +1556,227 @@
         <mxCell id="6NYV1lg8QXjQuyF4k1_8-199" parent="1" style="whiteSpace=wrap;strokeWidth=2;fillColor=light-dark(#eeeeee,#1f2020);strokeColor=light-dark(#999999,#cccccc);fontColor=light-dark(#333333,#cccccc);" value="%%" vertex="1">
           <mxGeometry height="54" width="79" x="12741" y="178" as="geometry" />
         </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-200" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-177" style="curved=1;startArrow=none;endArrow=block;exitX=1;exitY=0.53;entryX=0;entryY=0.21;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-192" value="ILocationService&#xa;→ ZoneDTO for location tag">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="5925" y="1050" />
-              <mxPoint x="5925" y="5742" />
-              <mxPoint x="3476" y="5767" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-201" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-180" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.64;entryY=0;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-192" value="ILocationService (location permission)&#xa;IVisionService (camera permission)&#xa;INotificationService (notif permission)">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="6665" y="5742" />
-              <mxPoint x="3856" y="5767" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-202" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-182" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.74;entryY=0;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-198" value="ITipArticleService&#xa;→ TipArticleDTO">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="7868" y="5669" />
-              <mxPoint x="7654" y="5742" />
-              <mxPoint x="5580" y="5767" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-203" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-184" style="curved=1;startArrow=none;endArrow=block;exitX=0.6;exitY=1;entryX=1;entryY=0.45;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-194" value="IWeatherService&#xa;→ WeatherDTO">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="9727" y="1050" />
-              <mxPoint x="9727" y="5669" />
-              <mxPoint x="8904" y="5742" />
-              <mxPoint x="10374" y="5767" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-204" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-185" style="curved=1;startArrow=none;endArrow=block;exitX=1;exitY=0.59;entryX=0.82;entryY=0;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-187" value="IStorageService&#xa;for PDF / image export">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="12010" y="1050" />
-              <mxPoint x="12010" y="5669" />
-              <mxPoint x="10220" y="5742" />
-              <mxPoint x="7277" y="5767" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-205" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-78" style="curved=1;startArrow=none;endArrow=block;exitX=0.54;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-197" value="reads/writes SessionDTO&#xa;UserPreferencesDTO&#xa;AccessibilityDTO&#xa;via ILocalCache">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="5405" y="5669" />
-              <mxPoint x="5405" y="5742" />
-              <mxPoint x="7747" y="5767" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-206" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-78" style="curved=1;startArrow=none;endArrow=block;exitX=0.52;exitY=1;entryX=0;entryY=0.4;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-192" value="ILocationService&#xa;→ ZoneDTO for locale seed">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="5199" y="5669" />
-              <mxPoint x="5199" y="5742" />
-              <mxPoint x="2897" y="5767" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-207" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-78" style="curved=1;startArrow=none;endArrow=block;exitX=0.51;exitY=1;entryX=0.98;entryY=0;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-189" value="IAnalyticsService&#xa;screen navigation events">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="4906" y="5669" />
-              <mxPoint x="4906" y="5742" />
-              <mxPoint x="6560" y="5767" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-208" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-72" style="curved=1;startArrow=none;endArrow=block;exitX=0.98;exitY=1;entryX=0.96;entryY=0;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-78" value="markOnboardingComplete()&#xa;save UserPreferencesDTO&#xa;→ SessionManager + UserPreferencesStore">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="12966" y="462" />
-              <mxPoint x="12966" y="3532" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-209" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-72" style="curved=1;startArrow=none;endArrow=block;exitX=0.89;exitY=1;entryX=1;entryY=0.46;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-56" value="save initial PlantDTO&#xa;via IPlantRepository">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="12771" y="462" />
-              <mxPoint x="12771" y="3532" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-210" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-72" style="curved=1;startArrow=none;endArrow=block;exitX=0.84;exitY=1;entryX=1;entryY=0.45;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-194" value="IWeatherService&#xa;→ WeatherDTO for CarePlanPreview">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="12651" y="462" />
-              <mxPoint x="12651" y="5669" />
-              <mxPoint x="10767" y="5742" />
-              <mxPoint x="10427" y="5767" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-211" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-72" style="curved=1;startArrow=none;endArrow=block;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-9" value="triggers PermissionContextModal&#xa;PermissionType: Location, Camera, Notifications">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-212" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-68" style="curved=1;startArrow=none;endArrow=block;exitX=1;exitY=0.98;entryX=0;entryY=0.15;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-45" value="reads TaskDTO[]&#xa;via SchedulerService">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="2077" y="1050" />
-              <mxPoint x="2077" y="1123" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-213" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-68" style="curved=1;startArrow=none;endArrow=block;exitX=0.93;exitY=1;entryX=0;entryY=0.46;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-56" value="reads PlantDTO[] · LogEntryDTO[]&#xa;HealthScoreDTO&#xa;via IPlantRepository · ILogRepository">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="1983" y="1050" />
-              <mxPoint x="1983" y="3532" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-214" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-68" style="curved=1;startArrow=none;endArrow=block;exitX=0.81;exitY=1;entryX=0;entryY=0.37;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-194" value="IWeatherService&#xa;→ WeatherDTO">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="1863" y="1050" />
-              <mxPoint x="1863" y="5669" />
-              <mxPoint x="4196" y="5742" />
-              <mxPoint x="8034" y="5767" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-215" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-68" style="curved=1;startArrow=none;endArrow=block;exitX=0.7;exitY=1;entryX=0.33;entryY=0;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-78" value="reads SessionDTO&#xa;for lapse / comeback detection">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="1743" y="1050" />
-              <mxPoint x="1743" y="3532" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-216" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-68" style="curved=1;startArrow=none;endArrow=block;exitX=0.59;exitY=1;entryX=0.29;entryY=0;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-198" value="ITipArticleService&#xa;→ TipArticleDTO (contextual tip card)">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="1623" y="1050" />
-              <mxPoint x="1623" y="5669" />
-              <mxPoint x="3990" y="5742" />
-              <mxPoint x="5445" y="5767" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-217" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-68" style="curved=1;startArrow=none;endArrow=block;exitX=0.41;exitY=1;entryX=0.88;entryY=0;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-189" value="IAnalyticsService">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="1443" y="1050" />
-              <mxPoint x="1443" y="5669" />
-              <mxPoint x="3598" y="5742" />
-              <mxPoint x="6477" y="5767" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-218" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-56" style="curved=1;startArrow=none;endArrow=block;exitX=0.76;exitY=1;entryX=0.85;entryY=0;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-186" value="IPlantRepository · ILogRepository&#xa;→ FirestoreAdapter&#xa;all plant + log persistence">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="7579" y="5669" />
-              <mxPoint x="7474" y="5742" />
-              <mxPoint x="6805" y="5767" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-219" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-56" style="curved=1;startArrow=none;endArrow=block;exitX=0.52;exitY=1;entryX=0;entryY=0.06;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-187" value="IStorageService&#xa;→ plant photos, reel videos">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="7359" y="5669" />
-              <mxPoint x="7254" y="5742" />
-              <mxPoint x="6600" y="5767" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-220" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-56" style="curved=1;startArrow=none;endArrow=block;exitX=0.32;exitY=1;entryX=1;entryY=0.01;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-189" value="IAnalyticsService">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="7179" y="5669" />
-              <mxPoint x="6985" y="5742" />
-              <mxPoint x="6580" y="5767" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-221" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-45" style="curved=1;startArrow=none;endArrow=block;exitX=1;exitY=0.67;entryX=0;entryY=0.41;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-56" value="reads PlantDTO[] · LogEntryDTO[]&#xa;via IPlantRepository · ILogRepository&#xa;(Scheduler reads plants; Calculator saves recipes)">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="4697" y="3532" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-222" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-45" style="curved=1;startArrow=none;endArrow=block;exitX=1;exitY=0.98;entryX=0.5;entryY=0;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-191" value="IVisionService&#xa;→ DiagnosisResultDTO&#xa;on-device only">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="3568" y="3532" />
-              <mxPoint x="3568" y="5669" />
-              <mxPoint x="4777" y="5742" />
-              <mxPoint x="2321" y="5767" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-223" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-45" style="curved=1;startArrow=none;endArrow=block;exitX=0.87;exitY=1;entryX=0.21;entryY=0;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-194" value="IWeatherService&#xa;→ WeatherDTO&#xa;(Scheduler weather sync)">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="3377" y="3532" />
-              <mxPoint x="3377" y="5669" />
-              <mxPoint x="4757" y="5742" />
-              <mxPoint x="8621" y="5767" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-224" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-45" style="curved=1;startArrow=none;endArrow=block;exitX=0.7;exitY=1;entryX=1;entryY=0.35;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-188" value="INotificationService&#xa;→ TaskDTO + NotificationPrefsDTO&#xa;(Scheduler schedules reminders)">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="3166" y="3532" />
-              <mxPoint x="3166" y="5669" />
-              <mxPoint x="4696" y="5742" />
-              <mxPoint x="6540" y="5767" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-225" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-45" style="curved=1;startArrow=none;endArrow=block;exitX=0.52;exitY=1;entryX=0.29;entryY=0;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-197" value="ILocalCache&#xa;brand DB · product DB&#xa;diagnostics history">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="2947" y="3532" />
-              <mxPoint x="2947" y="5669" />
-              <mxPoint x="4586" y="5742" />
-              <mxPoint x="7684" y="5767" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-226" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-45" style="curved=1;startArrow=none;endArrow=block;exitX=0.39;exitY=1;entryX=0.91;entryY=0;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-189" value="IAnalyticsService">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="2787" y="3532" />
-              <mxPoint x="2787" y="5669" />
-              <mxPoint x="4496" y="5742" />
-              <mxPoint x="6497" y="5767" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-227" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-32" style="curved=1;startArrow=none;endArrow=block;exitX=1;exitY=0.93;entryX=0;entryY=0.21;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-186" value="ClusterDTO[] · PostDTO[]&#xa;CommentDTO[] · SwapDTO[]&#xa;via FirestoreAdapter">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="1103" y="3532" />
-              <mxPoint x="1103" y="5669" />
-              <mxPoint x="3418" y="5742" />
-              <mxPoint x="6297" y="5767" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-228" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-32" style="curved=1;startArrow=none;endArrow=block;exitX=0.88;exitY=1;entryX=0;entryY=0.4;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-192" value="ILocationService&#xa;→ ZoneDTO (zone-level only)&#xa;no precise GPS shared">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="883" y="3532" />
-              <mxPoint x="883" y="5669" />
-              <mxPoint x="3298" y="5742" />
-              <mxPoint x="2844" y="5767" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-229" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-32" style="curved=1;startArrow=none;endArrow=block;exitX=0.67;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-193" value="IMapService&#xa;→ MapClusterDTO[] · MapTilesDTO">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="663" y="3532" />
-              <mxPoint x="663" y="5669" />
-              <mxPoint x="3178" y="5742" />
-              <mxPoint x="2679" y="5767" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-230" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-32" style="curved=1;startArrow=none;endArrow=block;exitX=0.56;exitY=1;entryX=0.26;entryY=0;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-78" value="reads UserPreferencesDTO&#xa;for method + zone filtering">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="546" y="3532" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-231" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-32" style="curved=1;startArrow=none;endArrow=block;exitX=0.44;exitY=1;entryX=0.23;entryY=0;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-189" value="IAnalyticsService">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="429" y="3532" />
-              <mxPoint x="429" y="5669" />
-              <mxPoint x="3050" y="5742" />
-              <mxPoint x="5950" y="5767" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-232" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-17" style="curved=1;startArrow=none;endArrow=block;exitX=1;exitY=0.91;entryX=1;entryY=0.38;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-56" value="reads LogEntryDTO[] · PlantDTO[]&#xa;via ILogRepository · IPlantRepository&#xa;(BadgeEngine · StreakTracker · ConfidenceScore&#xa;use historical log data)">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="9293" y="3532" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-233" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-17" style="curved=1;startArrow=none;endArrow=block;exitX=0.98;exitY=1;entryX=1;entryY=0.27;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-186" value="CemeteryEntryDTO[] · GuideDTO[]&#xa;via FirestoreAdapter">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="9173" y="3532" />
-              <mxPoint x="9173" y="5669" />
-              <mxPoint x="8722" y="5742" />
-              <mxPoint x="7115" y="5767" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-234" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-17" style="curved=1;startArrow=none;endArrow=block;exitX=0.74;exitY=1;entryX=0.42;entryY=0;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-187" value="IStorageService&#xa;→ avatar photos, guide cover images">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="8953" y="3532" />
-              <mxPoint x="8953" y="5669" />
-              <mxPoint x="8602" y="5742" />
-              <mxPoint x="6970" y="5767" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-235" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-17" style="curved=1;startArrow=none;endArrow=block;exitX=0.51;exitY=1;entryX=0.57;entryY=0;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-197" value="ILocalCache&#xa;NotificationPrefsDTO · badge status">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="8733" y="3532" />
-              <mxPoint x="8733" y="5669" />
-              <mxPoint x="8482" y="5742" />
-              <mxPoint x="7767" y="5767" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-236" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-17" style="curved=1;startArrow=none;endArrow=block;exitX=0.28;exitY=1;entryX=1;entryY=0.14;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-186" value="IDataExportService&#xa;GDPR export + CCPA delete&#xa;via FirestoreAdapter">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="8516" y="3532" />
-              <mxPoint x="8516" y="5669" />
-              <mxPoint x="8301" y="5742" />
-              <mxPoint x="6950" y="5767" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-237" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-17" style="curved=1;startArrow=none;endArrow=block;exitX=0.15;exitY=1;entryX=0.7;entryY=0;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-78" value="reads/writes UserPreferencesDTO&#xa;via UserPreferencesStore">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="8396" y="3532" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-238" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-17" style="curved=1;startArrow=none;endArrow=block;exitX=0.02;exitY=1;entryX=1;entryY=0.23;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-189" value="IAnalyticsService">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="8276" y="3532" />
-              <mxPoint x="8276" y="5669" />
-              <mxPoint x="8061" y="5742" />
-              <mxPoint x="6930" y="5767" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-239" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-10" style="curved=1;startArrow=none;endArrow=block;exitX=0.59;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-195" value="IAdService&#xa;→ AdMobAdapter">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="11481" y="5669" />
-              <mxPoint x="9851" y="5742" />
-              <mxPoint x="11014" y="5767" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-240" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-10" style="curved=1;startArrow=none;endArrow=block;exitX=0.56;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-196" value="IPurchaseService&#xa;→ InAppPurchaseAdapter">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="11192" y="5669" />
-              <mxPoint x="9610" y="5742" />
-              <mxPoint x="10704" y="5767" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-241" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-10" style="curved=1;startArrow=none;endArrow=block;exitX=0.53;exitY=1;entryX=0.74;entryY=0;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-197" value="ILocalCache&#xa;persists SupporterBadge status">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="10981" y="5669" />
-              <mxPoint x="9494" y="5742" />
-              <mxPoint x="7819" y="5767" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-242" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-10" style="curved=1;startArrow=none;endArrow=block;exitX=0.46;exitY=1;entryX=1;entryY=0.43;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-192" value="ILocationService&#xa;→ ZoneDTO for geoFence check">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="10345" y="5669" />
-              <mxPoint x="9066" y="5742" />
-              <mxPoint x="5136" y="5767" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-243" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-177" style="curved=1;startArrow=none;endArrow=block;exitX=0;exitY=0.57;entryX=0;entryY=0.45;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-56" value="submits LogEntryDTO&#xa;via ILogRepository">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="2388" y="1050" />
-              <mxPoint x="2388" y="3532" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-244" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-178" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0;entryY=0.32;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-56" value="submits / updates PlantDTO&#xa;via IPlantRepository">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="6045" y="3532" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-245" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-179" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=1;entryY=0.41;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-45" value="QRResultDTO&#xa;via QRScannerService">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="6355" y="1123" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-246" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-181" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-56" value="BatchActionDTO&#xa;via BatchActionService">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-247" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-183" style="curved=1;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-17" value="reads/writes NotificationPrefsDTO&#xa;via NotificationPrefsStore">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-248" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-184" style="curved=1;startArrow=none;endArrow=block;exitX=0.39;exitY=1;entryX=1;entryY=0.4;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-56" value="reads LogEntryDTO[]&#xa;via ILogRepository&#xa;for BloomReportBuilder">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="9623" y="1050" />
-              <mxPoint x="9623" y="3532" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-249" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-185" style="curved=1;startArrow=none;endArrow=block;exitX=1;exitY=0.78;entryX=0.59;entryY=0;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-10" value="checks SupporterBadge.isActive()&#xa;→ watermark toggle visibility">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="11462" y="1050" />
-              <mxPoint x="11462" y="3532" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-250" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-185" style="curved=1;startArrow=none;endArrow=block;exitX=0;exitY=0.58;entryX=0.45;entryY=0;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-10" value="checks RewardedVideoService&#xa;→ isRewardUnlocked for PDF/video">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="10275" y="1050" />
-              <mxPoint x="10275" y="3532" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-251" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-186" style="curved=1;dashed=1;dashPattern=2 3;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.68;entryY=0;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-86" value="«implements»&#xa;IPlantRepository · ILogRepository">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="6660" y="6245" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-252" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-187" style="curved=1;dashed=1;dashPattern=2 3;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.77;entryY=0;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-86" value="«implements» IStorageService">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="7032" y="6245" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-253" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-188" style="curved=1;dashed=1;dashPattern=2 3;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.48;entryY=0;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-86" value="«implements» INotificationService">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="5858" y="6245" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-254" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-189" style="curved=1;dashed=1;dashPattern=2 3;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.55;entryY=0;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-86" value="«implements» IAnalyticsService">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="6168" y="6245" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-255" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-190" style="curved=1;dashed=1;dashPattern=2 3;startArrow=none;endArrow=block;exitX=0.64;exitY=1;entryX=0.88;entryY=0;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-86" value="«implements» ICrashlyticsService">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="7464" y="6159" />
-              <mxPoint x="7464" y="6245" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-256" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-191" style="curved=1;dashed=1;dashPattern=2 3;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0;entryY=0.23;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-86" value="«implements» IVisionService">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="2321" y="6245" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-257" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-192" style="curved=1;dashed=1;dashPattern=2 3;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0;entryY=0.04;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-86" value="«implements» ILocationService">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="3802" y="6245" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-258" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-193" style="curved=1;dashed=1;dashPattern=2 3;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0;entryY=0.2;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-86" value="«implements» IMapService">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="2679" y="6245" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-259" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-194" style="curved=1;dashed=1;dashPattern=2 3;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=1;entryY=0.14;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-86" value="«implements» IWeatherService">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="8722" y="6245" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-260" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-195" style="curved=1;dashed=1;dashPattern=2 3;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=1;entryY=0.31;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-86" value="«implements» IAdService">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="11014" y="6245" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-261" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-196" style="curved=1;dashed=1;dashPattern=2 3;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=1;entryY=0.29;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-86" value="«implements» IPurchaseService">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="10704" y="6245" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-262" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-197" style="curved=1;dashed=1;dashPattern=2 3;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.95;entryY=0;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-86" value="«implements» ILocalCache">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="7747" y="6245" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-263" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-198" style="curved=1;dashed=1;dashPattern=2 3;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.39;entryY=0;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-86" value="«implements» ITipArticleService">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="5508" y="6245" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-264" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-78" style="curved=1;dashed=1;dashPattern=2 3;startArrow=none;endArrow=block;exitX=0.46;exitY=1;entryX=0;entryY=0.26;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-86" value="uses DTOs + Enums + Interfaces">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="4187" y="5669" />
-              <mxPoint x="1765" y="5742" />
-              <mxPoint x="1765" y="6245" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-265" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-72" style="curved=1;dashed=1;dashPattern=2 3;startArrow=none;endArrow=block;exitX=0;exitY=0.55;entryX=0;entryY=0.33;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-86" value="uses DTOs + Enums + Interfaces">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="20" y="462" />
-              <mxPoint x="20" y="6245" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-266" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-68" style="curved=1;dashed=1;dashPattern=2 3;startArrow=none;endArrow=block;exitX=0.3;exitY=1;entryX=0;entryY=0.31;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-86" value="uses DTOs + Enums + Interfaces">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="1323" y="1050" />
-              <mxPoint x="1323" y="5669" />
-              <mxPoint x="657" y="5742" />
-              <mxPoint x="657" y="6245" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-267" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-56" style="curved=1;dashed=1;dashPattern=2 3;startArrow=none;endArrow=block;exitX=0.24;exitY=1;entryX=1;entryY=0.32;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-86" value="uses DTOs + Enums + Interfaces">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="7099" y="5669" />
-              <mxPoint x="11319" y="5742" />
-              <mxPoint x="11319" y="6245" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-268" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-45" style="curved=1;dashed=1;dashPattern=2 3;startArrow=none;endArrow=block;exitX=0.29;exitY=1;entryX=0;entryY=0.29;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-86" value="uses DTOs + Enums + Interfaces">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="2667" y="3532" />
-              <mxPoint x="2667" y="5669" />
-              <mxPoint x="1235" y="5742" />
-              <mxPoint x="1235" y="6245" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-269" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-32" style="curved=1;dashed=1;dashPattern=2 3;startArrow=none;endArrow=block;exitX=0.17;exitY=1;entryX=0;entryY=0.33;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-86" value="uses DTOs + Enums + Interfaces">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="140" y="3532" />
-              <mxPoint x="140" y="6245" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-270" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-17" style="curved=1;dashed=1;dashPattern=2 3;startArrow=none;endArrow=block;exitX=0;exitY=0.91;entryX=1;entryY=0.33;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-86" value="uses DTOs + Enums + Interfaces">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="8156" y="3532" />
-              <mxPoint x="8156" y="5669" />
-              <mxPoint x="11739" y="5742" />
-              <mxPoint x="11739" y="6245" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-271" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-10" style="curved=1;dashed=1;dashPattern=2 3;startArrow=none;endArrow=block;exitX=0.44;exitY=1;entryX=1;entryY=0.36;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-86" value="uses DTOs + Enums + Interfaces">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="10225" y="5669" />
-              <mxPoint x="12798" y="5742" />
-              <mxPoint x="12798" y="6245" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-272" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-9" style="curved=1;dashed=1;dashPattern=2 3;startArrow=none;endArrow=block;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-86" value="uses DTOs + Enums + Interfaces">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points" />
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="6NYV1lg8QXjQuyF4k1_8-273" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-1" style="curved=1;dashed=1;dashPattern=2 3;startArrow=none;endArrow=block;rounded=0;" target="6NYV1lg8QXjQuyF4k1_8-86" value="uses DTOs + Enums">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points" />
-          </mxGeometry>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-200" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-177" style="startArrow=none;endArrow=block;exitX=1;exitY=0.53;entryX=0;entryY=0.21;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-192" value="ILocationService&#xa;→ ZoneDTO for location tag">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-201" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-180" style="startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.64;entryY=0;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-192" value="ILocationService (location permission)&#xa;IVisionService (camera permission)&#xa;INotificationService (notif permission)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-202" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-182" style="startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.74;entryY=0;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-198" value="ITipArticleService&#xa;→ TipArticleDTO">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-203" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-184" style="startArrow=none;endArrow=block;exitX=0.6;exitY=1;entryX=1;entryY=0.45;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-194" value="IWeatherService&#xa;→ WeatherDTO">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-204" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-185" style="startArrow=none;endArrow=block;exitX=1;exitY=0.59;entryX=0.82;entryY=0;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-187" value="IStorageService&#xa;for PDF / image export">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-205" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-78" style="startArrow=none;endArrow=block;exitX=0.54;exitY=1;entryX=0.5;entryY=0;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-197" value="reads/writes SessionDTO&#xa;UserPreferencesDTO&#xa;AccessibilityDTO&#xa;via ILocalCache">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-206" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-78" style="startArrow=none;endArrow=block;exitX=0.52;exitY=1;entryX=0;entryY=0.4;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-192" value="ILocationService&#xa;→ ZoneDTO for locale seed">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-207" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-78" style="startArrow=none;endArrow=block;exitX=0.51;exitY=1;entryX=0.98;entryY=0;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-189" value="IAnalyticsService&#xa;screen navigation events">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-208" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-72" style="startArrow=none;endArrow=block;exitX=0.98;exitY=1;entryX=0.96;entryY=0;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-78" value="markOnboardingComplete()&#xa;save UserPreferencesDTO&#xa;→ SessionManager + UserPreferencesStore">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-209" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-72" style="startArrow=none;endArrow=block;exitX=0.89;exitY=1;entryX=1;entryY=0.46;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-56" value="save initial PlantDTO&#xa;via IPlantRepository">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-210" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-72" style="startArrow=none;endArrow=block;exitX=0.84;exitY=1;entryX=1;entryY=0.45;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-194" value="IWeatherService&#xa;→ WeatherDTO for CarePlanPreview">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-211" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-72" style="startArrow=none;endArrow=block;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-9" value="triggers PermissionContextModal&#xa;PermissionType: Location, Camera, Notifications">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-212" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-68" style="startArrow=none;endArrow=block;exitX=1;exitY=0.98;entryX=0;entryY=0.15;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-45" value="reads TaskDTO[]&#xa;via SchedulerService">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-213" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-68" style="startArrow=none;endArrow=block;exitX=0.93;exitY=1;entryX=0;entryY=0.46;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-56" value="reads PlantDTO[] · LogEntryDTO[]&#xa;HealthScoreDTO&#xa;via IPlantRepository · ILogRepository">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-214" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-68" style="startArrow=none;endArrow=block;exitX=0.81;exitY=1;entryX=0;entryY=0.37;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-194" value="IWeatherService&#xa;→ WeatherDTO">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-215" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-68" style="startArrow=none;endArrow=block;exitX=0.7;exitY=1;entryX=0.33;entryY=0;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-78" value="reads SessionDTO&#xa;for lapse / comeback detection">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-216" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-68" style="startArrow=none;endArrow=block;exitX=0.59;exitY=1;entryX=0.29;entryY=0;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-198" value="ITipArticleService&#xa;→ TipArticleDTO (contextual tip card)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-217" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-68" style="startArrow=none;endArrow=block;exitX=0.41;exitY=1;entryX=0.88;entryY=0;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-189" value="IAnalyticsService">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-218" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-56" style="startArrow=none;endArrow=block;exitX=0.76;exitY=1;entryX=0.85;entryY=0;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-186" value="IPlantRepository · ILogRepository&#xa;→ FirestoreAdapter&#xa;all plant + log persistence">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-219" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-56" style="startArrow=none;endArrow=block;exitX=0.52;exitY=1;entryX=0;entryY=0.06;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-187" value="IStorageService&#xa;→ plant photos, reel videos">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-220" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-56" style="startArrow=none;endArrow=block;exitX=0.32;exitY=1;entryX=1;entryY=0.01;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-189" value="IAnalyticsService">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-221" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-45" style="startArrow=none;endArrow=block;exitX=1;exitY=0.67;entryX=0;entryY=0.41;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-56" value="reads PlantDTO[] · LogEntryDTO[]&#xa;via IPlantRepository · ILogRepository&#xa;(Scheduler reads plants; Calculator saves recipes)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-222" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-45" style="startArrow=none;endArrow=block;exitX=1;exitY=0.98;entryX=0.5;entryY=0;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-191" value="IVisionService&#xa;→ DiagnosisResultDTO&#xa;on-device only">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-223" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-45" style="startArrow=none;endArrow=block;exitX=0.87;exitY=1;entryX=0.21;entryY=0;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-194" value="IWeatherService&#xa;→ WeatherDTO&#xa;(Scheduler weather sync)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-224" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-45" style="startArrow=none;endArrow=block;exitX=0.7;exitY=1;entryX=1;entryY=0.35;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-188" value="INotificationService&#xa;→ TaskDTO + NotificationPrefsDTO&#xa;(Scheduler schedules reminders)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-225" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-45" style="startArrow=none;endArrow=block;exitX=0.52;exitY=1;entryX=0.29;entryY=0;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-197" value="ILocalCache&#xa;brand DB · product DB&#xa;diagnostics history">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-226" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-45" style="startArrow=none;endArrow=block;exitX=0.39;exitY=1;entryX=0.91;entryY=0;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-189" value="IAnalyticsService">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-227" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-32" style="startArrow=none;endArrow=block;exitX=1;exitY=0.93;entryX=0;entryY=0.21;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-186" value="ClusterDTO[] · PostDTO[]&#xa;CommentDTO[] · SwapDTO[]&#xa;via FirestoreAdapter">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-228" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-32" style="startArrow=none;endArrow=block;exitX=0.88;exitY=1;entryX=0;entryY=0.4;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-192" value="ILocationService&#xa;→ ZoneDTO (zone-level only)&#xa;no precise GPS shared">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-229" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-32" style="startArrow=none;endArrow=block;exitX=0.67;exitY=1;entryX=0.5;entryY=0;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-193" value="IMapService&#xa;→ MapClusterDTO[] · MapTilesDTO">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-230" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-32" style="startArrow=none;endArrow=block;exitX=0.56;exitY=1;entryX=0.26;entryY=0;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-78" value="reads UserPreferencesDTO&#xa;for method + zone filtering">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-231" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-32" style="startArrow=none;endArrow=block;exitX=0.44;exitY=1;entryX=0.23;entryY=0;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-189" value="IAnalyticsService">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-232" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-17" style="startArrow=none;endArrow=block;exitX=1;exitY=0.91;entryX=1;entryY=0.38;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-56" value="reads LogEntryDTO[] · PlantDTO[]&#xa;via ILogRepository · IPlantRepository&#xa;(BadgeEngine · StreakTracker · ConfidenceScore&#xa;use historical log data)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-233" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-17" style="startArrow=none;endArrow=block;exitX=0.98;exitY=1;entryX=1;entryY=0.27;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-186" value="CemeteryEntryDTO[] · GuideDTO[]&#xa;via FirestoreAdapter">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-234" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-17" style="startArrow=none;endArrow=block;exitX=0.74;exitY=1;entryX=0.42;entryY=0;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-187" value="IStorageService&#xa;→ avatar photos, guide cover images">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-235" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-17" style="startArrow=none;endArrow=block;exitX=0.51;exitY=1;entryX=0.57;entryY=0;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-197" value="ILocalCache&#xa;NotificationPrefsDTO · badge status">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-236" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-17" style="startArrow=none;endArrow=block;exitX=0.28;exitY=1;entryX=1;entryY=0.14;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-186" value="IDataExportService&#xa;GDPR export + CCPA delete&#xa;via FirestoreAdapter">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-237" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-17" style="startArrow=none;endArrow=block;exitX=0.15;exitY=1;entryX=0.7;entryY=0;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-78" value="reads/writes UserPreferencesDTO&#xa;via UserPreferencesStore">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-238" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-17" style="startArrow=none;endArrow=block;exitX=0.02;exitY=1;entryX=1;entryY=0.23;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-189" value="IAnalyticsService">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-239" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-10" style="startArrow=none;endArrow=block;exitX=0.59;exitY=1;entryX=0.5;entryY=0;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-195" value="IAdService&#xa;→ AdMobAdapter">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-240" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-10" style="startArrow=none;endArrow=block;exitX=0.56;exitY=1;entryX=0.5;entryY=0;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-196" value="IPurchaseService&#xa;→ InAppPurchaseAdapter">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-241" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-10" style="startArrow=none;endArrow=block;exitX=0.53;exitY=1;entryX=0.74;entryY=0;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-197" value="ILocalCache&#xa;persists SupporterBadge status">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-242" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-10" style="startArrow=none;endArrow=block;exitX=0.46;exitY=1;entryX=1;entryY=0.43;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-192" value="ILocationService&#xa;→ ZoneDTO for geoFence check">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-243" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-177" style="startArrow=none;endArrow=block;exitX=0;exitY=0.57;entryX=0;entryY=0.45;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-56" value="submits LogEntryDTO&#xa;via ILogRepository">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-244" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-178" style="startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0;entryY=0.32;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-56" value="submits / updates PlantDTO&#xa;via IPlantRepository">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-245" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-179" style="startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=1;entryY=0.41;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-45" value="QRResultDTO&#xa;via QRScannerService">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-246" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-181" style="startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-56" value="BatchActionDTO&#xa;via BatchActionService">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-247" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-183" style="startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-17" value="reads/writes NotificationPrefsDTO&#xa;via NotificationPrefsStore">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-248" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-184" style="startArrow=none;endArrow=block;exitX=0.39;exitY=1;entryX=1;entryY=0.4;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-56" value="reads LogEntryDTO[]&#xa;via ILogRepository&#xa;for BloomReportBuilder">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-249" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-185" style="startArrow=none;endArrow=block;exitX=1;exitY=0.78;entryX=0.59;entryY=0;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-10" value="checks SupporterBadge.isActive()&#xa;→ watermark toggle visibility">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-250" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-185" style="startArrow=none;endArrow=block;exitX=0;exitY=0.58;entryX=0.45;entryY=0;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-10" value="checks RewardedVideoService&#xa;→ isRewardUnlocked for PDF/video">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-251" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-186" style="dashed=1;dashPattern=2 3;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.68;entryY=0;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-86" value="«implements»&#xa;IPlantRepository · ILogRepository">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-252" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-187" style="dashed=1;dashPattern=2 3;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.77;entryY=0;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-86" value="«implements» IStorageService">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-253" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-188" style="dashed=1;dashPattern=2 3;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.48;entryY=0;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-86" value="«implements» INotificationService">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-254" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-189" style="dashed=1;dashPattern=2 3;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.55;entryY=0;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-86" value="«implements» IAnalyticsService">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-255" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-190" style="dashed=1;dashPattern=2 3;startArrow=none;endArrow=block;exitX=0.64;exitY=1;entryX=0.88;entryY=0;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-86" value="«implements» ICrashlyticsService">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-256" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-191" style="dashed=1;dashPattern=2 3;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0;entryY=0.23;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-86" value="«implements» IVisionService">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-257" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-192" style="dashed=1;dashPattern=2 3;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0;entryY=0.04;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-86" value="«implements» ILocationService">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-258" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-193" style="dashed=1;dashPattern=2 3;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0;entryY=0.2;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-86" value="«implements» IMapService">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-259" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-194" style="dashed=1;dashPattern=2 3;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=1;entryY=0.14;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-86" value="«implements» IWeatherService">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-260" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-195" style="dashed=1;dashPattern=2 3;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=1;entryY=0.31;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-86" value="«implements» IAdService">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-261" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-196" style="dashed=1;dashPattern=2 3;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=1;entryY=0.29;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-86" value="«implements» IPurchaseService">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-262" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-197" style="dashed=1;dashPattern=2 3;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.95;entryY=0;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-86" value="«implements» ILocalCache">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-263" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-198" style="dashed=1;dashPattern=2 3;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0.39;entryY=0;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-86" value="«implements» ITipArticleService">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-264" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-78" style="dashed=1;dashPattern=2 3;startArrow=none;endArrow=block;exitX=0.46;exitY=1;entryX=0;entryY=0.26;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-86" value="uses DTOs + Enums + Interfaces">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-265" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-72" style="dashed=1;dashPattern=2 3;startArrow=none;endArrow=block;exitX=0;exitY=0.55;entryX=0;entryY=0.33;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-86" value="uses DTOs + Enums + Interfaces">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-266" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-68" style="dashed=1;dashPattern=2 3;startArrow=none;endArrow=block;exitX=0.3;exitY=1;entryX=0;entryY=0.31;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-86" value="uses DTOs + Enums + Interfaces">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-267" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-56" style="dashed=1;dashPattern=2 3;startArrow=none;endArrow=block;exitX=0.24;exitY=1;entryX=1;entryY=0.32;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-86" value="uses DTOs + Enums + Interfaces">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-268" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-45" style="dashed=1;dashPattern=2 3;startArrow=none;endArrow=block;exitX=0.29;exitY=1;entryX=0;entryY=0.29;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-86" value="uses DTOs + Enums + Interfaces">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-269" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-32" style="dashed=1;dashPattern=2 3;startArrow=none;endArrow=block;exitX=0.17;exitY=1;entryX=0;entryY=0.33;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-86" value="uses DTOs + Enums + Interfaces">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-270" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-17" style="dashed=1;dashPattern=2 3;startArrow=none;endArrow=block;exitX=0;exitY=0.91;entryX=1;entryY=0.33;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-86" value="uses DTOs + Enums + Interfaces">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-271" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-10" style="dashed=1;dashPattern=2 3;startArrow=none;endArrow=block;exitX=0.44;exitY=1;entryX=1;entryY=0.36;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-86" value="uses DTOs + Enums + Interfaces">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-272" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-9" style="dashed=1;dashPattern=2 3;startArrow=none;endArrow=block;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-86" value="uses DTOs + Enums + Interfaces">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="6NYV1lg8QXjQuyF4k1_8-273" edge="1" parent="1" source="6NYV1lg8QXjQuyF4k1_8-1" style="dashed=1;dashPattern=2 3;startArrow=none;endArrow=block;rounded=0;edgeStyle=orthogonalEdgeStyle;" target="6NYV1lg8QXjQuyF4k1_8-86" value="uses DTOs + Enums">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
