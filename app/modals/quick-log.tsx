@@ -12,20 +12,17 @@ import NotesInput from '../../components/common/NotesInput';
 import MetricsQuickEntry from '../../components/common/MetricsQuickEntry';
 import CustomButton from '../../components/common/CustomButton';
 import SectionHeader from '../../components/common/SectionHeader';
-
-const mockPlants = [
-  { id: '1', name: 'Monstera', imageUrl: undefined },
-  { id: '2', name: 'Snake Plant', imageUrl: undefined },
-  { id: '3', name: 'Pothos', imageUrl: undefined },
-  { id: '4', name: 'Sweet Basil', imageUrl: undefined },
-  { id: '5', name: 'Roma Tomato', imageUrl: undefined },
-];
+import { useGardenStore } from '../../store/useGardenStore';
 
 export default function QuickLogModal() {
   const router = useRouter();
   const params = useLocalSearchParams();
   const theme = useTheme();
   const { Spacing } = theme;
+
+  const isHydrated = useGardenStore((state) => state.isHydrated);
+  const storePlants = useGardenStore((state) => state.plants);
+  const addLogEntry = useGardenStore((state) => state.addLogEntry);
 
   const [selectedPlantId, setSelectedPlantId] = useState<string | null>(
     (params.plantId as string) || null
@@ -35,12 +32,23 @@ export default function QuickLogModal() {
   const [mood, setMood] = useState(3);
   const [notes, setNotes] = useState('');
   const [isRecording, setIsRecording] = useState(false);
+  const [hadVoiceNote, setHadVoiceNote] = useState(false);
 
   // Metrics state
   const [phValue, setPhValue] = useState(6.0);
   const [ecValue, setEcValue] = useState('');
   const [moistureValue, setMoistureValue] = useState('');
   const [tempValue, setTempValue] = useState('');
+
+  if (!isHydrated) {
+    return null;
+  }
+
+  const activePlants = storePlants.filter((p) => !p.isArchived).map((p) => ({
+    id: p.id,
+    name: p.nickname || p.name,
+    imageUrl: p.imageUrl,
+  }));
 
   const handleToggleActivity = (activity: StandardActivity) => {
     setSelectedActivities((prev) =>
@@ -53,6 +61,7 @@ export default function QuickLogModal() {
   const handleMicPress = () => {
     setIsRecording(!isRecording);
     if (!isRecording) {
+      setHadVoiceNote(true);
       setTimeout(() => {
         setNotes((prev) => (prev ? prev + ' ' : '') + 'Simulated voice dictation transcription text.');
         setIsRecording(false);
@@ -61,7 +70,19 @@ export default function QuickLogModal() {
   };
 
   const handleSave = () => {
-    // Save simulation
+    if (!selectedPlantId) return;
+    addLogEntry({
+      plantId: selectedPlantId,
+      activities: selectedActivities,
+      notes: notes,
+      hasVoiceNote: hadVoiceNote,
+      metrics: {
+        ph: phValue,
+        ec: ecValue ? parseFloat(ecValue) : undefined,
+        moisture: moistureValue ? parseFloat(moistureValue) : undefined,
+        temp: tempValue ? parseFloat(tempValue) : undefined,
+      },
+    });
     router.back();
   };
 
@@ -77,7 +98,7 @@ export default function QuickLogModal() {
         
         <SectionHeader title="Select Plant" />
         <QuickLogPlantSelector
-          plants={mockPlants}
+          plants={activePlants}
           selectedId={selectedPlantId}
           onSelect={setSelectedPlantId}
         />
@@ -124,7 +145,7 @@ export default function QuickLogModal() {
           <CustomButton 
             label="Save Care Log" 
             onPress={handleSave} 
-            isDisabled={selectedActivities.length === 0}
+            isDisabled={selectedActivities.length === 0 || !selectedPlantId}
           />
         </View>
 

@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router';
 import { useTheme } from '../../components/layout/ThemeProvider';
 import CustomText from '../../components/common/CustomText';
 import ScreenWrapper from '../../components/common/ScreenWrapper';
+import { useGardenStore } from '../../store/useGardenStore';
 import CustomHeader from '../../components/common/CustomHeader';
 import NotificationBell from '../../components/common/NotificationBell';
 import IconButton from '../../components/common/IconButton';
@@ -19,34 +20,10 @@ import BloomReportBanner from '../../components/common/BloomReportBanner';
 import FAB from '../../components/common/FAB';
 import ConfettiCelebration from '../../components/common/ConfettiCelebration';
 
-interface DashboardTask {
-  id: string;
-  plantName: string;
-  taskType: TaskType;
-  isDone: boolean;
-  plantImageUrl?: string;
-}
-
-interface DashboardPlant {
-  id: string;
-  name: string;
-  nickname?: string;
-  method: 'Soil' | 'Container' | 'Hydro' | 'Indoor';
-  healthStatus: 'healthy' | 'warning' | 'critical';
-  lastLoggedDays: number;
-  imageUrl?: string;
-}
-
 const mockForecast = [
   { id: '1', dayLabel: 'Thu', icon: 'sun' as const, high: 24, low: 16 },
   { id: '2', dayLabel: 'Fri', icon: 'cloud' as const, high: 22, low: 14 },
   { id: '3', dayLabel: 'Sat', icon: 'cloud-rain' as const, high: 19, low: 12 },
-];
-
-const mockPlants: DashboardPlant[] = [
-  { id: '1', name: 'Monstera Deliciosa', nickname: 'Spike', method: 'Indoor', healthStatus: 'healthy', lastLoggedDays: 2 },
-  { id: '2', name: 'Tomato Plant', nickname: 'Juicy', method: 'Soil', healthStatus: 'warning', lastLoggedDays: 4 },
-  { id: '3', name: 'Golden Pothos', nickname: 'Viny', method: 'Container', healthStatus: 'critical', lastLoggedDays: 6 },
 ];
 
 export default function DashboardScreen() {
@@ -54,17 +31,44 @@ export default function DashboardScreen() {
   const theme = useTheme();
   const { Colors, Spacing, Typography } = theme;
 
-  const [showComeback, setShowComeback] = useState(true);
-  const [tasks, setTasks] = useState<DashboardTask[]>([
-    { id: '1', plantName: 'Monstera Deliciosa', taskType: 'Water', isDone: false },
-    { id: '2', plantName: 'Tomato Plant', taskType: 'Feed', isDone: false },
-    { id: '3', plantName: 'Golden Pothos', taskType: 'Prune', isDone: true },
-  ]);
+  const isHydrated = useGardenStore((state) => state.isHydrated);
+  const plants = useGardenStore((state) => state.plants);
+  const logs = useGardenStore((state) => state.logs);
+  const storeTasks = useGardenStore((state) => state.tasks);
+  const toggleTaskDone = useGardenStore((state) => state.toggleTaskDone);
+  const userProfile = useGardenStore((state) => state.userProfile);
 
-  const allTasksDone = tasks.length > 0 && tasks.every(t => t.isDone);
+  const [showComeback, setShowComeback] = useState(true);
+
+  if (!isHydrated) {
+    return null;
+  }
+
+  const activePlants = plants.filter((p) => !p.isArchived);
+  const pendingTasks = storeTasks.filter((t) => !t.isDone);
+  const allTasksDone = storeTasks.length > 0 && storeTasks.every((t) => t.isDone);
+
+  const avgHealth = activePlants.length > 0 
+    ? Math.round(activePlants.reduce((sum, p) => sum + p.healthScore, 0) / activePlants.length)
+    : 100;
+
+  const avgMoisture = logs.map(l => l.metrics?.moisture).filter((m): m is number => typeof m === 'number');
+  const displayMoisture = avgMoisture.length > 0 
+    ? Math.round(avgMoisture.reduce((s, x) => s + x, 0) / avgMoisture.length) 
+    : 68;
+
+  const avgPh = logs.map(l => l.metrics?.ph).filter((p): p is number => typeof p === 'number');
+  const displayPh = avgPh.length > 0 
+    ? (avgPh.reduce((s, x) => s + x, 0) / avgPh.length).toFixed(1) 
+    : '6.4';
+
+  const latestLog = logs[0];
+  const daysSince = latestLog
+    ? Math.max(0, Math.floor((Date.now() - new Date(latestLog.timestamp).getTime()) / (1000 * 60 * 60 * 24)))
+    : 4; // fallback to 4 if no logs
 
   const handleTaskDone = (id: string) => {
-    setTasks(prev => prev.map(t => t.id === id ? { ...t, isDone: true } : t));
+    toggleTaskDone(id);
   };
 
   const handleQuickLogFAB = () => {
@@ -107,7 +111,7 @@ export default function DashboardScreen() {
         {/* Comeback Banner */}
         {showComeback && (
           <ComebackBonusBanner
-            daysSince={4}
+            daysSince={daysSince}
             ctaLabel="See What Needs Attention →"
             onPress={() => {
               setShowComeback(false);
@@ -124,7 +128,7 @@ export default function DashboardScreen() {
             onActionPress={() => router.push('/(tabs)/tools/smart-scheduler')}
           />
           <HorizontalScrollRow>
-            {tasks.map(task => (
+            {pendingTasks.map(task => (
               <TaskCard
                 key={task.id}
                 plantName={task.plantName}
@@ -152,11 +156,11 @@ export default function DashboardScreen() {
             alignItems: 'center', 
             gap: Spacing.md 
           }}>
-            <MetricDial value={84} size={110} label="Avg Health" />
+            <MetricDial value={avgHealth} size={110} label="Avg Health" />
             <View style={{ flexDirection: 'row', justifyContent: 'space-around', width: '100%', marginTop: Spacing.sm }}>
               <View style={{ alignItems: 'center' }}>
                 <CustomText style={{ fontSize: Typography.sizes.base, fontWeight: Typography.weights.bold, color: Colors.text.heading }}>Moisture</CustomText>
-                <CustomText style={{ fontSize: Typography.sizes.sm, color: Colors.green.DEFAULT }}>68%</CustomText>
+                <CustomText style={{ fontSize: Typography.sizes.sm, color: Colors.green.DEFAULT }}>{displayMoisture}%</CustomText>
               </View>
               <View style={{ alignItems: 'center' }}>
                 <CustomText style={{ fontSize: Typography.sizes.base, fontWeight: Typography.weights.bold, color: Colors.text.heading }}>Light</CustomText>
@@ -164,7 +168,7 @@ export default function DashboardScreen() {
               </View>
               <View style={{ alignItems: 'center' }}>
                 <CustomText style={{ fontSize: Typography.sizes.base, fontWeight: Typography.weights.bold, color: Colors.text.heading }}>pH Level</CustomText>
-                <CustomText style={{ fontSize: Typography.sizes.sm, color: Colors.green.DEFAULT }}>6.4</CustomText>
+                <CustomText style={{ fontSize: Typography.sizes.sm, color: Colors.green.DEFAULT }}>{displayPh}</CustomText>
               </View>
             </View>
           </View>
@@ -178,7 +182,7 @@ export default function DashboardScreen() {
             onActionPress={() => router.push('/(tabs)/garden')}
           />
           <HorizontalScrollRow>
-            {mockPlants.map(plant => (
+            {activePlants.map(plant => (
               <PlantCard
                 key={plant.id}
                 name={plant.name}

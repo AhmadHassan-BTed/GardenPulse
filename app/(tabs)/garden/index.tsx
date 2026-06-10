@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router';
 import { useTheme } from '../../../components/layout/ThemeProvider';
 import ScreenWrapper from '../../../components/common/ScreenWrapper';
 import CustomHeader from '../../../components/common/CustomHeader';
+import { useGardenStore } from '../../../store/useGardenStore';
 import IconButton from '../../../components/common/IconButton';
 import FilterChip from '../../../components/common/FilterChip';
 import CustomInput from '../../../components/common/CustomInput';
@@ -26,21 +27,16 @@ interface Plant {
   imageUrl?: string;
 }
 
-const initialPlants: Plant[] = [
-  { id: '1', name: 'Monstera Deliciosa', nickname: 'Spike', method: 'Indoor', healthStatus: 'healthy', lastLoggedDays: 2 },
-  { id: '2', name: 'Snake Plant', nickname: 'Juicy', method: 'Indoor', healthStatus: 'warning', lastLoggedDays: 4 },
-  { id: '3', name: 'Golden Pothos', nickname: 'Viny', method: 'Container', healthStatus: 'critical', lastLoggedDays: 6 },
-  { id: '4', name: 'Garden Tomatoes', nickname: 'Juicy Tomato', method: 'Soil', healthStatus: 'healthy', lastLoggedDays: 0 },
-  { id: '5', name: 'Hydroponic Basil', nickname: 'Herb', method: 'Hydro', healthStatus: 'healthy', lastLoggedDays: 1 },
-  { id: '6', name: 'Balcony Lavender', nickname: 'Sweet scent', method: 'Container', healthStatus: 'warning', lastLoggedDays: 10 },
-];
-
 export default function PlantListScreen() {
   const router = useRouter();
   const theme = useTheme();
   const { Colors, Spacing } = theme;
 
-  const [plants, setPlants] = useState<Plant[]>(initialPlants);
+  const isHydrated = useGardenStore((state) => state.isHydrated);
+  const storePlants = useGardenStore((state) => state.plants);
+  const updatePlant = useGardenStore((state) => state.updatePlant);
+  const archivePlant = useGardenStore((state) => state.archivePlant);
+
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState<string>('All');
   const [isGrid, setIsGrid] = useState(false);
@@ -49,15 +45,21 @@ export default function PlantListScreen() {
   const [isBatchMode, setIsBatchMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
+  if (!isHydrated) {
+    return null;
+  }
+
+  const activePlants = storePlants.filter((p) => !p.isArchived);
+
   // Filter & Search Logic
   const filteredPlants = useMemo(() => {
-    return plants.filter((plant) => {
+    return activePlants.filter((plant) => {
       const matchesSearch = plant.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
         (plant.nickname && plant.nickname.toLowerCase().includes(searchQuery.toLowerCase()));
       const matchesFilter = activeFilter === 'All' || plant.method.toLowerCase() === activeFilter.toLowerCase();
       return matchesSearch && matchesFilter;
     });
-  }, [plants, searchQuery, activeFilter]);
+  }, [activePlants, searchQuery, activeFilter]);
 
   const handleToggleSelect = (id: string) => {
     setSelectedIds((prev) => 
@@ -80,13 +82,17 @@ export default function PlantListScreen() {
 
   const handleBatchWater = () => {
     console.log(`Watering batch of ${selectedIds.length} plants`);
-    setPlants(prev => prev.map(p => selectedIds.includes(p.id) ? { ...p, lastLoggedDays: 0, healthStatus: 'healthy' as const } : p));
+    selectedIds.forEach((id) => {
+      updatePlant(id, { lastLoggedDays: 0, healthStatus: 'healthy' });
+    });
     handleCancelBatch();
   };
 
   const handleBatchFeed = () => {
     console.log(`Feeding batch of ${selectedIds.length} plants`);
-    setPlants(prev => prev.map(p => selectedIds.includes(p.id) ? { ...p, lastLoggedDays: 0 } : p));
+    selectedIds.forEach((id) => {
+      updatePlant(id, { lastLoggedDays: 0 });
+    });
     handleCancelBatch();
   };
 
@@ -97,7 +103,9 @@ export default function PlantListScreen() {
 
   const handleBatchArchive = () => {
     console.log(`Archiving batch of ${selectedIds.length} plants`);
-    setPlants(prev => prev.filter(p => !selectedIds.includes(p.id)));
+    selectedIds.forEach((id) => {
+      archivePlant(id, 'Batch Archived');
+    });
     handleCancelBatch();
   };
 
