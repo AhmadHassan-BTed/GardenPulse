@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, StyleSheet, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTheme } from '../../components/layout/ThemeProvider';
@@ -8,13 +8,19 @@ import ExportFormatOptions from '../../components/common/ExportFormatOptions';
 import WatermarkToggleRow from '../../components/common/WatermarkToggleRow';
 import CustomButton from '../../components/common/CustomButton';
 import SectionHeader from '../../components/common/SectionHeader';
+import { useGardenStore } from '../../store/useGardenStore';
 
 export default function ExportShareModal() {
   const router = useRouter();
   const theme = useTheme();
   const { Spacing } = theme;
 
-  const [isSupporter, setIsSupporter] = useState(false);
+  const isHydrated = useGardenStore((state) => state.isHydrated);
+  const isSupporter = useGardenStore((state) => state.userProfile.isSupporter);
+
+  if (!isHydrated) {
+    return null;
+  }
 
   const handleSelectPNG = () => {
     Alert.alert('Export Successful', 'Image saved to gallery.', [{ text: 'OK', onPress: () => router.back() }]);
@@ -56,13 +62,15 @@ export default function ExportShareModal() {
           <WatermarkToggleRow isSupporter={isSupporter} />
         </View>
 
-        <View style={{ marginTop: Spacing.lg, gap: Spacing.sm }}>
-          <CustomButton 
-            label="Become a Supporter to unlock PDF" 
-            variant="secondary"
-            onPress={() => router.push('/modals/supporter-badge')} 
-          />
-        </View>
+        {!isSupporter && (
+          <View style={{ marginTop: Spacing.lg, gap: Spacing.sm }}>
+            <CustomButton 
+              label="Become a Supporter to unlock PDF" 
+              variant="secondary"
+              onPress={() => router.push('/modals/supporter-badge')} 
+            />
+          </View>
+        )}
 
       </View>
     </ScreenWrapper>

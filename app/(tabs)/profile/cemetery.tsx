@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTheme } from '../../../components/layout/ThemeProvider';
@@ -8,26 +8,35 @@ import { CemeteryEntryCard } from '../../../components/common/CemeteryComponents
 import { PatternInsightCard } from '../../../components/common/InsightBanners';
 import CustomButton from '../../../components/common/CustomButton';
 import SectionHeader from '../../../components/common/SectionHeader';
-
-const initialLostPlants = [
-  { id: '1', name: 'Fiddle Leaf Fig', method: 'Soil', archivedDate: 'Mar 15, 2026', imageUrl: null },
-  { id: '2', name: 'String of Pearls', method: 'Soil', archivedDate: 'Feb 28, 2026', imageUrl: null },
-  { id: '3', name: 'Calathea Orbifolia', method: 'Soil', archivedDate: 'Jan 10, 2026', imageUrl: null },
-  { id: '4', name: 'Venus Flytrap', method: 'Sphagnum Moss', archivedDate: 'Dec 18, 2025', imageUrl: null },
-];
+import EmptyStateView from '../../../components/common/EmptyStateView';
+import { useGardenStore } from '../../../store/useGardenStore';
 
 export default function CemeteryScreen() {
   const router = useRouter();
   const theme = useTheme();
   const { Spacing } = theme;
-  const [lostPlants, setLostPlants] = useState(initialLostPlants);
+
+  const isHydrated = useGardenStore((state) => state.isHydrated);
+  const storePlants = useGardenStore((state) => state.plants);
+  const updatePlant = useGardenStore((state) => state.updatePlant);
+  const deletePlant = useGardenStore((state) => state.deletePlant);
+
+  if (!isHydrated) {
+    return null;
+  }
+
+  const lostPlants = storePlants.filter((p) => p.isArchived);
 
   const handleRestore = (id: string) => {
-    setLostPlants((prev) => prev.filter((p) => p.id !== id));
+    updatePlant(id, {
+      isArchived: false,
+      causeOfDeath: undefined,
+      archivedDate: undefined,
+    });
   };
 
   const handleDelete = (id: string) => {
-    setLostPlants((prev) => prev.filter((p) => p.id !== id));
+    deletePlant(id);
   };
 
   return (
@@ -43,17 +52,36 @@ export default function CemeteryScreen() {
 
         <SectionHeader title="In Memory" />
         
-        {lostPlants.map((plant) => (
-          <CemeteryEntryCard
-            key={plant.id}
-            name={plant.name}
-            method={plant.method}
-            archivedDate={plant.archivedDate}
-            imageUrl={plant.imageUrl}
-            onRestore={() => handleRestore(plant.id)}
-            onDelete={() => handleDelete(plant.id)}
+        {lostPlants.length > 0 ? (
+          lostPlants.map((plant) => (
+            <CemeteryEntryCard
+              key={plant.id}
+              name={plant.nickname || plant.name}
+              method={plant.method}
+              archivedDate={plant.archivedDate 
+                ? new Date(plant.archivedDate).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                  })
+                : 'Unknown'
+              }
+              imageUrl={plant.imageUrl}
+              causeOfDeath={plant.causeOfDeath}
+              onChangeCauseOfDeath={(cause: string) => updatePlant(plant.id, { causeOfDeath: cause })}
+              onRestore={() => handleRestore(plant.id)}
+              onDelete={() => handleDelete(plant.id)}
+            />
+          ))
+        ) : (
+          <EmptyStateView
+            title="Cemetery is empty"
+            description="All your plants are alive and kicking! Any archived plants will appear here."
+            iconName="heart"
+            actionLabel="View Active Plants"
+            onActionPress={() => router.push('/(tabs)/garden')}
           />
-        ))}
+        )}
 
         <View style={{ gap: Spacing.md, marginTop: Spacing.lg }}>
           <CustomButton 

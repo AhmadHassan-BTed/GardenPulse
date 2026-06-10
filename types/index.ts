@@ -6,7 +6,7 @@
 export type GrowingMethod = 'Soil' | 'Container' | 'Hydro' | 'Indoor';
 export type GrowingStage = 'Seedling' | 'Veg' | 'Bloom';
 export type HealthStatus = 'healthy' | 'warning' | 'critical';
-export type TaskType = 'Water' | 'Feed' | 'Prune' | 'Check';
+export type TaskType = 'Water' | 'Feed' | 'Prune' | 'Check' | 'Harvest';
 
 export interface Plant {
   id: string;

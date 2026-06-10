@@ -1614,7 +1614,7 @@ export default function ComponentShowcase() {
 
         <SunriseSunsetRow sunrise="06:24 AM" sunset="08:12 PM" />
 
-        <CustomReminderForm />
+        <CustomReminderForm plants={[{ id: '1', name: 'Monstera' }]} onSave={() => {}} />
 
         <View style={{ borderWidth: 1, borderColor: Colors.border.subtle, borderRadius: Radius.lg, marginBottom: Spacing.md }}>
           <MapLayerToggleSheet />

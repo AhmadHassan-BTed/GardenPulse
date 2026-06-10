@@ -18,9 +18,18 @@ export const CauseOfDeathSelector = ({ selected, onSelect }: { selected: string;
   );
 };
 
-export const CemeteryEntryCard = ({ name, method, archivedDate, imageUrl, onRestore, onDelete }: any) => {
+export const CemeteryEntryCard = ({ name, method, archivedDate, imageUrl, causeOfDeath, onChangeCauseOfDeath, onRestore, onDelete }: any) => {
   const { Colors, Spacing, Radius, Typography } = useTheme();
-  const [cause, setCause] = useState('Unknown');
+  const [localCause, setLocalCause] = useState('Unknown');
+
+  const selectedCause = causeOfDeath !== undefined ? causeOfDeath : localCause;
+  const handleSelectCause = (c: string) => {
+    if (onChangeCauseOfDeath) {
+      onChangeCauseOfDeath(c);
+    } else {
+      setLocalCause(c);
+    }
+  };
 
   return (
     <CustomCard padding={Spacing.md} style={{ marginBottom: Spacing.md, borderColor: Colors.border.subtle, borderWidth: 1 }}>
@@ -35,7 +44,7 @@ export const CemeteryEntryCard = ({ name, method, archivedDate, imageUrl, onRest
         </View>
       </View>
       <Text style={{ fontSize: Typography.sizes.sm, fontWeight: 'bold', color: Colors.text.heading, marginBottom: Spacing.sm }}>Cause of Death</Text>
-      <CauseOfDeathSelector selected={cause} onSelect={setCause} />
+      <CauseOfDeathSelector selected={selectedCause} onSelect={handleSelectCause} />
       <View style={{ flexDirection: 'row', gap: Spacing.md, marginTop: Spacing.lg }}>
         <CustomButton label="Restore" variant="secondary" onPress={onRestore} style={{ flex: 1 }} />
         <CustomButton label="Delete Permanently" onPress={onDelete} style={{ flex: 1, backgroundColor: `${Colors.text.error}15` }} labelStyle={{ color: Colors.text.error }} />

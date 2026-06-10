@@ -11,6 +11,7 @@ import CustomInput from '../../components/common/CustomInput';
 import CustomButton from '../../components/common/CustomButton';
 import SectionHeader from '../../components/common/SectionHeader';
 import RepeatSelector, { RepeatInterval } from '../../components/common/RepeatSelector';
+import { useGardenStore } from '../../store/useGardenStore';
 
 const plantSuggestions = [
   'Monstera Deliciosa',
@@ -27,14 +28,49 @@ export default function AddPlantModal() {
   const theme = useTheme();
   const { Spacing } = theme;
 
+  const isHydrated = useGardenStore((state) => state.isHydrated);
+  const addPlant = useGardenStore((state) => state.addPlant);
+  const addTask = useGardenStore((state) => state.addTask);
+
   const [name, setName] = useState('');
   const [species, setSpecies] = useState('');
   const [method, setMethod] = useState('soil');
+  const [containerSize, setContainerSize] = useState('3 Gallons');
+  const [zone, setZone] = useState('Zone 7b');
   const [wateringFrequency, setWateringFrequency] = useState<RepeatInterval>('Weekly');
   const [photoUri, setPhotoUri] = useState<string | null>(null);
 
+  if (!isHydrated) {
+    return null;
+  }
+
   const handleSave = () => {
-    // Save simulation
+    const methodMapped = method === 'hydro' ? 'Hydro' : (method === 'coco' ? 'Container' : 'Soil');
+
+    // 1. Add the plant
+    addPlant({
+      name: species.trim(),
+      nickname: name.trim() || undefined,
+      method: methodMapped,
+      stage: 'Veg',
+      dateAdded: new Date().toISOString(),
+      zone: zone.trim() || 'Zone 7b',
+      containerSize: method === 'coco' ? containerSize : undefined,
+      imageUrl: photoUri || undefined,
+    });
+
+    // 2. Query store immediately to find the newly created plant (prepended in the plants array)
+    const latestPlant = useGardenStore.getState().plants[0];
+    if (latestPlant) {
+      // Create initial Check task due today or tomorrow
+      addTask({
+        plantId: latestPlant.id,
+        plantName: latestPlant.nickname || latestPlant.name,
+        taskType: 'Check',
+        dueDate: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // Due tomorrow
+      });
+    }
+
     router.back();
   };
 
@@ -72,6 +108,30 @@ export default function AddPlantModal() {
           selectedValue={method}
           onSelect={(v) => setMethod(String(v))}
           horizontal={true}
+        />
+
+        {method === 'coco' && (
+          <>
+            <SectionHeader title="Container Size" style={{ marginTop: Spacing.sm }} />
+            <RadioGroup
+              options={[
+                { label: '1 Gal', value: '1 Gallon' },
+                { label: '3 Gal', value: '3 Gallons' },
+                { label: '5 Gal', value: '5 Gallons' },
+                { label: '10 Gal', value: '10 Gallons' },
+              ]}
+              selectedValue={containerSize}
+              onSelect={(v) => setContainerSize(String(v))}
+              horizontal={true}
+            />
+          </>
+        )}
+
+        <CustomInput
+          label="Growing Zone"
+          placeholder="e.g. Zone 7b"
+          value={zone}
+          onChangeText={setZone}
         />
 
         <SectionHeader title="Watering Schedule" style={{ marginTop: Spacing.sm }} />

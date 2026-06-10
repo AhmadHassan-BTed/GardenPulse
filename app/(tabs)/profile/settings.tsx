@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTheme } from '../../../components/layout/ThemeProvider';
 import ScreenWrapper from '../../../components/common/ScreenWrapper';
@@ -10,16 +10,33 @@ import CustomSwitch from '../../../components/common/CustomSwitch';
 import ThemeToggle from '../../../components/common/ThemeToggle';
 import UnitToggle, { UnitSystem } from '../../../components/common/UnitToggle';
 import CustomText from '../../../components/common/CustomText';
+import ModalDialog from '../../../components/common/ModalDialog';
+import { useGardenStore } from '../../../store/useGardenStore';
 
 export default function SettingsScreen() {
   const router = useRouter();
   const theme = useTheme();
   const { Colors, Spacing, Typography } = theme;
 
+  const isHydrated = useGardenStore((state) => state.isHydrated);
+  const userProfile = useGardenStore((state) => state.userProfile);
+  const updateProfile = useGardenStore((state) => state.updateProfile);
+
   const [notifications, setNotifications] = useState(true);
   const [autoSync, setAutoSync] = useState(true);
   const [haptics, setHaptics] = useState(true);
   const [unitSystem, setUnitSystem] = useState<UnitSystem>('metric');
+  const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
+
+  if (!isHydrated) {
+    return null;
+  }
+
+  const handleDeleteAccount = () => {
+    setDeleteDialogVisible(false);
+    // In production: clear all store data, reset AsyncStorage, navigate to onboarding
+    console.log('Account deletion requested');
+  };
 
   return (
     <ScreenWrapper scrollable={true} withPadding={true}>
@@ -35,15 +52,18 @@ export default function SettingsScreen() {
         <SettingsSectionGroup title="Account">
           <NavigationLinkRow 
             label="Edit Profile" 
+            value={userProfile.name}
             onPress={() => console.log('Edit Profile')} 
           />
           <NavigationLinkRow 
-            label="Connected Accounts" 
-            onPress={() => console.log('Connected Accounts')} 
+            label="Grower Tag" 
+            value={`@${userProfile.growerTag}`}
+            onPress={() => console.log('Edit Tag')} 
           />
           <NavigationLinkRow 
-            label="Change Password" 
-            onPress={() => console.log('Change Password')} 
+            label="Supporter Status" 
+            value={userProfile.isSupporter ? '✅ Active' : 'Free'}
+            onPress={() => router.push('/modals/supporter-badge')} 
           />
         </SettingsSectionGroup>
 
@@ -114,9 +134,13 @@ export default function SettingsScreen() {
         {/* Danger Zone */}
         <DangerZoneSection>
           <NavigationLinkRow 
-            label="Delete Account" 
+            label="Export All Data" 
+            onPress={() => router.push('/modals/export-share')} 
+          />
+          <NavigationLinkRow 
+            label="Delete Account & Data" 
             isDestructive={true}
-            onPress={() => console.log('Delete Account')} 
+            onPress={() => setDeleteDialogVisible(true)} 
           />
         </DangerZoneSection>
 
@@ -128,6 +152,21 @@ export default function SettingsScreen() {
         </View>
 
       </View>
+
+      {/* Delete Confirmation Dialog */}
+      <ModalDialog
+        visible={deleteDialogVisible}
+        title="Delete Account?"
+        description="This will permanently erase all your plants, logs, and profile data. This action cannot be undone."
+        primaryAction={{
+          label: 'Delete Everything',
+          onPress: handleDeleteAccount,
+        }}
+        secondaryAction={{
+          label: 'Cancel',
+          onPress: () => setDeleteDialogVisible(false),
+        }}
+      />
     </ScreenWrapper>
   );
 }
