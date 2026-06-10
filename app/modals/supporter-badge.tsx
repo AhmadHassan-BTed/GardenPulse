@@ -18,6 +18,37 @@ export default function SupporterBadgeModal() {
     router.back();
   };
 
+  const styles = React.useMemo(() => {
+    return StyleSheet.create({
+      badgeRing: {
+        width: 96,
+        height: 96,
+        borderRadius: 48,
+        backgroundColor: Colors.green.tint,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 2,
+        borderColor: Colors.green.glow,
+      },
+      title: {
+        fontWeight: 'bold',
+        textAlign: 'center',
+      },
+      description: {
+        textAlign: 'center',
+        lineHeight: 22,
+        paddingHorizontal: 16,
+      },
+      benefitsContainer: {
+        width: '100%',
+        padding: 16,
+        borderRadius: 12,
+        backgroundColor: Colors.surface.glass,
+        marginVertical: 12,
+      },
+    });
+  }, [Colors, Spacing]);
+
   return (
     <ScreenWrapper scrollable={true} withPadding={true}>
       <CustomHeader 
@@ -62,32 +93,3 @@ export default function SupporterBadgeModal() {
     </ScreenWrapper>
   );
 }
-
-const styles = StyleSheet.create({
-  badgeRing: {
-    width: 96,
-    height: 96,
-    borderRadius: 48,
-    backgroundColor: 'rgba(239, 68, 68, 0.08)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 2,
-    borderColor: 'rgba(239, 68, 68, 0.18)',
-  },
-  title: {
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  description: {
-    textAlign: 'center',
-    lineHeight: 22,
-    paddingHorizontal: 16,
-  },
-  benefitsContainer: {
-    width: '100%',
-    padding: 16,
-    borderRadius: 12,
-    backgroundColor: 'rgba(0,0,0,0.02)',
-    marginVertical: 12,
-  },
-});

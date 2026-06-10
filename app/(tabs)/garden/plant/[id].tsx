@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text } from 'react-native';
+import React, { useState, useMemo, useEffect } from 'react';
+import { View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useTheme } from '../../../../components/layout/ThemeProvider';
 import ScreenWrapper from '../../../../components/common/ScreenWrapper';
@@ -9,76 +9,12 @@ import ActionPillRow from '../../../../components/common/ActionPillRow';
 import PlantInfoCard from '../../../../components/common/PlantInfoCard';
 import { WeatherImpactBanner } from '../../../../components/common/InsightAndMapCards';
 import SectionHeader from '../../../../components/common/SectionHeader';
-import TaskCard, { TaskType } from '../../../../components/common/TaskCard';
+import TaskCard from '../../../../components/common/TaskCard';
 import LogTimeline from '../../../../components/common/LogTimeline';
 import { ContextualTipCard } from '../../../../components/common/InsightBanners';
 import NotesInput from '../../../../components/common/NotesInput';
 import FAB from '../../../../components/common/FAB';
-import { GrowingStage } from '../../../../components/common/GrowingStageChip';
-
-const plantMockData: Record<string, any> = {
-  '1': {
-    id: '1',
-    commonName: 'Monstera Deliciosa',
-    species: 'Monstera deliciosa',
-    method: 'Hydroponics',
-    stage: 'Veg' as GrowingStage,
-    dateAdded: 'March 15, 2024',
-    zone: 'Zone 7b · Berlin',
-    containerSize: '10 Gallons',
-    photoCount: 12,
-    imageUrl: null, // Sourced from placeholder
-    weatherAlert: '🌧 High humidity expected in 2 days → reduce reservoir topping.',
-    tasks: [
-      { id: 't1', name: 'Check pH levels', type: 'Check' as TaskType, done: false },
-      { id: 't2', name: 'Refill nutrient tank', type: 'Feed' as TaskType, done: false },
-      { id: 't3', name: 'Prune yellow bottom leaf', type: 'Prune' as TaskType, done: true },
-    ],
-    logs: [
-      {
-        id: 'l1',
-        timestamp: 'Today, 10:30 AM',
-        activities: [{ id: 'a1', label: 'Pruned', colorKey: 'warning' }],
-        metrics: ['pH 5.9', 'EC 1.6'],
-        notes: 'Pruned one of the lowest leaves that showed heavy yellowing due to nitrogen deficiency. Adjusted nutrient dosage by +10%.',
-        hasVoiceNote: true,
-      },
-      {
-        id: 'l2',
-        timestamp: 'Jun 4, 2026',
-        activities: [{ id: 'a2', label: 'Watered', colorKey: 'info' }, { id: 'a3', label: 'Fed', colorKey: 'success' }],
-        metrics: ['pH 6.0', 'EC 1.5'],
-        notes: 'Refilled the main reservoir. Plant looks healthy and new leaf is beginning to unfurl.',
-      },
-    ],
-  },
-  '2': {
-    id: '2',
-    commonName: 'Snake Plant',
-    species: 'Sansevieria trifasciata',
-    method: 'Soil',
-    stage: 'Veg' as GrowingStage,
-    dateAdded: 'January 10, 2024',
-    zone: 'Zone 7b · Berlin',
-    containerSize: '8 Inches',
-    photoCount: 4,
-    imageUrl: null,
-    weatherAlert: '☀️ Sunny week ahead → monitor soil moisture closely.',
-    tasks: [
-      { id: 't4', name: 'Water soil thoroughly', type: 'Water' as TaskType, done: false },
-      { id: 't5', name: 'Check for root boundaries', type: 'Check' as TaskType, done: false },
-    ],
-    logs: [
-      {
-        id: 'l3',
-        timestamp: 'Jun 1, 2026',
-        activities: [{ id: 'a4', label: 'Check', colorKey: 'purple' }],
-        metrics: ['Moisture 35%'],
-        notes: 'Soil is moderately dry. Will water in the next few days if it drops below 25%.',
-      },
-    ],
-  },
-};
+import { useGardenStore } from '../../../../store/useGardenStore';
 
 export default function PlantDetailScreen() {
   const router = useRouter();
@@ -86,30 +22,102 @@ export default function PlantDetailScreen() {
   const theme = useTheme();
   const { Colors, Spacing } = theme;
 
-  const rawPlant = plantMockData[id || '1'] || plantMockData['1'];
-  
-  const plant = React.useMemo(() => {
-    return {
-      ...rawPlant,
-      logs: rawPlant.logs.map((log: any) => ({
-        ...log,
-        activities: log.activities.map((act: any) => ({
-          ...act,
-          color: Colors[act.colorKey as keyof typeof Colors] || Colors.green.DEFAULT,
-        })),
-      })),
-    };
-  }, [rawPlant, Colors]);
-  
-  const [tasks, setTasks] = useState(plant.tasks);
+  const isHydrated = useGardenStore((state) => state.isHydrated);
+  const storePlants = useGardenStore((state) => state.plants);
+  const storeLogs = useGardenStore((state) => state.logs);
+  const storeTasks = useGardenStore((state) => state.tasks);
+  const toggleTaskDone = useGardenStore((state) => state.toggleTaskDone);
+
+  const plant = useMemo(() => {
+    return storePlants.find((p) => p.id === id);
+  }, [storePlants, id]);
+
+  useEffect(() => {
+    if (isHydrated && !plant) {
+      router.replace('/(tabs)/garden');
+    }
+  }, [isHydrated, plant]);
+
+  const plantLogs = useMemo(() => {
+    return storeLogs
+      .filter((l) => l.plantId === id)
+      .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+  }, [storeLogs, id]);
+
+  const plantTasks = useMemo(() => {
+    return storeTasks.filter((t) => t.plantId === id);
+  }, [storeTasks, id]);
+
+  const formattedDate = useMemo(() => {
+    if (!plant) return '';
+    return new Date(plant.dateAdded).toLocaleDateString('en-US', {
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric',
+    });
+  }, [plant?.dateAdded]);
+
+  const getActivityColor = (act: string) => {
+    switch (act) {
+      case 'Water':
+        return Colors.info;
+      case 'Feed':
+        return Colors.success;
+      case 'Prune':
+        return Colors.warning;
+      case 'Check':
+        return Colors.purple;
+      default:
+        return Colors.green.DEFAULT;
+    }
+  };
+
+  const formattedLogs = useMemo(() => {
+    return plantLogs.map((log) => {
+      const date = new Date(log.timestamp);
+      const formattedTimestamp = date.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      }) + ', ' + date.toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true,
+      });
+
+      const activities = log.activities.map((act, idx) => ({
+        id: `${log.id}-act-${idx}`,
+        label: act,
+        color: getActivityColor(act),
+      }));
+
+      const metrics: string[] = [];
+      if (log.metrics?.ph !== undefined) metrics.push(`pH ${log.metrics.ph}`);
+      if (log.metrics?.ec !== undefined) metrics.push(`EC ${log.metrics.ec}`);
+      if (log.metrics?.moisture !== undefined) metrics.push(`Moisture ${log.metrics.moisture}%`);
+      if (log.metrics?.temp !== undefined) metrics.push(`Temp ${log.metrics.temp}°C`);
+
+      return {
+        id: log.id,
+        timestamp: formattedTimestamp,
+        activities,
+        metrics,
+        notes: log.notes,
+        hasVoiceNote: log.hasVoiceNote,
+      };
+    });
+  }, [plantLogs, Colors]);
+
   const [noteText, setNoteText] = useState('');
   const [isRecording, setIsRecording] = useState(false);
 
-  const handleDonePress = (taskId: string) => {
-    setTasks((prev: any[]) =>
-      prev.map(t => t.id === taskId ? { ...t, done: true } : t)
-    );
-  };
+  if (!isHydrated || !plant) {
+    return null;
+  }
+
+  const weatherAlert = plant.method === 'Indoor'
+    ? '☀️ Stable indoor environment'
+    : '🌧 High humidity expected in 2 days → reduce reservoir topping.';
 
   const handleMicPress = () => {
     setIsRecording(!isRecording);
@@ -135,7 +143,7 @@ export default function PlantDetailScreen() {
   return (
     <ScreenWrapper scrollable={true} withPadding={false}>
       <CustomHeader
-        title={plant.commonName}
+        title={plant.nickname || plant.name}
         showBack={true}
         onBack={() => router.back()}
       />
@@ -143,7 +151,7 @@ export default function PlantDetailScreen() {
       {/* Full-bleed hero banner */}
       <PlantHeroImage
         imageUrl={plant.imageUrl}
-        photoCount={plant.photoCount}
+        photoCount={plant.imageUrl ? 1 : 0}
         onAddPhoto={handleAddPhoto}
       />
 
@@ -157,7 +165,7 @@ export default function PlantDetailScreen() {
               id: 'log',
               label: 'Log Activity',
               icon: 'edit' as any,
-              onPress: () => router.push(`/modals/quick-log?id=${plant.id}`),
+              onPress: () => router.push(`/modals/quick-log?plantId=${plant.id}`),
             },
             {
               id: 'diagnose',
@@ -183,49 +191,51 @@ export default function PlantDetailScreen() {
 
         {/* Detailed specifications */}
         <PlantInfoCard
-          commonName={plant.commonName}
-          species={plant.species}
+          commonName={plant.nickname || plant.name}
+          species={plant.name}
           method={plant.method}
           stage={plant.stage}
-          dateAdded={plant.dateAdded}
+          dateAdded={formattedDate}
           zone={plant.zone}
           containerSize={plant.containerSize}
           onEdit={handleEdit}
         />
 
         {/* Environment Alert */}
-        {plant.weatherAlert && (
+        {weatherAlert && (
           <WeatherImpactBanner
-            message={plant.weatherAlert}
+            message={weatherAlert}
           />
         )}
 
         {/* Daily schedule tasks */}
-        <View style={{ gap: Spacing.sm }}>
-          <SectionHeader
-            title="Daily Care Schedule"
-            actionLabel="See all"
-            onActionPress={() => router.push('/tools/smart-scheduler')}
-          />
-          <View style={{ gap: Spacing.xs }}>
-            {tasks.map((task: any) => (
-              <TaskCard
-                key={task.id}
-                plantName={plant.commonName}
-                taskType={task.type}
-                isDone={task.done}
-                onDonePress={() => handleDonePress(task.id)}
-                style={{ width: '100%' }}
-              />
-            ))}
+        {plantTasks.length > 0 && (
+          <View style={{ gap: Spacing.sm }}>
+            <SectionHeader
+              title="Daily Care Schedule"
+              actionLabel="See all"
+              onActionPress={() => router.push('/tools/smart-scheduler')}
+            />
+            <View style={{ gap: Spacing.xs }}>
+              {plantTasks.map((task) => (
+                <TaskCard
+                  key={task.id}
+                  plantName={plant.nickname || plant.name}
+                  taskType={task.taskType}
+                  isDone={task.isDone}
+                  onDonePress={() => toggleTaskDone(task.id)}
+                  style={{ width: '100%' }}
+                />
+              ))}
+            </View>
           </View>
-        </View>
+        )}
 
         {/* Historical log timeline */}
         <View style={{ gap: Spacing.sm }}>
           <SectionHeader title="Log History" />
           <LogTimeline
-            entries={plant.logs}
+            entries={formattedLogs}
           />
         </View>
 
@@ -256,7 +266,7 @@ export default function PlantDetailScreen() {
       {/* Floating Action Button */}
       <FAB
         iconName="plus"
-        onPress={() => router.push(`/modals/quick-log?id=${plant.id}`)}
+        onPress={() => router.push(`/modals/quick-log?plantId=${plant.id}`)}
       />
     </ScreenWrapper>
   );

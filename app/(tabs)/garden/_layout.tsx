@@ -1,6 +1,10 @@
 import { Stack } from "expo-router";
+import { useTheme } from "../../../components/layout/ThemeProvider";
 
 export default function GardenLayout() {
+  const theme = useTheme();
+  const { Colors } = theme;
+
   return (
     <Stack
       screenOptions={{
@@ -8,7 +12,7 @@ export default function GardenLayout() {
         headerLargeTitle: true,
         headerBlurEffect: "none",
         headerLargeStyle: { backgroundColor: "transparent" },
-        headerTitleStyle: { color: "#1c4a22" },
+        headerTitleStyle: { color: Colors.text.heading },
       }}
     >
       <Stack.Screen name="index" options={{ title: "My Garden" }} />
