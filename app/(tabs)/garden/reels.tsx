@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTheme } from '../../../components/layout/ThemeProvider';
 import ScreenWrapper from '../../../components/common/ScreenWrapper';
@@ -10,6 +10,7 @@ import ReelCard from '../../../components/common/ReelCard';
 import VideoPlayer from '../../../components/common/VideoPlayer';
 import ReelGeneratorFlow from '../../../components/common/ReelGeneratorFlow';
 import CustomCard from '../../../components/common/CustomCard';
+import CustomText from '../../../components/common/CustomText';
 
 interface ReelData {
   id: string;
@@ -101,16 +102,16 @@ export default function ReelsScreen() {
         {/* Gallery Statistics Row */}
         <View style={{ flexDirection: 'row', gap: Spacing.sm }}>
           <CustomCard style={styles.statBox}>
-            <Text style={[styles.statValue, { color: Colors.text.heading }]}>{reels.length}</Text>
-            <Text style={[styles.statLabel, { color: Colors.text.muted }]}>Reels</Text>
+            <CustomText style={styles.statValue} variant="heading" size="lg">{reels.length}</CustomText>
+            <CustomText style={styles.statLabel} variant="muted" size="xs">Reels</CustomText>
           </CustomCard>
           <CustomCard style={styles.statBox}>
-            <Text style={[styles.statValue, { color: Colors.green.DEFAULT }]}>{totalViews}</Text>
-            <Text style={[styles.statLabel, { color: Colors.text.muted }]}>Views</Text>
+            <CustomText style={styles.statValue} variant="success" size="lg">{totalViews}</CustomText>
+            <CustomText style={styles.statLabel} variant="muted" size="xs">Views</CustomText>
           </CustomCard>
           <CustomCard style={styles.statBox}>
-            <Text style={[styles.statValue, { color: '#E11D48' }]}>{totalLikes}</Text>
-            <Text style={[styles.statLabel, { color: Colors.text.muted }]}>Likes</Text>
+            <CustomText style={styles.statValue} variant="error" size="lg">{totalLikes}</CustomText>
+            <CustomText style={styles.statLabel} variant="muted" size="xs">Likes</CustomText>
           </CustomCard>
         </View>
 
@@ -153,11 +154,9 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   statValue: {
-    fontSize: 20,
     fontWeight: 'bold',
   },
   statLabel: {
-    fontSize: 10,
     textTransform: 'uppercase',
     fontWeight: 'bold',
     marginTop: 2,

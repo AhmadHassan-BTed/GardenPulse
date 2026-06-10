@@ -1,11 +1,12 @@
 import React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTheme } from '../../components/layout/ThemeProvider';
 import ScreenWrapper from '../../components/common/ScreenWrapper';
 import CustomHeader from '../../components/common/CustomHeader';
 import { SupporterBenefitsList } from '../../components/common/PremiumGuides';
 import CustomButton from '../../components/common/CustomButton';
+import CustomText from '../../components/common/CustomText';
 
 export default function SupporterBadgeModal() {
   const router = useRouter();
@@ -27,15 +28,15 @@ export default function SupporterBadgeModal() {
 
       <View style={{ gap: Spacing.md, marginTop: Spacing.lg, alignItems: 'center' }}>
         <View style={styles.badgeRing}>
-          <Text style={{ fontSize: 48 }}>💝</Text>
+          <CustomText size="xxxl">💝</CustomText>
         </View>
-
-        <Text style={[styles.title, { color: Colors.text.heading, fontSize: Typography.sizes.xl }]}>
+ 
+        <CustomText variant="heading" size="xl" style={styles.title}>
           Support GardenPulse development
-        </Text>
-        <Text style={[styles.description, { color: Colors.text.body, fontSize: Typography.sizes.base }]}>
+        </CustomText>
+        <CustomText variant="body" size="base" style={styles.description}>
           Help us build the best local, offline-first grower app. Unlock exclusive tools while supporting free gardening access globally.
-        </Text>
+        </CustomText>
 
         <View style={styles.benefitsContainer}>
           <SupporterBenefitsList />
@@ -67,11 +68,11 @@ const styles = StyleSheet.create({
     width: 96,
     height: 96,
     borderRadius: 48,
-    backgroundColor: '#EF444415',
+    backgroundColor: 'rgba(239, 68, 68, 0.08)',
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: '#EF444430',
+    borderColor: 'rgba(239, 68, 68, 0.18)',
   },
   title: {
     fontWeight: 'bold',

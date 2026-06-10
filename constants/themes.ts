@@ -68,6 +68,13 @@ const lightColors = {
     inverse: '#FFFFFF',          // text on dark / brand buttons
   },
 
+  // Utility colors for activities, badges, etc.
+  warning: '#F59E0B',
+  info:    '#3B82F6',
+  success: '#10B981',
+  purple:  '#8B5CF6',
+  gold:    '#FFD700',
+
   // Surfaces — clean light theme
   surface: {
     base:        '#FFFFFF',  // app background
@@ -119,6 +126,13 @@ const darkColors = {
     inverse: '#0A0F0D',
   },
 
+  // Utility colors for activities, badges, etc.
+  warning: '#FBBF24',
+  info:    '#60A5FA',
+  success: '#34D399',
+  purple:  '#A78BFA',
+  gold:    '#FFD700',
+
   // Surfaces — dark glassmorphism
   surface: {
     base:        '#0A0F0D',  // app background
@@ -167,6 +181,11 @@ export type ThemeColors = {
     readonly error:   string;
     readonly inverse: string;
   };
+  readonly warning: string;
+  readonly info: string;
+  readonly success: string;
+  readonly purple: string;
+  readonly gold: string;
   readonly surface: {
     readonly base:        string;
     readonly subtle:      string;

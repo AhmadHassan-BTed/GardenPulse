@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import { View, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTheme } from '../../../components/layout/ThemeProvider';
 import ScreenWrapper from '../../../components/common/ScreenWrapper';
@@ -15,6 +15,7 @@ import InterstitialAdContainer from '../../../components/common/InterstitialAdCo
 import RewardedVideoPrompt from '../../../components/common/RewardedVideoPrompt';
 import ModalDialog from '../../../components/common/ModalDialog';
 import { ContextualTipCard } from '../../../components/common/InsightBanners';
+import CustomText from '../../../components/common/CustomText';
 
 const brands = [
   'General Hydroponics FloraSeries',
@@ -87,9 +88,9 @@ export default function NutrientCalculatorScreen() {
       <View style={{ gap: Spacing.lg, paddingBottom: Spacing.xl }}>
         {/* Method Picker */}
         <View style={{ gap: Spacing.xs }}>
-          <Text style={{ fontSize: Typography.sizes.sm, fontWeight: 'bold', color: Colors.text.muted, textTransform: 'uppercase' }}>
+          <CustomText style={{ fontSize: Typography.sizes.sm, fontWeight: 'bold', color: Colors.text.muted, textTransform: 'uppercase' }}>
             Growing Method
-          </Text>
+          </CustomText>
           <RadioGroup
             horizontal={true}
             options={[
@@ -134,9 +135,9 @@ export default function NutrientCalculatorScreen() {
 
         {/* Growth Phase selection */}
         <View style={{ gap: Spacing.xs }}>
-          <Text style={{ fontSize: Typography.sizes.sm, fontWeight: 'bold', color: Colors.text.muted, textTransform: 'uppercase' }}>
+          <CustomText style={{ fontSize: Typography.sizes.sm, fontWeight: 'bold', color: Colors.text.muted, textTransform: 'uppercase' }}>
             Target Growth Stage
-          </Text>
+          </CustomText>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: Spacing.xs }}>
             {presets.map((p) => (
               <FilterChip
@@ -185,14 +186,14 @@ export default function NutrientCalculatorScreen() {
         )}
 
         <View style={{ gap: Spacing.xs, marginTop: Spacing.sm }}>
-          <Text style={{ fontSize: Typography.sizes.base, fontWeight: 'bold', color: Colors.text.heading }}>
+          <CustomText style={{ fontSize: Typography.sizes.base, fontWeight: 'bold', color: Colors.text.heading }}>
             Pro Botanical Guides
-          </Text>
+          </CustomText>
           <ContextualTipCard
             title="Understanding Nutrient Lockout: Why pH Tuning Matters"
             tag="pH Management"
             readTime="4 min read"
-            onPress={() => router.push('/modals/tips')}
+            onPress={() => router.push(`/modals/tips` as any)}
           />
         </View>
       </View>
@@ -204,12 +205,12 @@ export default function NutrientCalculatorScreen() {
         countdownSeconds={3}
       >
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: Spacing.xl }}>
-          <Text style={{ color: '#FFD700', fontSize: Typography.sizes.lg, fontWeight: 'bold', marginBottom: Spacing.sm }}>
+          <CustomText style={{ color: Colors.gold, fontSize: Typography.sizes.lg, fontWeight: 'bold', marginBottom: Spacing.sm }}>
             GrowMax Hydro Nutrients
-          </Text>
-          <Text style={{ color: '#FFF', textAlign: 'center', fontSize: Typography.sizes.sm }}>
+          </CustomText>
+          <CustomText style={{ color: Colors.text.inverse, textAlign: 'center', fontSize: Typography.sizes.sm }}>
             Maximize flower density and terpene profiles with our premium organic formula.
-          </Text>
+          </CustomText>
         </View>
       </InterstitialAdContainer>
 

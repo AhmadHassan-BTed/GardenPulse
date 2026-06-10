@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTheme } from '../../components/layout/ThemeProvider';
+import CustomText from '../../components/common/CustomText';
 import ScreenWrapper from '../../components/common/ScreenWrapper';
 import CustomHeader from '../../components/common/CustomHeader';
 import NotificationBell from '../../components/common/NotificationBell';
@@ -154,16 +155,16 @@ export default function DashboardScreen() {
             <MetricDial value={84} size={110} label="Avg Health" />
             <View style={{ flexDirection: 'row', justifyContent: 'space-around', width: '100%', marginTop: Spacing.sm }}>
               <View style={{ alignItems: 'center' }}>
-                <Text style={{ fontSize: Typography.sizes.base, fontWeight: Typography.weights.bold, color: Colors.text.heading }}>Moisture</Text>
-                <Text style={{ fontSize: Typography.sizes.sm, color: Colors.green.DEFAULT }}>68%</Text>
+                <CustomText style={{ fontSize: Typography.sizes.base, fontWeight: Typography.weights.bold, color: Colors.text.heading }}>Moisture</CustomText>
+                <CustomText style={{ fontSize: Typography.sizes.sm, color: Colors.green.DEFAULT }}>68%</CustomText>
               </View>
               <View style={{ alignItems: 'center' }}>
-                <Text style={{ fontSize: Typography.sizes.base, fontWeight: Typography.weights.bold, color: Colors.text.heading }}>Light</Text>
-                <Text style={{ fontSize: Typography.sizes.sm, color: '#F59E0B' }}>Medium</Text>
+                <CustomText style={{ fontSize: Typography.sizes.base, fontWeight: Typography.weights.bold, color: Colors.text.heading }}>Light</CustomText>
+                <CustomText style={{ fontSize: Typography.sizes.sm, color: Colors.warning }}>Medium</CustomText>
               </View>
               <View style={{ alignItems: 'center' }}>
-                <Text style={{ fontSize: Typography.sizes.base, fontWeight: Typography.weights.bold, color: Colors.text.heading }}>pH Level</Text>
-                <Text style={{ fontSize: Typography.sizes.sm, color: Colors.green.DEFAULT }}>6.4</Text>
+                <CustomText style={{ fontSize: Typography.sizes.base, fontWeight: Typography.weights.bold, color: Colors.text.heading }}>pH Level</CustomText>
+                <CustomText style={{ fontSize: Typography.sizes.sm, color: Colors.green.DEFAULT }}>6.4</CustomText>
               </View>
             </View>
           </View>
@@ -197,7 +198,7 @@ export default function DashboardScreen() {
           title="💡 From your garden expert: Tomato Care: Reducing leaf curl during high heat"
           method="Soil"
           readTime="3 min read"
-          onPress={() => router.push('/modals/tips')}
+          onPress={() => router.push(`/modals/tips` as any)}
         />
 
         {/* Bloom Report */}

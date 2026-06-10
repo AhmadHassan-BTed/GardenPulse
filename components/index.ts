@@ -86,6 +86,9 @@ export type { StatusBadgeProps, StatusType } from './common/StatusBadge';
 export { default as TextLink } from './common/TextLink';
 export type { TextLinkProps } from './common/TextLink';
 
+export { default as CustomText } from './common/CustomText';
+export type { CustomTextProps } from './common/CustomText';
+
 export { default as ThemeToggle } from './common/ThemeToggle';
 export type { ThemeToggleProps } from './common/ThemeToggle';
 

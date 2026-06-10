@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTheme } from '../../components/layout/ThemeProvider';
 import ScreenWrapper from '../../components/common/ScreenWrapper';
@@ -9,6 +9,7 @@ import SectionHeader from '../../components/common/SectionHeader';
 import MethodSelectionCard from '../../components/common/MethodSelectionCard';
 import CustomButton from '../../components/common/CustomButton';
 import TextLink from '../../components/common/TextLink';
+import CustomText from '../../components/common/CustomText';
 
 export default function WelcomeScreen() {
   const router = useRouter();
@@ -36,7 +37,7 @@ export default function WelcomeScreen() {
     <ScreenWrapper scrollable={true} withPadding={true}>
       <CustomHeader
         transparent
-        rightNode={
+        rightNode = {
           <TextLink
             label="Skip for now"
             onPress={handleSkip}
@@ -54,14 +55,14 @@ export default function WelcomeScreen() {
               title="How do you grow?" 
               titleStyle={{ fontSize: Typography.sizes.xl, textAlign: 'center' }} 
             />
-            <Text style={{ 
+            <CustomText style={{ 
               fontSize: Typography.sizes.base, 
               color: Colors.text.muted, 
               textAlign: 'center', 
               lineHeight: 22 
             }}>
               Pick your primary method — you can mix later
-            </Text>
+            </CustomText>
           </View>
 
           <View style={{ gap: Spacing.md }}>

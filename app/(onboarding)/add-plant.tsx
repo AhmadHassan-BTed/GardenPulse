@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useTheme } from '../../components/layout/ThemeProvider';
+import CustomText from '../../components/common/CustomText';
 import ScreenWrapper from '../../components/common/ScreenWrapper';
 import OnboardingProgressBar from '../../components/common/OnboardingProgressBar';
 import CustomHeader from '../../components/common/CustomHeader';
@@ -114,9 +115,9 @@ export default function AddPlantScreen() {
 
         <View style={{ gap: Spacing.xs }}>
           <SectionHeader title="Add your first plant" titleStyle={{ fontSize: Typography.sizes.xl }} />
-          <Text style={{ fontSize: Typography.sizes.sm, color: Colors.text.muted, lineHeight: 20 }}>
+          <CustomText style={{ fontSize: Typography.sizes.sm, color: Colors.text.muted, lineHeight: 20 }}>
             Search or scan a plant. This configures the initial care guides and calendars for your garden.
-          </Text>
+          </CustomText>
         </View>
 
         <View style={{ gap: Spacing.md }}>
@@ -143,9 +144,9 @@ export default function AddPlantScreen() {
         <Divider text="OR" />
 
         <View style={{ gap: Spacing.sm }}>
-          <Text style={{ fontSize: Typography.sizes.xs, fontWeight: Typography.weights.bold, color: Colors.text.heading, textTransform: 'uppercase', letterSpacing: 0.5 }}>
+          <CustomText style={{ fontSize: Typography.sizes.xs, fontWeight: Typography.weights.bold, color: Colors.text.heading, textTransform: 'uppercase', letterSpacing: 0.5 }}>
             Browse Categories
-          </Text>
+          </CustomText>
           <PlantBrowseGrid categories={categories} />
         </View>
 
@@ -166,9 +167,9 @@ export default function AddPlantScreen() {
           />
 
           <View style={{ gap: Spacing.sm }}>
-            <Text style={{ fontSize: Typography.sizes.xs, fontWeight: Typography.weights.bold, color: Colors.text.heading, textTransform: 'uppercase', letterSpacing: 0.5 }}>
+            <CustomText style={{ fontSize: Typography.sizes.xs, fontWeight: Typography.weights.bold, color: Colors.text.heading, textTransform: 'uppercase', letterSpacing: 0.5 }}>
               Growing Method
-            </Text>
+            </CustomText>
             <RadioGroup
               options={methodOptions}
               selectedValue={growingMethod}
@@ -178,9 +179,9 @@ export default function AddPlantScreen() {
           </View>
 
           <View style={{ gap: Spacing.sm }}>
-            <Text style={{ fontSize: Typography.sizes.xs, fontWeight: Typography.weights.bold, color: Colors.text.heading, textTransform: 'uppercase', letterSpacing: 0.5 }}>
+            <CustomText style={{ fontSize: Typography.sizes.xs, fontWeight: Typography.weights.bold, color: Colors.text.heading, textTransform: 'uppercase', letterSpacing: 0.5 }}>
               Location & Climate
-            </Text>
+            </CustomText>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.md }}>
               <ZoneBadge zone="Zone 7b" location="Berlin" />
               <TextLink

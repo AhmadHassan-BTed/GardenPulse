@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTheme } from '../../../components/layout/ThemeProvider';
 import ScreenWrapper from '../../../components/common/ScreenWrapper';
@@ -9,6 +9,7 @@ import NavigationLinkRow from '../../../components/common/NavigationLinkRow';
 import CustomSwitch from '../../../components/common/CustomSwitch';
 import ThemeToggle from '../../../components/common/ThemeToggle';
 import UnitToggle, { UnitSystem } from '../../../components/common/UnitToggle';
+import CustomText from '../../../components/common/CustomText';
 
 export default function SettingsScreen() {
   const router = useRouter();
@@ -34,31 +35,31 @@ export default function SettingsScreen() {
         <SettingsSectionGroup title="Account">
           <NavigationLinkRow 
             label="Edit Profile" 
-            onPress={() => router.push('/modals/edit-profile')} 
+            onPress={() => console.log('Edit Profile')} 
           />
           <NavigationLinkRow 
             label="Connected Accounts" 
-            onPress={() => router.push('/modals/connected-accounts')} 
+            onPress={() => console.log('Connected Accounts')} 
           />
           <NavigationLinkRow 
             label="Change Password" 
-            onPress={() => router.push('/modals/change-password')} 
+            onPress={() => console.log('Change Password')} 
           />
         </SettingsSectionGroup>
 
         {/* Preferences Section */}
         <SettingsSectionGroup title="Preferences">
           <View style={styles.row}>
-            <Text style={[styles.rowLabel, { color: Colors.text.heading, fontSize: Typography.sizes.base }]}>
+            <CustomText style={[styles.rowLabel, { color: Colors.text.heading, fontSize: Typography.sizes.base }]}>
               App Theme
-            </Text>
+            </CustomText>
             <ThemeToggle showLabel variant="pill" />
           </View>
 
           <View style={styles.row}>
-            <Text style={[styles.rowLabel, { color: Colors.text.heading, fontSize: Typography.sizes.base }]}>
+            <CustomText style={[styles.rowLabel, { color: Colors.text.heading, fontSize: Typography.sizes.base }]}>
               Measurement Units
-            </Text>
+            </CustomText>
             <UnitToggle value={unitSystem} onChange={setUnitSystem} />
           </View>
 
@@ -102,11 +103,11 @@ export default function SettingsScreen() {
           />
           <NavigationLinkRow 
             label="Help Center" 
-            onPress={() => router.push('/modals/help-center')} 
+            onPress={() => console.log('Help Center')} 
           />
           <NavigationLinkRow 
             label="Send Feedback" 
-            onPress={() => router.push('/modals/feedback')} 
+            onPress={() => console.log('Send Feedback')} 
           />
         </SettingsSectionGroup>
 
@@ -115,15 +116,15 @@ export default function SettingsScreen() {
           <NavigationLinkRow 
             label="Delete Account" 
             isDestructive={true}
-            onPress={() => router.push('/modals/delete-account')} 
+            onPress={() => console.log('Delete Account')} 
           />
         </DangerZoneSection>
 
         {/* Version Display */}
         <View style={styles.versionContainer}>
-          <Text style={{ fontSize: Typography.sizes.xs, color: Colors.text.muted }}>
+          <CustomText style={{ fontSize: Typography.sizes.xs, color: Colors.text.muted }}>
             GardenPulse v1.0.0 (Build 26)
-          </Text>
+          </CustomText>
         </View>
 
       </View>

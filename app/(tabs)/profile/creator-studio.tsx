@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTheme } from '../../../components/layout/ThemeProvider';
 import ScreenWrapper from '../../../components/common/ScreenWrapper';
@@ -10,6 +10,7 @@ import { SettingsSectionGroup } from '../../../components/common/SettingsSection
 import CustomSwitch from '../../../components/common/CustomSwitch';
 import CustomButton from '../../../components/common/CustomButton';
 import SectionHeader from '../../../components/common/SectionHeader';
+import CustomText from '../../../components/common/CustomText';
 
 const initialGuides = [
   { id: '1', title: 'Monstera Care: A Comprehensive Guide', status: 'Live', views: 1248, revenue: '12.48' },
@@ -65,9 +66,9 @@ export default function CreatorStudioScreen() {
         {isEditing ? (
           <View style={{ gap: Spacing.md }}>
             <SectionHeader title="Editor Workspace" />
-            <Text style={{ fontSize: Typography.sizes.sm, color: Colors.text.body, fontWeight: 'bold' }}>
+            <CustomText style={{ fontSize: Typography.sizes.sm, color: Colors.text.body, fontWeight: 'bold' }}>
               Drafting: {editorTitle}
-            </Text>
+            </CustomText>
             <RichTextEditor
               initialValue={editorContent}
               onChange={setEditorContent}

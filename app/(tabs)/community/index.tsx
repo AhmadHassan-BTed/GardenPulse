@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import { View, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTheme } from '../../../components/layout/ThemeProvider';
 import ScreenWrapper from '../../../components/common/ScreenWrapper';
@@ -13,6 +13,7 @@ import WinnerSpotlightCard from '../../../components/common/WinnerSpotlightCard'
 import ReferralBanner from '../../../components/common/ReferralBanner';
 import SectionHeader from '../../../components/common/SectionHeader';
 import HorizontalScrollRow from '../../../components/common/HorizontalScrollRow';
+import CustomText from '../../../components/common/CustomText';
 
 const successStats = [
   { plantName: 'Cherry Tomatoes', successRate: 87, growerCount: 342, trend: 'up' as const },
@@ -100,9 +101,9 @@ export default function CommunityHubScreen() {
 
             <View style={{ marginTop: Spacing.md }}>
               <SectionHeader title="Recent Local Logs" />
-              <Text style={{ fontSize: Typography.sizes.sm, color: Colors.text.muted, lineHeight: 18, fontStyle: 'italic' }}>
+              <CustomText style={{ fontSize: Typography.sizes.sm, color: Colors.text.muted, lineHeight: 18, fontStyle: 'italic' }}>
                 "Just harvested 200g of sweet basil from my hydroponic windowsill tent in Kreuzberg. The leaves are incredibly aromatic!" — green_thumb_berlin
-              </Text>
+              </CustomText>
             </View>
           </View>
         )}

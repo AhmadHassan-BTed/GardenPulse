@@ -149,7 +149,7 @@ _(Props marked with `?` are optional. Standard props like `style` and `onPress` 
 - **`RichTextEditor`**: Toolbar + text area for guides. `(initialValue, onChange, onInsertTemplate, onInsertTip)`
 - **`ArticleBodyRenderer`**: Renders cached JSON articles. `(blocks: {id, type, content, url, caption}[])`
 - **`PublishedGuideCard`**: Author's guide management. `(title, status, views, revenue, onEdit)`
-- **`RevenueBanner` / `SupporterBadgeBanner` / `SupporterBenefitsList`**: Monetization UI.
+- **`RevenueBanner`** / **`SupporterBadgeBanner`** / **`SupporterBenefitsList`**: Monetization UI.
 - **`ExportFormatOptions`**: PDF/Image export selector. `(isSupporter, onSelectPNG, onSelectPDF...)`
 - **`WatermarkToggleRow`**: `(isSupporter)`
 - **`PendingExportStatusCard`**: Loading state for data exports.
@@ -157,6 +157,39 @@ _(Props marked with `?` are optional. Standard props like `style` and `onPress` 
 - **`VideoProgressOverlay`**: AdMob timer overlay.
 - **`VideoPlayer`**: `(videoUrl, plantName, methodTag, onClose...)`
 - **`ReelGeneratorFlow`**: Multi-step video creator. `(onClose, onComplete)`
+
+### 11. Auxiliary, Custom & Helper Components
+
+- **`CustomText`**: Standard typography element wrapper. `(variant?, size?, weight?)`
+- **`OnboardingProgressBar`**: Progress indicator. `(totalSteps, currentStep)`
+- **`MethodSelectionCard`**: Onboarding selection. `(title, description, iconName, isSelected, onPress)`
+- **`PlantBrowseGrid`**: Grid of plant categories. `(categories)`
+- **`LocalContextCard`**: Displays regional/local advice. `(title, description, location?)`
+- **`NotificationOptInRow`**: Checkbox row for notification onboarding. `(isEnabled, onToggle, plantName)`
+- **`ContextualTipCard`**: Expert garden tip presentation. `(title, method, readTime, onPress)`
+- **`BloomReportBanner`**: Weekly report card. `(onPress)`
+- **`ComebackBonusBanner`**: Daily login rewards indicator. `(streakCount, bonusAwarded)`
+- **`FilterChip`**: Selector pill. `(label, isSelected, onPress)`
+- **`BatchModeHeader`**: Header for multi-select. `(title, selectedCount, onSelectAll, onCancel)`
+- **`WeatherImpactBanner`**: Notice for upcoming climate conditions. `(condition, impactText)`
+- **`RecentlyUsedBanner`**: Recents slider. `(items)`
+- **`SupporterBadgeBanner`**: Monetization highlight. `(onPress)`
+- **`CustomCard`**: Standard card wrapper. `(children, padding?, style?)`
+- **`CameraViewfinder`**: QR / Leaf scanner UI. `(onScan, onClose)`
+- **`SmartControlsPanel`**: Automated scheduler variables. `(onReset, onApply)`
+- **`PrivacyFooter`**: Terms footer. `()`
+- **`BadgeGrid`**: Achievement display. `(badges[])`
+- **`PatternInsightCard`**: Trend advisor. `(title, pattern, advice)`
+- **`RevenueBanner`**: Creator stats card. `(totalViews, rateEstimate, projectedPayout)`
+- **`ReferralBanner`**: Community invitation link. `(onPress)`
+- **`MoodEmojiSlider`**: Quick log emoji picker. `(value, onChange)`
+- **`PermissionIllustration`**: Context graphic. `(type)`
+- **`SupporterBenefitsList`**: Subscription perks layout. `()`
+- **`RelatedArticlesRow`**: Article suggestions slider. `()`
+- **`BloomWeatherInsight`**: High-yield forecasting report piece. `()`
+- **`BloomCemeteryAlert`**: Weekly lost plants breakdown warning. `()`
+- **`Pressable`**: Core interactive wrapper. `(onPress, children)`
+- **`Feather`**: Standard vector icon component. `(name, size, color)`
 
 ---
 

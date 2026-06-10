@@ -64,6 +64,6 @@ export default function QRScannerModal() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
+    backgroundColor: 'rgba(0, 0, 0, 1)',
   },
 });

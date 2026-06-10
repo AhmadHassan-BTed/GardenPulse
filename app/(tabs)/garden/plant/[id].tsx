@@ -38,7 +38,7 @@ const plantMockData: Record<string, any> = {
       {
         id: 'l1',
         timestamp: 'Today, 10:30 AM',
-        activities: [{ id: 'a1', label: 'Pruned', color: '#F59E0B' }],
+        activities: [{ id: 'a1', label: 'Pruned', colorKey: 'warning' }],
         metrics: ['pH 5.9', 'EC 1.6'],
         notes: 'Pruned one of the lowest leaves that showed heavy yellowing due to nitrogen deficiency. Adjusted nutrient dosage by +10%.',
         hasVoiceNote: true,
@@ -46,7 +46,7 @@ const plantMockData: Record<string, any> = {
       {
         id: 'l2',
         timestamp: 'Jun 4, 2026',
-        activities: [{ id: 'a2', label: 'Watered', color: '#3B82F6' }, { id: 'a3', label: 'Fed', color: '#10B981' }],
+        activities: [{ id: 'a2', label: 'Watered', colorKey: 'info' }, { id: 'a3', label: 'Fed', colorKey: 'success' }],
         metrics: ['pH 6.0', 'EC 1.5'],
         notes: 'Refilled the main reservoir. Plant looks healthy and new leaf is beginning to unfurl.',
       },
@@ -72,7 +72,7 @@ const plantMockData: Record<string, any> = {
       {
         id: 'l3',
         timestamp: 'Jun 1, 2026',
-        activities: [{ id: 'a4', label: 'Check', color: '#8B5CF6' }],
+        activities: [{ id: 'a4', label: 'Check', colorKey: 'purple' }],
         metrics: ['Moisture 35%'],
         notes: 'Soil is moderately dry. Will water in the next few days if it drops below 25%.',
       },
@@ -86,7 +86,20 @@ export default function PlantDetailScreen() {
   const theme = useTheme();
   const { Colors, Spacing } = theme;
 
-  const plant = plantMockData[id || '1'] || plantMockData['1'];
+  const rawPlant = plantMockData[id || '1'] || plantMockData['1'];
+  
+  const plant = React.useMemo(() => {
+    return {
+      ...rawPlant,
+      logs: rawPlant.logs.map((log: any) => ({
+        ...log,
+        activities: log.activities.map((act: any) => ({
+          ...act,
+          color: Colors[act.colorKey as keyof typeof Colors] || Colors.green.DEFAULT,
+        })),
+      })),
+    };
+  }, [rawPlant, Colors]);
   
   const [tasks, setTasks] = useState(plant.tasks);
   const [noteText, setNoteText] = useState('');
@@ -235,7 +248,7 @@ export default function PlantDetailScreen() {
             title="Recognizing Magnesium Deficiency in Monstera Leaves"
             tag="Nutrition"
             readTime="3 min read"
-            onPress={() => router.push('/modals/tips')}
+            onPress={() => router.push(`/modals/tips` as any)}
           />
         </View>
       </View>

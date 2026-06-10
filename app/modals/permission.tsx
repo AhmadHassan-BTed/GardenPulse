@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import { useTheme } from '../../components/layout/ThemeProvider';
@@ -8,6 +8,7 @@ import CustomHeader from '../../components/common/CustomHeader';
 import PermissionIllustration, { PermissionType } from '../../components/common/PermissionIllustration';
 import CustomButton from '../../components/common/CustomButton';
 import TextLink from '../../components/common/TextLink';
+import CustomText from '../../components/common/CustomText';
 
 interface PermissionContent {
   title: string;
@@ -86,15 +87,15 @@ export default function PermissionModal() {
         <PermissionIllustration type={activeType} />
 
         <View style={{ gap: Spacing.sm, alignItems: 'center' }}>
-          <Text style={{
+          <CustomText style={{
             fontSize: Typography.sizes.lg,
             fontWeight: Typography.weights.bold,
             color: Colors.text.heading,
             textAlign: 'center',
           }}>
             {info.title}
-          </Text>
-          <Text style={{
+          </CustomText>
+          <CustomText style={{
             fontSize: Typography.sizes.base,
             color: Colors.text.body,
             textAlign: 'center',
@@ -102,7 +103,7 @@ export default function PermissionModal() {
             paddingHorizontal: Spacing.md,
           }}>
             {info.description}
-          </Text>
+          </CustomText>
         </View>
 
         <View style={{
@@ -117,12 +118,12 @@ export default function PermissionModal() {
           borderColor: Colors.border.subtle,
         }}>
           <Feather name="lock" size={12} color={Colors.text.muted} />
-          <Text style={{
+          <CustomText style={{
             fontSize: Typography.sizes.xs,
             color: Colors.text.muted,
           }}>
             {info.reassurance}
-          </Text>
+          </CustomText>
         </View>
 
         <View style={{ width: '100%', gap: Spacing.md, marginTop: Spacing.md, alignItems: 'center' }}>

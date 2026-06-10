@@ -17,12 +17,12 @@ import NavigationLinkRow from '../../../components/common/NavigationLinkRow';
 import { SupporterBadgeBanner } from '../../../components/common/PremiumGuides';
 import SectionHeader from '../../../components/common/SectionHeader';
 
-const mockBadges: BadgeDetails[] = [
-  { id: '1', name: 'Green Thumb', icon: 'award' as const, isEarned: true, color: '#4CAF50', description: 'Grow 10 plants successfully', unlockCriteria: 'Successfully complete 10 plant grow cycles.', earnedDate: 'Mar 15, 2026' },
-  { id: '2', name: 'Propagation Pro', icon: 'scissors' as const, isEarned: true, color: '#8BC34A', description: 'Propagate 20 cuttings', unlockCriteria: 'Log 20 successful propagation events.', earnedDate: 'Apr 22, 2026' },
-  { id: '3', name: 'Hydro Hero', icon: 'droplet' as const, isEarned: true, color: '#2196F3', description: 'Complete a hydroponic grow', unlockCriteria: 'Harvest your first hydroponically grown crop.', earnedDate: 'May 10, 2026' },
-  { id: '4', name: 'Community Champ', icon: 'users' as const, isEarned: false, color: '#9C27B0', description: 'Help 50 community members', unlockCriteria: 'Receive 50 helpful reactions on comments.' },
-  { id: '5', name: 'Rare Collector', icon: 'star' as const, isEarned: false, color: '#FFD700', description: 'Own 5 rare plants', unlockCriteria: 'Add 5 rare classified plant species to your garden.' },
+const mockBadges: any[] = [
+  { id: '1', name: 'Green Thumb', icon: 'award' as const, isEarned: true, colorKey: 'success', description: 'Grow 10 plants successfully', unlockCriteria: 'Successfully complete 10 plant grow cycles.', earnedDate: 'Mar 15, 2026' },
+  { id: '2', name: 'Propagation Pro', icon: 'scissors' as const, isEarned: true, colorKey: 'green.muted', description: 'Propagate 20 cuttings', unlockCriteria: 'Log 20 successful propagation events.', earnedDate: 'Apr 22, 2026' },
+  { id: '3', name: 'Hydro Hero', icon: 'droplet' as const, isEarned: true, colorKey: 'info', description: 'Complete a hydroponic grow', unlockCriteria: 'Harvest your first hydroponically grown crop.', earnedDate: 'May 10, 2026' },
+  { id: '4', name: 'Community Champ', icon: 'users' as const, isEarned: false, colorKey: 'purple', description: 'Help 50 community members', unlockCriteria: 'Receive 50 helpful reactions on comments.' },
+  { id: '5', name: 'Rare Collector', icon: 'star' as const, isEarned: false, colorKey: 'gold', description: 'Own 5 rare plants', unlockCriteria: 'Add 5 rare classified plant species to your garden.' },
 ];
 
 const mockEnvironmentalMetrics: PlantMetric[] = [
@@ -49,9 +49,18 @@ const mockSkills = [
 export default function ProfileScreen() {
   const router = useRouter();
   const theme = useTheme();
-  const { Spacing } = theme;
+  const { Colors, Spacing, Typography } = theme;
 
-  const [selectedBadge, setSelectedBadge] = useState<BadgeDetails | null>(null);
+  const [selectedBadge, setSelectedBadge] = useState<any | null>(null);
+
+  const badges = React.useMemo(() => {
+    return mockBadges.map(b => ({
+      ...b,
+      color: b.colorKey === 'green.muted'
+        ? Colors.green.muted
+        : Colors[b.colorKey as keyof typeof Colors] || Colors.green.DEFAULT
+    }));
+  }, [Colors]);
 
   const handleEditProfile = () => {
     router.push('/modals/edit-profile');
@@ -100,7 +109,7 @@ export default function ProfileScreen() {
 
         <SectionHeader title="Earned Badges" />
         <BadgeGrid
-          badges={mockBadges.map(b => ({
+          badges={badges.map(b => ({
             id: b.id,
             name: b.name,
             icon: b.icon,
@@ -108,7 +117,7 @@ export default function ProfileScreen() {
             color: b.color,
           }))}
           onBadgePress={(badgeItem) => {
-            const fullBadge = mockBadges.find((b) => b.id === badgeItem.id) || null;
+            const fullBadge = badges.find((b) => b.id === badgeItem.id) || null;
             setSelectedBadge(fullBadge);
           }}
         />
@@ -118,7 +127,7 @@ export default function ProfileScreen() {
 
         <SectionHeader title="Quick Links" style={{ marginTop: Spacing.md }} />
         <View style={{ backgroundColor: theme.Colors.surface.base, borderRadius: theme.Radius.md, overflow: 'hidden', borderWidth: 1, borderColor: theme.Colors.border.subtle }}>
-          <NavigationLinkRow label="Progress Reels Gallery" onPress={() => router.push('/garden/reels')} />
+          <NavigationLinkRow label="Progress Reels Gallery" onPress={() => router.push(`/garden/reels` as any)} />
           <NavigationLinkRow label="Cemetery Log" onPress={() => router.push('/profile/cemetery')} />
           <NavigationLinkRow label="Creator Studio" onPress={() => router.push('/profile/creator-studio')} />
           <NavigationLinkRow label="Settings" onPress={() => router.push('/profile/settings')} />

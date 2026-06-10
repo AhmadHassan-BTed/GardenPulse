@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useTheme } from '../../components/layout/ThemeProvider';
+import CustomText from '../../components/common/CustomText';
 import ScreenWrapper from '../../components/common/ScreenWrapper';
 import OnboardingProgressBar from '../../components/common/OnboardingProgressBar';
 import CustomHeader from '../../components/common/CustomHeader';
@@ -88,14 +89,14 @@ export default function CarePlanScreen() {
             title="Your care plan is ready!" 
             titleStyle={{ fontSize: Typography.sizes.xl, textAlign: 'center' }} 
           />
-          <Text style={{ 
+          <CustomText style={{ 
             fontSize: Typography.sizes.base, 
             color: Colors.text.muted, 
             textAlign: 'center', 
             lineHeight: 22 
           }}>
             We've customized a personalized growing routine for {plantName || 'your plant'}.
-          </Text>
+          </CustomText>
         </View>
 
         <LocalContextCard
@@ -121,14 +122,14 @@ export default function CarePlanScreen() {
             gap: Spacing.sm 
           }}>
             <MetricDial value={50} size={100} label="Health Score" />
-            <Text style={{ 
+            <CustomText style={{ 
               fontSize: Typography.sizes.sm, 
               color: Colors.text.body, 
               textAlign: 'center', 
               lineHeight: 20 
             }}>
               This is your baseline Garden Health Score. We'll track your updates and logs to watch it grow!
-            </Text>
+            </CustomText>
           </View>
         </View>
 

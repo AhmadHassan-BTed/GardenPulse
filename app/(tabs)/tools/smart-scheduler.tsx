@@ -15,7 +15,7 @@ import NavigationLinkRow from '../../../components/common/NavigationLinkRow';
 import ConfettiCelebration from '../../../components/common/ConfettiCelebration';
 
 // Generate days for CalendarWeekStrip
-const getMockDays = (): CalendarDayData[] => {
+const getMockDays = (Colors: any): CalendarDayData[] => {
   const today = new Date();
   const days: CalendarDayData[] = [];
   const dayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -28,7 +28,7 @@ const getMockDays = (): CalendarDayData[] => {
       label: dayLabels[d.getDay()],
       dayNumber: d.getDate(),
       isToday: i === 0,
-      taskColors: i === 0 ? ['#3B82F6', '#10B981'] : i === 1 ? ['#F59E0B'] : [],
+      taskColors: i === 0 ? [Colors.info, Colors.success] : i === 1 ? [Colors.warning] : [],
     });
   }
   return days;
@@ -41,6 +41,7 @@ export default function SmartSchedulerScreen() {
 
   const [activeTab, setActiveTab] = useState('Tasks');
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const days = React.useMemo(() => getMockDays(Colors), [Colors]);
   
   // Tasks state
   const [tasks, setTasks] = useState([
@@ -76,7 +77,7 @@ export default function SmartSchedulerScreen() {
       <View style={{ gap: Spacing.lg, paddingBottom: Spacing.xl }}>
         {/* Calendar strip section */}
         <CalendarWeekStrip
-          days={getMockDays()}
+          days={days}
           selectedDate={selectedDate}
           onSelectDate={(d) => setSelectedDate(d)}
         />

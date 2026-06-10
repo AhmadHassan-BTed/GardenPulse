@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, Pressable } from 'react-native';
+import { View, ScrollView, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTheme } from '../../../components/layout/ThemeProvider';
 import ScreenWrapper from '../../../components/common/ScreenWrapper';
@@ -11,6 +11,7 @@ import CustomButton from '../../../components/common/CustomButton';
 import CustomCard from '../../../components/common/CustomCard';
 import SectionHeader from '../../../components/common/SectionHeader';
 import { ContextualTipCard } from '../../../components/common/InsightBanners';
+import CustomText from '../../../components/common/CustomText';
 
 const recentScansData = [
   { id: '1', date: 'Jun 8', plantName: 'Fiddle Leaf Fig', finding: 'Spider Mites Infestation', severity: 'high' as const },
@@ -64,7 +65,7 @@ export default function LeafDiagnosticsScreen() {
 
   if (viewState === 'camera') {
     return (
-      <View style={{ flex: 1, backgroundColor: '#000' }}>
+      <View style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 1)' }}>
         <CameraViewfinder
           mode="leaf"
           instructionLabel="Align leaf within the dashed area"
@@ -96,9 +97,9 @@ export default function LeafDiagnosticsScreen() {
           <>
             {/* Primary CTA */}
             <CustomCard padding={Spacing.lg} style={{ backgroundColor: `${Colors.green.DEFAULT}10`, borderStyle: 'dashed', borderWidth: 2, borderColor: Colors.green.DEFAULT, alignItems: 'center', gap: Spacing.md }}>
-              <Text style={{ fontSize: Typography.sizes.base, color: Colors.text.body, textAlign: 'center', fontWeight: 'bold' }}>
+              <CustomText style={{ fontSize: Typography.sizes.base, color: Colors.text.body, textAlign: 'center', fontWeight: 'bold' }}>
                 Suspect a deficiency or pest infestation?
-              </Text>
+              </CustomText>
               <CustomButton
                 label="Scan Sick Leaf"
                 leftIcon="camera"
@@ -131,7 +132,7 @@ export default function LeafDiagnosticsScreen() {
                   title={`${issue.title}: ${issue.desc}`}
                   tag={issue.tag}
                   readTime={issue.readTime}
-                  onPress={() => router.push('/modals/tips')}
+                  onPress={() => router.push(`/modals/tips` as any)}
                 />
               ))}
             </View>
@@ -150,7 +151,7 @@ export default function LeafDiagnosticsScreen() {
                 alert('Treatment protocols added to your scheduler task list.');
               }}
               onReadMore={() => {
-                router.push('/modals/tips');
+                router.push(`/modals/tips` as any);
               }}
             />
 
