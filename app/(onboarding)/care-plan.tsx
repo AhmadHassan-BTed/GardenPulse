@@ -1,281 +1,166 @@
-import { View, Text, StyleSheet, ScrollView, Pressable, Image } from "react-native";
-import { Link, useRouter, useLocalSearchParams } from "expo-router";
-import { useColorScheme } from "react-native";
-import { useEffect, useState } from "react";
+import React, { useState } from 'react';
+import { View, Text } from 'react-native';
+import { useRouter, useLocalSearchParams } from 'expo-router';
+import { useTheme } from '../../components/layout/ThemeProvider';
+import ScreenWrapper from '../../components/common/ScreenWrapper';
+import OnboardingProgressBar from '../../components/common/OnboardingProgressBar';
+import CustomHeader from '../../components/common/CustomHeader';
+import SectionHeader from '../../components/common/SectionHeader';
+import LocalContextCard from '../../components/common/LocalContextCard';
+import MetricDial from '../../components/common/MetricDial';
+import CustomButton from '../../components/common/CustomButton';
+import TextLink from '../../components/common/TextLink';
+import ConfettiCelebration from '../../components/common/ConfettiCelebration';
+import { CarePlanSummaryCard, NotificationOptInRow } from '../../components/common/OnboardingAndModals';
 
 export default function CarePlanScreen() {
   const router = useRouter();
+  const theme = useTheme();
+  const { Colors, Spacing, Typography } = theme;
+
   const { method, plantName, plantType, location } = useLocalSearchParams<{
     method?: string;
     plantName?: string;
     plantType?: string;
     location?: string;
   }>();
-  const colorScheme = useColorScheme();
-  const isDark = colorScheme === "dark";
-  const [animate, setAnimate] = useState(false);
 
-  useEffect(() => {
-    setAnimate(true);
-    const timer = setTimeout(() => {
-      router.replace("/(tabs)");
-    }, 5000);
-    return () => clearTimeout(timer);
-  }, [router]);
+  const [notificationsEnabled, setNotificationsEnabled] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
 
-  const carePlan = {
-    watering: "Every 7-10 days",
-    light: "Bright, indirect light",
-    humidity: "Medium (40-60%)",
-    temperature: "65-80°F (18-27°C)",
-    fertilizer: "Monthly during growing season",
-    nextWatering: "In 3 days",
+  // Dynamic Care Plan based on the growing method passed from onboarding
+  const activeMethod = method || 'soil';
+  const getWateringFreq = (m: string) => {
+    switch (m.toLowerCase()) {
+      case 'hydroponic':
+      case 'hydro':
+        return 'Check reservoir level every 2 days';
+      case 'indoor':
+        return 'Water every 7–10 days';
+      case 'container':
+        return 'Water every 3–5 days';
+      default:
+        return 'Water every 5–7 days depending on rain';
+    }
+  };
+
+  const waterFreq = getWateringFreq(activeMethod);
+  const lightRequirement = activeMethod.toLowerCase() === 'indoor' ? 'Bright, indirect light' : 'Full sun / Partial shade';
+
+  const handleStartGrowing = () => {
+    setShowConfetti(true);
+    setTimeout(() => {
+      router.replace('/(tabs)');
+    }, 1500);
+  };
+
+  const handleToggleNotifications = (val: boolean) => {
+    setNotificationsEnabled(val);
+    if (val) {
+      router.push({
+        pathname: '/modals/permission',
+        params: { 
+          type: 'notifications', 
+          next: `/(onboarding)/care-plan?method=${activeMethod}&plantName=${plantName}&plantType=${plantType}&location=${location}` 
+        }
+      });
+    }
   };
 
   return (
-    <ScrollView
-      contentInsetAdjustmentBehavior="automatic"
-      style={styles.container}
-      contentContainerStyle={styles.contentContainer}
-    >
-      <View style={styles.header}>
-        <View
-          style={[
-            styles.badge,
-            { backgroundColor: animate ? "#4CAF50" : "#4CAF5080" },
-          ]}
-        >
-          <Image
-            source={{ uri: "sf:checkmark.circle.fill" }}
-            style={styles.badgeIcon}
+    <ScreenWrapper scrollable={true} withPadding={true}>
+      {showConfetti && <ConfettiCelebration />}
+
+      <CustomHeader
+        showBack={true}
+        onBack={() => router.replace({
+          pathname: '/(onboarding)/add-plant',
+          params: { method: activeMethod }
+        })}
+        transparent={true}
+      />
+
+      <View style={{ gap: Spacing.lg, paddingBottom: Spacing.xl }}>
+        <OnboardingProgressBar totalSteps={3} currentStep={3} />
+
+        <View style={{ gap: Spacing.xs, alignItems: 'center' }}>
+          <SectionHeader 
+            title="Your care plan is ready!" 
+            titleStyle={{ fontSize: Typography.sizes.xl, textAlign: 'center' }} 
+          />
+          <Text style={{ 
+            fontSize: Typography.sizes.base, 
+            color: Colors.text.muted, 
+            textAlign: 'center', 
+            lineHeight: 22 
+          }}>
+            We've customized a personalized growing routine for {plantName || 'your plant'}.
+          </Text>
+        </View>
+
+        <LocalContextCard
+          city={location || 'Berlin'}
+          insight={`Growers in this region report a high success rate for ${plantType || 'this variety'} matching your setup.`}
+          onPress={() => console.log('View Map pressed')}
+        />
+
+        <View style={{ gap: Spacing.md }}>
+          <CarePlanSummaryCard
+            method={activeMethod.toUpperCase()}
+            light={lightRequirement}
+            waterFreq={waterFreq}
+          />
+
+          <View style={{ 
+            backgroundColor: Colors.surface.glass, 
+            borderRadius: theme.Radius.lg, 
+            borderWidth: 1, 
+            borderColor: Colors.surface.glassBorder, 
+            padding: Spacing.md, 
+            alignItems: 'center', 
+            gap: Spacing.sm 
+          }}>
+            <MetricDial value={50} size={100} label="Health Score" />
+            <Text style={{ 
+              fontSize: Typography.sizes.sm, 
+              color: Colors.text.body, 
+              textAlign: 'center', 
+              lineHeight: 20 
+            }}>
+              This is your baseline Garden Health Score. We'll track your updates and logs to watch it grow!
+            </Text>
+          </View>
+        </View>
+
+        <View style={{ 
+          backgroundColor: Colors.surface.glass, 
+          borderRadius: theme.Radius.lg, 
+          borderWidth: 1, 
+          borderColor: Colors.surface.glassBorder, 
+          paddingHorizontal: Spacing.md,
+          paddingVertical: Spacing.xs
+        }}>
+          <NotificationOptInRow
+            isEnabled={notificationsEnabled}
+            onToggle={handleToggleNotifications}
+            plantName={plantName || 'your plant'}
           />
         </View>
-        <Text style={[styles.title, { color: isDark ? "#fff" : "#1c4a22" }]}>
-          Your Care Plan is Ready!
-        </Text>
-        <Text style={[styles.subtitle, { color: isDark ? "rgba(255,255,255,0.7)" : "rgba(28,74,34,0.7)" }]}>
-          We've created a personalized schedule for your {plantName}
-        </Text>
-      </View>
 
-      <View style={styles.plantCard}>
-        <View style={styles.plantInfo}>
-          <Text style={[styles.plantName, { color: isDark ? "#fff" : "#1c4a22" }]}>
-            {plantName}
-          </Text>
-          <Text style={[styles.plantType, { color: isDark ? "rgba(255,255,255,0.7)" : "rgba(28,74,34,0.7)" }]}>
-            {plantType} · {location}
-          </Text>
-          <View style={styles.methodTag}>
-            <Text style={styles.methodTagText}>{method?.charAt(0).toUpperCase() + method?.slice(1)}</Text>
-          </View>
+        <View style={{ gap: Spacing.md, marginTop: Spacing.md, alignItems: 'center' }}>
+          <CustomButton
+            label="Start Growing 🌱"
+            fullWidth={true}
+            onPress={handleStartGrowing}
+          />
+          <TextLink
+            label="Remind me later"
+            onPress={() => router.replace('/(tabs)')}
+            variant="muted"
+            style={{ alignSelf: 'center' }}
+          />
         </View>
       </View>
-
-      <View style={styles.section}>
-        <Text style={[styles.sectionTitle, { color: isDark ? "#fff" : "#1c4a22" }]}>
-          Care Schedule
-        </Text>
-        <View style={styles.scheduleGrid}>
-          <View style={[styles.scheduleItem, { borderColor: "#4CAF50" }]}>
-            <Image
-              source={{ uri: "sf:drop.fill" }}
-              style={[styles.scheduleIcon, { tintColor: "#4CAF50" }]}
-            />
-            <Text style={[styles.scheduleLabel, { color: isDark ? "#fff" : "#1c4a22" }]}>Watering</Text>
-            <Text style={[styles.scheduleValue, { color: isDark ? "rgba(255,255,255,0.7)" : "rgba(28,74,34,0.7)" }]}>{carePlan.watering}</Text>
-            <Text style={[styles.nextAction, { color: "#4CAF50" }]}>Next: {carePlan.nextWatering}</Text>
-          </View>
-          <View style={[styles.scheduleItem, { borderColor: "#FF9800" }]}>
-            <Image
-              source={{ uri: "sf:sun.max.fill" }}
-              style={[styles.scheduleIcon, { tintColor: "#FF9800" }]}
-            />
-            <Text style={[styles.scheduleLabel, { color: isDark ? "#fff" : "#1c4a22" }]}>Light</Text>
-            <Text style={[styles.scheduleValue, { color: isDark ? "rgba(255,255,255,0.7)" : "rgba(28,74,34,0.7)" }]}>{carePlan.light}</Text>
-          </View>
-          <View style={[styles.scheduleItem, { borderColor: "#2196F3" }]}>
-            <Image
-              source={{ uri: "sf:humidity.fill" }}
-              style={[styles.scheduleIcon, { tintColor: "#2196F3" }]}
-            />
-            <Text style={[styles.scheduleLabel, { color: isDark ? "#fff" : "#1c4a22" }]}>Humidity</Text>
-            <Text style={[styles.scheduleValue, { color: isDark ? "rgba(255,255,255,0.7)" : "rgba(28,74,34,0.7)" }]}>{carePlan.humidity}</Text>
-          </View>
-          <View style={[styles.scheduleItem, { borderColor: "#FF5722" }]}>
-            <Image
-              source={{ uri: "sf:thermometer" }}
-              style={[styles.scheduleIcon, { tintColor: "#FF5722" }]}
-            />
-            <Text style={[styles.scheduleLabel, { color: isDark ? "#fff" : "#1c4a22" }]}>Temperature</Text>
-            <Text style={[styles.scheduleValue, { color: isDark ? "rgba(255,255,255,0.7)" : "rgba(28,74,34,0.7)" }]}>{carePlan.temperature}</Text>
-          </View>
-          <View style={[styles.scheduleItem, { borderColor: "#8BC34A" }]}>
-            <Image
-              source={{ uri: "sf:leaf.fill" }}
-              style={[styles.scheduleIcon, { tintColor: "#8BC34A" }]}
-            />
-            <Text style={[styles.scheduleLabel, { color: isDark ? "#fff" : "#1c4a22" }]}>Fertilizer</Text>
-            <Text style={[styles.scheduleValue, { color: isDark ? "rgba(255,255,255,0.7)" : "rgba(28,74,34,0.7)" }]}>{carePlan.fertilizer}</Text>
-          </View>
-        </View>
-      </View>
-
-      <View style={styles.actions}>
-        <Pressable style={styles.primaryButton} onPress={() => router.replace("/(tabs)")}>
-          <Text style={styles.primaryButtonText}>Start Growing!</Text>
-        </Pressable>
-        <Link href="/(onboarding)/add-plant" asChild>
-          <Pressable style={styles.secondaryButton}>
-            <Text style={styles.secondaryButtonText}>Adjust Settings</Text>
-          </Pressable>
-        </Link>
-      </View>
-
-      <View style={styles.autoRedirect}>
-        <Text style={[styles.autoRedirectText, { color: isDark ? "rgba(255,255,255,0.5)" : "rgba(28,74,34,0.5)" }]}>
-          Redirecting to dashboard in 5 seconds...
-        </Text>
-      </View>
-    </ScrollView>
+    </ScreenWrapper>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#1c4a22",
-  },
-  contentContainer: {
-    padding: 24,
-    paddingBottom: 40,
-    gap: 24,
-  },
-  header: {
-    gap: 16,
-    alignItems: "center",
-    marginTop: 40,
-  },
-  badge: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  badgeIcon: {
-    width: 40,
-    height: 40,
-    tintColor: "#fff",
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: "700",
-    textAlign: "center",
-  },
-  subtitle: {
-    fontSize: 16,
-    textAlign: "center",
-    lineHeight: 24,
-  },
-  plantCard: {
-    backgroundColor: "rgba(255,255,255,0.1)",
-    borderRadius: 16,
-    padding: 20,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.2)",
-  },
-  plantInfo: {
-    alignItems: "center",
-    gap: 4,
-  },
-  plantName: {
-    fontSize: 24,
-    fontWeight: "700",
-  },
-  plantType: {
-    fontSize: 16,
-  },
-  methodTag: {
-    marginTop: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 6,
-    borderRadius: 20,
-    backgroundColor: "rgba(255,255,255,0.2)",
-  },
-  methodTagText: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#fff",
-  },
-  section: {
-    gap: 16,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: "600",
-  },
-  scheduleGrid: {
-    gap: 12,
-  },
-  scheduleItem: {
-    padding: 16,
-    borderRadius: 12,
-    borderWidth: 1,
-    backgroundColor: "rgba(255,255,255,0.05)",
-    gap: 8,
-  },
-  scheduleIcon: {
-    width: 24,
-    height: 24,
-  },
-  scheduleLabel: {
-    fontSize: 14,
-    fontWeight: "600",
-  },
-  scheduleValue: {
-    fontSize: 14,
-  },
-  nextAction: {
-    fontSize: 12,
-    fontWeight: "500",
-    marginTop: 4,
-  },
-  actions: {
-    gap: 12,
-    marginTop: 8,
-  },
-  primaryButton: {
-    height: 56,
-    borderRadius: 12,
-    backgroundColor: "#4CAF50",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  primaryButtonText: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#fff",
-  },
-  secondaryButton: {
-    height: 56,
-    borderRadius: 12,
-    justifyContent: "center",
-    alignItems: "center",
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.3)",
-    backgroundColor: "transparent",
-  },
-  secondaryButtonText: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#fff",
-  },
-  autoRedirect: {
-    marginTop: 24,
-    alignItems: "center",
-  },
-  autoRedirectText: {
-    fontSize: 14,
-  },
-});

@@ -1,77 +1,92 @@
-import { View, Text, StyleSheet, Pressable, Image } from "react-native";
-import { useRouter } from "expo-router";
-import { useColorScheme } from "react-native";
+import React from 'react';
+import { View, StyleSheet, Text } from 'react-native';
+import { useRouter } from 'expo-router';
+import { useTheme } from '../../components/layout/ThemeProvider';
+import ScreenWrapper from '../../components/common/ScreenWrapper';
+import CustomHeader from '../../components/common/CustomHeader';
+import { SupporterBenefitsList } from '../../components/common/PremiumGuides';
+import CustomButton from '../../components/common/CustomButton';
 
-export default function SupporterBadgeDialog() {
+export default function SupporterBadgeModal() {
   const router = useRouter();
-  const colorScheme = useColorScheme();
-  const isDark = colorScheme === "dark";
+  const theme = useTheme();
+  const { Colors, Spacing, Typography } = theme;
+
+  const handleUpgrade = () => {
+    // Simulate buy Pro
+    router.back();
+  };
 
   return (
-    <View style={styles.container}>
-      <Pressable style={styles.closeButton} onPress={() => router.back()}>
-        <Image source={{ uri: "sf:xmark" }} style={styles.closeIcon} />
-      </Pressable>
+    <ScreenWrapper scrollable={true} withPadding={true}>
+      <CustomHeader 
+        title="Become a Supporter" 
+        showBack={true} 
+        onBack={() => router.back()} 
+      />
 
-      <View style={styles.badgeContainer}>
+      <View style={{ gap: Spacing.md, marginTop: Spacing.lg, alignItems: 'center' }}>
         <View style={styles.badgeRing}>
-          <Image source={{ uri: "sf:heart.fill" }} style={styles.badgeIcon} />
-        </View>
-        <Text style={[styles.title, { color: isDark ? "#fff" : "#1c4a22" }]}>Support GardenPulse</Text>
-        <Text style={[styles.description, { color: isDark ? "rgba(255,255,255,0.7)" : "rgba(28,74,34,0.7)" }]}>Upgrade to Pro and get the Supporter badge on your profile</Text>
-
-        <View style={styles.perks}>
-          <View style={styles.perk}>
-            <Image source={{ uri: "sf:checkmark.circle.fill" }} style={[styles.perkIcon, { tintColor: "#4CAF50" }]} />
-            <Text style={styles.perkText}>No ads</Text>
-          </View>
-          <View style={styles.perk}>
-            <Image source={{ uri: "sf:checkmark.circle.fill" }} style={[styles.perkIcon, { tintColor: "#4CAF50" }]} />
-            <Text style={styles.perkText}>Unlimited AI diagnoses</Text>
-          </View>
-          <View style={styles.perk}>
-            <Image source={{ uri: "sf:checkmark.circle.fill" }} style={[styles.perkIcon, { tintColor: "#4CAF50" }]} />
-            <Text style={styles.perkText}>Custom nutrient recipes</Text>
-          </View>
-          <View style={styles.perk}>
-            <Image source={{ uri: "sf:checkmark.circle.fill" }} style={[styles.perkIcon, { tintColor: "#4CAF50" }]} />
-            <Text style={styles.perkText}>Advanced analytics</Text>
-          </View>
+          <Text style={{ fontSize: 48 }}>💝</Text>
         </View>
 
-        <Pressable style={styles.upgradeButton}>
-          <Text style={styles.upgradeButtonText}>Upgrade to Pro — $4.99/mo</Text>
-        </Pressable>
+        <Text style={[styles.title, { color: Colors.text.heading, fontSize: Typography.sizes.xl }]}>
+          Support GardenPulse development
+        </Text>
+        <Text style={[styles.description, { color: Colors.text.body, fontSize: Typography.sizes.base }]}>
+          Help us build the best local, offline-first grower app. Unlock exclusive tools while supporting free gardening access globally.
+        </Text>
 
-        <Pressable style={styles.restoreButton} onPress={() => router.back()}>
-          <Text style={styles.restoreButtonText}>Restore Purchases</Text>
-        </Pressable>
+        <View style={styles.benefitsContainer}>
+          <SupporterBenefitsList />
+        </View>
 
-        <Pressable style={styles.closeBtn} onPress={() => router.back()}>
-          <Text style={styles.closeBtnText}>Not Now</Text>
-        </Pressable>
+        <View style={{ width: '100%', gap: Spacing.md, marginTop: Spacing.md }}>
+          <CustomButton 
+            label="Upgrade to Pro — $2.99 / Month" 
+            onPress={handleUpgrade} 
+          />
+          <CustomButton 
+            label="Restore Purchase" 
+            variant="ghost" 
+            onPress={() => router.back()} 
+          />
+          <CustomButton 
+            label="Maybe Later" 
+            variant="secondary" 
+            onPress={() => router.back()} 
+          />
+        </View>
       </View>
-    </View>
+    </ScreenWrapper>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#F5F5F5", padding: 24 },
-  closeButton: { position: "absolute", top: 10, right: 10, width: 40, height: 40, borderRadius: 20, backgroundColor: "rgba(0,0,0,0.1)", justifyContent: "center", alignItems: "center" },
-  closeIcon: { width: 22, height: 22, tintColor: "#1c4a22" },
-  badgeContainer: { flex: 1, justifyContent: "center", alignItems: "center", gap: 20, paddingHorizontal: 20 },
-  badgeRing: { width: 100, height: 100, borderRadius: 50, backgroundColor: "#FFD70020", justifyContent: "center", alignItems: "center", borderWidth: 2, borderColor: "#FFD700" },
-  badgeIcon: { width: 48, height: 48, tintColor: "#FFD700" },
-  title: { fontSize: 24, fontWeight: "700", textAlign: "center" },
-  description: { fontSize: 16, lineHeight: 24, textAlign: "center", paddingHorizontal: 20 },
-  perks: { gap: 12, width: "100%", maxWidth: 300 },
-  perk: { flexDirection: "row", alignItems: "center", gap: 12 },
-  perkIcon: { width: 24, height: 24 },
-  perkText: { fontSize: 16, color: "#1c4a22" },
-  upgradeButton: { width: "100%", paddingVertical: 16, borderRadius: 12, backgroundColor: "#FFD700", alignItems: "center", marginTop: 8 },
-  upgradeButtonText: { fontSize: 18, fontWeight: "600", color: "#1c4a22" },
-  restoreButton: { marginTop: 12 },
-  restoreButtonText: { fontSize: 16, color: "#2196F3" },
-  closeBtn: { marginTop: 8 },
-  closeBtnText: { fontSize: 16, color: "#9E9E9E" },
+  badgeRing: {
+    width: 96,
+    height: 96,
+    borderRadius: 48,
+    backgroundColor: '#EF444415',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#EF444430',
+  },
+  title: {
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  description: {
+    textAlign: 'center',
+    lineHeight: 22,
+    paddingHorizontal: 16,
+  },
+  benefitsContainer: {
+    width: '100%',
+    padding: 16,
+    borderRadius: 12,
+    backgroundColor: 'rgba(0,0,0,0.02)',
+    marginVertical: 12,
+  },
 });

@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet } from "react-native";
-import { useLocalSearchParams, useColorScheme } from "react-native";
+import { useLocalSearchParams } from "expo-router"; import { useColorScheme } from "react-native";
 export default function ReelSheet() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const isDark = useColorScheme() === "dark";

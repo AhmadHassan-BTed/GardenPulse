@@ -1,202 +1,219 @@
-import { View, Text, StyleSheet, ScrollView, TextInput, Pressable, Image, Keyboard } from "react-native";
-import { Link, useRouter, useLocalSearchParams } from "expo-router";
-import { useColorScheme } from "react-native";
-import { useState } from "react";
+import React, { useState } from 'react';
+import { View, Text } from 'react-native';
+import { useRouter, useLocalSearchParams } from 'expo-router';
+import { useTheme } from '../../components/layout/ThemeProvider';
+import ScreenWrapper from '../../components/common/ScreenWrapper';
+import OnboardingProgressBar from '../../components/common/OnboardingProgressBar';
+import CustomHeader from '../../components/common/CustomHeader';
+import SectionHeader from '../../components/common/SectionHeader';
+import AutocompleteSearchInput from '../../components/common/AutocompleteSearchInput';
+import CustomInput from '../../components/common/CustomInput';
+import CustomButton from '../../components/common/CustomButton';
+import Divider from '../../components/common/Divider';
+import RadioGroup from '../../components/common/RadioGroup';
+import ZoneBadge from '../../components/common/ZoneBadge';
+import TextLink from '../../components/common/TextLink';
+import CustomDateTimePicker from '../../components/common/CustomDateTimePicker';
+import { PlantBrowseGrid, SelectedPlantPreviewCard } from '../../components/common/OnboardingAndModals';
+
+interface PlantSpecies {
+  name: string;
+  scientific: string;
+  methodBadge: string;
+}
+
+const plantDatabase: PlantSpecies[] = [
+  { name: 'Basil', scientific: 'Ocimum basilicum', methodBadge: 'Hydro' },
+  { name: 'Tomato', scientific: 'Solanum lycopersicum', methodBadge: 'Soil' },
+  { name: 'Monstera', scientific: 'Monstera deliciosa', methodBadge: 'Indoor' },
+  { name: 'Snake Plant', scientific: 'Sansevieria trifasciata', methodBadge: 'Indoor' },
+  { name: 'Pothos', scientific: 'Epipremnum aureum', methodBadge: 'Indoor' },
+];
+
+const categories = ['Herb', 'Vegetable', 'Fruit', 'Flower', 'Houseplant', 'Microgreen'];
+
+const methodOptions = [
+  { label: 'Soil', value: 'soil' },
+  { label: 'Container', value: 'container' },
+  { label: 'Hydro', value: 'hydro' },
+  { label: 'Indoor', value: 'indoor' },
+];
 
 export default function AddPlantScreen() {
   const router = useRouter();
   const { method } = useLocalSearchParams<{ method?: string }>();
-  const colorScheme = useColorScheme();
-  const isDark = colorScheme === "dark";
-  const [plantName, setPlantName] = useState("");
-  const [plantType, setPlantType] = useState("");
-  const [location, setLocation] = useState("");
+  const theme = useTheme();
+  const { Colors, Spacing, Typography } = theme;
 
-  const plantTypes = [
-    "Monstera", "Snake Plant", "Pothos", "ZZ Plant", "Fiddle Leaf Fig",
-    "Spider Plant", "Peace Lily", "Rubber Plant", "Bird of Paradise", "Philodendron",
-    "Tomato", "Basil", "Mint", "Lettuce", "Pepper",
-    "Rose", "Lavender", "Sunflower", "Hydrangea", "Orchid",
-  ];
+  const [searchValue, setSearchValue] = useState('');
+  const [selectedPlant, setSelectedPlant] = useState<PlantSpecies | null>(null);
+  const [nickname, setNickname] = useState('');
+  const [growingMethod, setGrowingMethod] = useState<string>(method || 'soil');
+  const [startedDate, setStartedDate] = useState<Date>(new Date());
+
+  const handleSelectPlant = (name: string) => {
+    setSearchValue(name);
+    const found = plantDatabase.find(p => p.name.toLowerCase() === name.toLowerCase());
+    if (found) {
+      setSelectedPlant(found);
+    } else {
+      setSelectedPlant({
+        name,
+        scientific: 'Custom Plant',
+        methodBadge: growingMethod.charAt(0).toUpperCase() + growingMethod.slice(1),
+      });
+    }
+  };
+
+  const handleScanLeaf = () => {
+    router.push({
+      pathname: '/modals/permission',
+      params: { 
+        type: 'camera', 
+        next: `/(onboarding)/add-plant?method=${growingMethod}`
+      }
+    });
+  };
 
   const handleContinue = () => {
-    if (!plantName.trim() || !plantType.trim()) return;
-    Keyboard.dismiss();
+    const finalName = nickname.trim() || searchValue.trim() || 'My First Plant';
+    const finalType = selectedPlant ? selectedPlant.scientific : 'Custom Species';
     router.replace({
-      pathname: "/(onboarding)/care-plan",
-      params: { method, plantName, plantType, location },
+      pathname: '/(onboarding)/care-plan',
+      params: {
+        method: growingMethod,
+        plantName: finalName,
+        plantType: finalType,
+        location: 'Indoor Balcony'
+      }
+    });
+  };
+
+  const handleSkip = () => {
+    router.replace({
+      pathname: '/(onboarding)/care-plan',
+      params: {
+        method: growingMethod,
+        plantName: 'My First Plant',
+        plantType: 'Unknown Species',
+        location: 'Garden Bed'
+      }
     });
   };
 
   return (
-    <ScrollView
-      contentInsetAdjustmentBehavior="automatic"
-      keyboardShouldPersistTaps="handled"
-      style={styles.container}
-      contentContainerStyle={styles.contentContainer}
-    >
-      <View style={styles.header}>
-        <Text style={[styles.stepLabel, { color: isDark ? "rgba(255,255,255,0.6)" : "rgba(28,74,34,0.6)" }]}>
-          Step 3 of 4
-        </Text>
-        <Text style={[styles.title, { color: isDark ? "#fff" : "#1c4a22" }]}>
-          Add Your First Plant
-        </Text>
-        <Text style={[styles.subtitle, { color: isDark ? "rgba(255,255,255,0.7)" : "rgba(28,74,34,0.7)" }]}>
-          Tell us about your new green friend
-        </Text>
-      </View>
+    <ScreenWrapper scrollable={true} withPadding={true}>
+      <CustomHeader
+        showBack={true}
+        onBack={() => router.replace('/(onboarding)/welcome')}
+        transparent={true}
+      />
 
-      <View style={styles.form}>
+      <View style={{ gap: Spacing.lg, paddingBottom: Spacing.xl }}>
+        <OnboardingProgressBar totalSteps={3} currentStep={2} />
 
-        <View style={styles.field}>
-          <Text style={[styles.label, { color: isDark ? "#fff" : "#1c4a22" }]}>Plant Name</Text>
-          <TextInput
-            style={[
-              styles.input,
-              { backgroundColor: isDark ? "#2a2a2a" : "#fff", color: isDark ? "#fff" : "#1c4a22" },
-            ]}
-            placeholder="e.g., My Monstera"
-            placeholderTextColor={isDark ? "rgba(255,255,255,0.4)" : "rgba(28,74,34,0.4)"}
-            value={plantName}
-            onChangeText={setPlantName}
-            autoCapitalize="words"
+        <View style={{ gap: Spacing.xs }}>
+          <SectionHeader title="Add your first plant" titleStyle={{ fontSize: Typography.sizes.xl }} />
+          <Text style={{ fontSize: Typography.sizes.sm, color: Colors.text.muted, lineHeight: 20 }}>
+            Search or scan a plant. This configures the initial care guides and calendars for your garden.
+          </Text>
+        </View>
+
+        <View style={{ gap: Spacing.md }}>
+          <AutocompleteSearchInput
+            label="Plant Species"
+            placeholder="e.g. Basil, Tomato, Monstera"
+            value={searchValue}
+            onChangeText={(text) => {
+              setSearchValue(text);
+              if (selectedPlant) setSelectedPlant(null);
+            }}
+            data={plantDatabase.map(p => p.name)}
+            onSelect={handleSelectPlant}
+          />
+
+          <CustomButton
+            label="Scan a leaf or seed packet"
+            variant="secondary"
+            onPress={handleScanLeaf}
+            fullWidth={true}
           />
         </View>
 
-        <View style={styles.field}>
-          <Text style={[styles.label, { color: isDark ? "#fff" : "#1c4a22" }]}>Plant Type</Text>
-          <TextInput
-            style={[
-              styles.input,
-              { backgroundColor: isDark ? "#2a2a2a" : "#fff", color: isDark ? "#fff" : "#1c4a22" },
-            ]}
-            placeholder="Search or select plant type"
-            placeholderTextColor={isDark ? "rgba(255,255,255,0.4)" : "rgba(28,74,34,0.4)"}
-            value={plantType}
-            onChangeText={setPlantType}
-            list={plantType ? undefined : "plant-types"}
-            autoCapitalize="words"
-          />
-          <datalist id="plant-types">
-            {plantTypes.map((type) => (
-              <option key={type} value={type} />
-            ))}
-          </datalist>
+        <Divider text="OR" />
+
+        <View style={{ gap: Spacing.sm }}>
+          <Text style={{ fontSize: Typography.sizes.xs, fontWeight: Typography.weights.bold, color: Colors.text.heading, textTransform: 'uppercase', letterSpacing: 0.5 }}>
+            Browse Categories
+          </Text>
+          <PlantBrowseGrid categories={categories} />
         </View>
 
-        <View style={styles.field}>
-          <Text style={[styles.label, { color: isDark ? "#fff" : "#1c4a22" }]}>Location</Text>
-          <TextInput
-            style={[
-              styles.input,
-              { backgroundColor: isDark ? "#2a2a2a" : "#fff", color: isDark ? "#fff" : "#1c4a22" },
-            ]}
-            placeholder="e.g., Living room, balcony, garden bed"
-            placeholderTextColor={isDark ? "rgba(255,255,255,0.4)" : "rgba(28,74,34,0.4)"}
-            value={location}
-            onChangeText={setLocation}
-            autoCapitalize="words"
+        {selectedPlant && (
+          <SelectedPlantPreviewCard
+            name={selectedPlant.name}
+            scientific={selectedPlant.scientific}
+            methodBadge={selectedPlant.methodBadge}
+          />
+        )}
+
+        <View style={{ gap: Spacing.lg }}>
+          <CustomInput
+            label="Plant Nickname (optional)"
+            placeholder="e.g. Spike, Greenie"
+            value={nickname}
+            onChangeText={setNickname}
+          />
+
+          <View style={{ gap: Spacing.sm }}>
+            <Text style={{ fontSize: Typography.sizes.xs, fontWeight: Typography.weights.bold, color: Colors.text.heading, textTransform: 'uppercase', letterSpacing: 0.5 }}>
+              Growing Method
+            </Text>
+            <RadioGroup
+              options={methodOptions}
+              selectedValue={growingMethod}
+              onSelect={(val) => setGrowingMethod(val as string)}
+              horizontal={true}
+            />
+          </View>
+
+          <View style={{ gap: Spacing.sm }}>
+            <Text style={{ fontSize: Typography.sizes.xs, fontWeight: Typography.weights.bold, color: Colors.text.heading, textTransform: 'uppercase', letterSpacing: 0.5 }}>
+              Location & Climate
+            </Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.md }}>
+              <ZoneBadge zone="Zone 7b" location="Berlin" />
+              <TextLink
+                label="Enter location manually"
+                onPress={() => console.log('Location edit')}
+                variant="primary"
+              />
+            </View>
+          </View>
+
+          <CustomDateTimePicker
+            label="Started growing on"
+            value={startedDate}
+            onChange={setStartedDate}
+            mode="date"
           />
         </View>
 
+        <View style={{ gap: Spacing.md, marginTop: Spacing.md, alignItems: 'center' }}>
+          <CustomButton
+            label="Continue"
+            fullWidth={true}
+            onPress={handleContinue}
+            isDisabled={!searchValue && !selectedPlant}
+          />
+          <TextLink
+            label="Skip for now"
+            onPress={handleSkip}
+            variant="muted"
+            style={{ alignSelf: 'center' }}
+          />
+        </View>
       </View>
-
-      <View style={styles.actions}>
-        <Pressable
-          style={[
-            styles.primaryButton,
-            { backgroundColor: plantName && plantType ? "#4CAF50" : "#9E9E9E" },
-          ]}
-          onPress={handleContinue}
-          disabled={!plantName || !plantType}
-        >
-          <Text style={styles.primaryButtonText}>Continue</Text>
-        </Pressable>
-        <Link href="/(onboarding)/welcome" asChild>
-          <Pressable style={styles.secondaryButton}>
-            <Text style={styles.secondaryButtonText}>Back</Text>
-          </Pressable>
-        </Link>
-      </View>
-    </ScrollView>
+    </ScreenWrapper>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#1c4a22",
-  },
-  contentContainer: {
-    padding: 24,
-    paddingBottom: 40,
-    gap: 24,
-  },
-  header: {
-    gap: 12,
-    marginTop: 20,
-  },
-  stepLabel: {
-    fontSize: 14,
-    fontWeight: "500",
-    textAlign: "center",
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: "700",
-    textAlign: "center",
-  },
-  subtitle: {
-    fontSize: 16,
-    textAlign: "center",
-    lineHeight: 24,
-  },
-  form: {
-    gap: 20,
-  },
-  field: {
-    gap: 8,
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: "500",
-  },
-  input: {
-    height: 56,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: "#E0E0E0",
-    paddingHorizontal: 16,
-    fontSize: 16,
-  },
-  actions: {
-    gap: 12,
-    marginTop: 8,
-  },
-  primaryButton: {
-    height: 56,
-    borderRadius: 12,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  primaryButtonText: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#fff",
-  },
-  secondaryButton: {
-    height: 56,
-    borderRadius: 12,
-    justifyContent: "center",
-    alignItems: "center",
-    borderWidth: 1,
-    borderColor: "#E0E0E0",
-    backgroundColor: "#fff",
-  },
-  secondaryButtonText: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#1c4a22",
-  },
-});

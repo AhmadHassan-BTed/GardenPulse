@@ -257,7 +257,6 @@ export { default as ComebackBonusBanner } from './common/ComebackBonusBanner';
 export type { ComebackBonusBannerProps } from './common/ComebackBonusBanner';
 
 export { default as ConfettiCelebration } from './common/ConfettiCelebration';
-export type { ConfettiCelebrationProps } from './common/ConfettiCelebration';
 
 export { default as SwipeableRow } from './common/SwipeableRow';
 export type { SwipeableRowProps } from './common/SwipeableRow';
@@ -266,7 +265,6 @@ export { default as ZoneGroupHeader } from './common/ZoneGroupHeader';
 export type { ZoneGroupHeaderProps } from './common/ZoneGroupHeader';
 
 export { default as PlantHeroImage } from './common/PlantHeroImage';
-export type { PlantHeroImageProps } from './common/PlantHeroImage';
 
 export { default as WeatherImpactBanner } from './common/WeatherImpactBanner';
 export type { WeatherImpactBannerProps } from './common/WeatherImpactBanner';
@@ -275,19 +273,15 @@ export { default as CrossMethodInsightCard } from './common/CrossMethodInsightCa
 export type { CrossMethodInsightCardProps } from './common/CrossMethodInsightCard';
 
 export { default as VoiceInputButton } from './common/VoiceInputButton';
-export type { VoiceInputButtonProps } from './common/VoiceInputButton';
 
 export { default as RecentlyUsedBanner } from './common/RecentlyUsedBanner';
-export type { RecentlyUsedBannerProps } from './common/RecentlyUsedBanner';
 
 export { default as DiagnosisHistoryRow } from './common/DiagnosisHistoryRow';
 export type { DiagnosisHistoryRowProps } from './common/DiagnosisHistoryRow';
 
 export { default as SunriseSunsetRow } from './common/SunriseSunsetRow';
-export type { SunriseSunsetRowProps } from './common/SunriseSunsetRow';
 
 export { default as CustomReminderForm } from './common/CustomReminderForm';
-export type { CustomReminderFormProps } from './common/CustomReminderForm';
 
 export { default as LocalContextCard } from './common/LocalContextCard';
 export type { LocalContextCardProps } from './common/LocalContextCard';

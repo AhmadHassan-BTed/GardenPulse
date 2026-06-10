@@ -1,465 +1,256 @@
-import { View, Text, StyleSheet, ScrollView, Pressable, Image, TextInput, Picker } from "react-native";
-import { Link, useRouter } from "expo-router";
-import { useColorScheme } from "react-native";
-import { useState, useCallback } from "react";
+import React, { useState } from 'react';
+import { View, Text, ScrollView } from 'react-native';
+import { useRouter } from 'expo-router';
+import { useTheme } from '../../../components/layout/ThemeProvider';
+import ScreenWrapper from '../../../components/common/ScreenWrapper';
+import CustomHeader from '../../../components/common/CustomHeader';
+import CustomInput from '../../../components/common/CustomInput';
+import AutocompleteSearchInput from '../../../components/common/AutocompleteSearchInput';
+import RadioGroup from '../../../components/common/RadioGroup';
+import UnitToggle, { UnitSystem } from '../../../components/common/UnitToggle';
+import FilterChip from '../../../components/common/FilterChip';
+import CustomButton from '../../../components/common/CustomButton';
+import RecipeResultCard, { RecipeNutrient } from '../../../components/common/RecipeResultCard';
+import InterstitialAdContainer from '../../../components/common/InterstitialAdContainer';
+import RewardedVideoPrompt from '../../../components/common/RewardedVideoPrompt';
+import ModalDialog from '../../../components/common/ModalDialog';
+import { ContextualTipCard } from '../../../components/common/InsightBanners';
 
-const nutrientParts = [
-  { id: "part-a", name: "Part A (Grow)", npk: "5-0-1", color: "#4CAF50" },
-  { id: "part-b", name: "Part B (Bloom)", npk: "0-5-4", color: "#FF9800" },
-  { id: "part-c", name: "Part C (Micro)", npk: "2-0-0", color: "#2196F3" },
-  { id: "cal-mag", name: "Cal-Mag", npk: "2-0-0 + Ca/Mg", color: "#9C27B0" },
-  { id: "silica", name: "Silica", npk: "0-0-0 + Si", color: "#607D8B" },
+const brands = [
+  'General Hydroponics FloraSeries',
+  'Biobizz Organic Grow & Bloom',
+  'FoxFarm Trio (Grow Big, Tiger Bloom)',
+  'Advanced Nutrients Sensi Grow',
+  'Canna Coco A & B',
+  'Plagron Alga Grow',
 ];
 
 const presets = [
-  { id: "seedling", name: "Seedling/Clone", ec: 0.8, ppm: 400, phase: "Vegetative" },
-  { id: "vegetative", name: "Vegetative", ec: 1.5, ppm: 750, phase: "Vegetative" },
-  { id: "early-bloom", name: "Early Bloom", ec: 2.0, ppm: 1000, phase: "Flowering" },
-  { id: "mid-bloom", name: "Mid Bloom", ec: 2.4, ppm: 1200, phase: "Flowering" },
-  { id: "late-bloom", name: "Late Bloom", ec: 1.8, ppm: 900, phase: "Flowering" },
-  { id: "flush", name: "Flush", ec: 0.2, ppm: 100, phase: "Flushing" },
+  { id: 'seedling', label: 'Seedling', ec: '0.8 EC', phMin: 5.5, phMax: 6.0, phTarget: 5.8, ratio: { a: 0.5, b: 0.2, c: 0.3, cal: 0.2 } },
+  { id: 'veg', label: 'Vegetative', ec: '1.5 EC', phMin: 5.8, phMax: 6.2, phTarget: 6.0, ratio: { a: 1.5, b: 0.5, c: 1.0, cal: 0.5 } },
+  { id: 'bloom', label: 'Bloom/Flower', ec: '2.2 EC', phMin: 5.8, phMax: 6.2, phTarget: 6.0, ratio: { a: 1.0, b: 2.0, c: 1.5, cal: 0.8 } },
+  { id: 'flush', label: 'Flush/Ripen', ec: '0.3 EC', phMin: 5.5, phMax: 6.0, phTarget: 5.7, ratio: { a: 0.0, b: 0.0, c: 0.0, cal: 0.0 } },
 ];
 
 export default function NutrientCalculatorScreen() {
   const router = useRouter();
-  const colorScheme = useColorScheme();
-  const isDark = colorScheme === "dark";
-  const [volume, setVolume] = useState("10");
-  const [unit, setUnit] = useState("L");
-  const [targetEC, setTargetEC] = useState("1.5");
-  const [selectedPreset, setSelectedPreset] = useState("vegetative");
-  const [recipe, setRecipe] = useState<Record<string, string>>({});
-  const [showResult, setShowResult] = useState(false);
+  const theme = useTheme();
+  const { Colors, Spacing, Typography } = theme;
 
-  const calculateRecipe = useCallback(() => {
-    const vol = parseFloat(volume) || 0;
-    const ec = parseFloat(targetEC) || 0;
-    if (vol <= 0 || ec <= 0) return;
+  const [method, setMethod] = useState<string | number>('hydro');
+  const [brand, setBrand] = useState('');
+  const [volume, setVolume] = useState('10');
+  const [unit, setUnit] = useState<UnitSystem>('metric');
+  const [selectedPreset, setSelectedPreset] = useState('veg');
+  const [isLoading, setIsLoading] = useState(false);
+  const [showResults, setShowResults] = useState(false);
+  const [adVisible, setAdVisible] = useState(false);
+  const [rewardPromptVisible, setRewardPromptVisible] = useState(false);
+  const [exportSuccessVisible, setExportSuccessVisible] = useState(false);
 
-    // Simplified calculation - in real app this would be more complex
-    const newRecipe: Record<string, string> = {};
-    nutrientParts.forEach((part) => {
-      let ml = 0;
-      switch (part.id) {
-        case "part-a": ml = vol * (ec * 1.2); break;
-        case "part-b": ml = vol * (ec * 0.8); break;
-        case "part-c": ml = vol * (ec * 1.0); break;
-        case "cal-mag": ml = vol * 0.5; break;
-        case "silica": ml = vol * 0.3; break;
-      }
-      newRecipe[part.id] = ml.toFixed(1);
-    });
-    setRecipe(newRecipe);
-    setShowResult(true);
-  }, [volume, targetEC]);
+  const activePreset = presets.find(p => p.id === selectedPreset) || presets[1];
 
-  const handlePresetSelect = (presetId: string) => {
-    const preset = presets.find(p => p.id === presetId);
-    if (preset) {
-      setSelectedPreset(presetId);
-      setTargetEC(preset.ec.toString());
-      calculateRecipe();
-    }
+  const handleGenerate = () => {
+    setIsLoading(true);
+    // Simulate generation with loading overlay and interstitial ad
+    setTimeout(() => {
+      setIsLoading(false);
+      setAdVisible(true);
+    }, 1200);
   };
 
-  const totalML = Object.values(recipe).reduce((sum, val) => sum + parseFloat(val), 0);
-  const estimatedCost = totalML * 0.02; // $0.02 per ml average
+  const handleAdClose = () => {
+    setAdVisible(false);
+    setShowResults(true);
+  };
+
+  const calculateNutrients = (): RecipeNutrient[] => {
+    const vol = parseFloat(volume) || 10;
+    const ratio = activePreset.ratio;
+    
+    return [
+      { id: 'part-a', name: 'Grow Part A (Primary NPK)', amount: Math.round(vol * ratio.a * 10) / 10, unit: 'mL' },
+      { id: 'part-b', name: 'Bloom Part B (Phosphorus Booster)', amount: Math.round(vol * ratio.b * 10) / 10, unit: 'mL' },
+      { id: 'part-c', name: 'Micro Part C (Micronutrients)', amount: Math.round(vol * ratio.c * 10) / 10, unit: 'mL' },
+      { id: 'calmag', name: 'Cal-Mag (Calcium & Magnesium)', amount: Math.round(vol * ratio.cal * 10) / 10, unit: 'mL', isWarning: activePreset.id === 'flush' },
+    ];
+  };
 
   return (
-    <ScrollView
-      contentInsetAdjustmentBehavior="automatic"
-      style={styles.container}
-      contentContainerStyle={styles.contentContainer}
-    >
-      <View style={styles.header}>
-        <Text style={[styles.title, { color: isDark ? "#fff" : "#1c4a22" }]}>Nutrient Calculator</Text>
-        <Text style={[styles.subtitle, { color: isDark ? "rgba(255,255,255,0.7)" : "rgba(28,74,34,0.7)" }]}>
-          Mix precise nutrient recipes for optimal growth
-        </Text>
-      </View>
+    <ScreenWrapper scrollable={true} withPadding={true}>
+      <CustomHeader
+        title="Recipe Calculator"
+        showBack={true}
+        onBack={() => router.back()}
+      />
 
-      {/* Input Section */}
-      <View style={styles.section}>
-        <Text style={[styles.sectionTitle, { color: isDark ? "#fff" : "#1c4a22" }]}>Mix Parameters</Text>
-        
-        <View style={styles.inputRow}>
-          <View style={styles.inputGroup}>
-            <Text style={[styles.label, { color: isDark ? "#fff" : "#1c4a22" }]}>Volume</Text>
-            <View style={styles.volumeInputContainer}>
-              <TextInput
-                style={[
-                  styles.input,
-                  { backgroundColor: isDark ? "#2a2a2a" : "#fff", color: isDark ? "#fff" : "#1c4a22" },
-                ]}
-                placeholder="10"
-                value={volume}
-                onChangeText={setVolume}
-                keyboardType="decimal-pad"
-              />
-              <Picker
-                selectedValue={unit}
-                onValueChange={setUnit}
-                style={styles.picker}
-                itemStyle={[
-                  { color: isDark ? "#fff" : "#1c4a22", backgroundColor: isDark ? "#2a2a2a" : "#fff" },
-                ]}
-              >
-                <Picker.Item label="Liters" value="L" />
-                <Picker.Item label="Gallons" value="gal" />
-              </Picker>
-            </View>
-          </View>
-          
-          <View style={styles.inputGroup}>
-            <Text style={[styles.label, { color: isDark ? "#fff" : "#1c4a22" }]}>Target EC</Text>
-            <TextInput
-              style={[
-                styles.input,
-                { backgroundColor: isDark ? "#2a2a2a" : "#fff", color: isDark ? "#fff" : "#1c4a22" },
-              ]}
-              placeholder="1.5"
-              value={targetEC}
-              onChangeText={setTargetEC}
+      <View style={{ gap: Spacing.lg, paddingBottom: Spacing.xl }}>
+        {/* Method Picker */}
+        <View style={{ gap: Spacing.xs }}>
+          <Text style={{ fontSize: Typography.sizes.sm, fontWeight: 'bold', color: Colors.text.muted, textTransform: 'uppercase' }}>
+            Growing Method
+          </Text>
+          <RadioGroup
+            horizontal={true}
+            options={[
+              { label: 'Hydroponics', value: 'hydro' },
+              { label: 'Soil Drench', value: 'soil' },
+              { label: 'Foliar Spray', value: 'foliar' },
+            ]}
+            selectedValue={method}
+            onSelect={(val) => setMethod(val)}
+          />
+        </View>
+
+        {/* Brand Search input */}
+        <AutocompleteSearchInput
+          label="Nutrient Brand"
+          placeholder="e.g. FoxFarm, Biobizz..."
+          value={brand}
+          onChangeText={setBrand}
+          data={brands}
+          onSelect={(item) => setBrand(item)}
+        />
+
+        {/* Volume & Unit Section */}
+        <View style={{ flexDirection: 'row', gap: Spacing.md, alignItems: 'flex-end' }}>
+          <View style={{ flex: 1 }}>
+            <CustomInput
+              label="Water Reservoir Volume"
+              placeholder="e.g. 10"
+              value={volume}
+              onChangeText={setVolume}
               keyboardType="decimal-pad"
             />
-            <Text style={[styles.unitLabel, { color: isDark ? "rgba(255,255,255,0.5)" : "rgba(28,74,34,0.5)" }]}>mS/cm</Text>
+          </View>
+          <View style={{ paddingBottom: Spacing.sm }}>
+            <UnitToggle
+              value={unit}
+              onChange={(sys) => setUnit(sys)}
+              width={140}
+            />
           </View>
         </View>
 
-        <View style={styles.inputGroup}>
-          <Text style={[styles.label, { color: isDark ? "#fff" : "#1c4a22" }]}>Growth Phase Presets</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.presetContainer}>
-            {presets.map((preset) => (
-              <Pressable
-                key={preset.id}
-                style={[
-                  styles.presetChip,
-                  { backgroundColor: selectedPreset === preset.id ? "#4CAF50" : isDark ? "#2a2a2a" : "#fff", borderColor: selectedPreset === preset.id ? "#4CAF50" : "#E0E0E0" },
-                ]}
-                onPress={() => handlePresetSelect(preset.id)}
-              >
-                <Text style={[
-                  styles.presetChipText,
-                  { color: selectedPreset === preset.id ? "#fff" : isDark ? "#fff" : "#1c4a22" },
-                ]}>{preset.name}</Text>
-                <Text style={[
-                  styles.presetChipSub,
-                  { color: selectedPreset === preset.id ? "rgba(255,255,255,0.8)" : isDark ? "rgba(255,255,255,0.5)" : "rgba(28,74,34,0.5)" },
-                ]}>{preset.ec} EC · {preset.ppm} PPM</Text>
-              </Pressable>
+        {/* Growth Phase selection */}
+        <View style={{ gap: Spacing.xs }}>
+          <Text style={{ fontSize: Typography.sizes.sm, fontWeight: 'bold', color: Colors.text.muted, textTransform: 'uppercase' }}>
+            Target Growth Stage
+          </Text>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: Spacing.xs }}>
+            {presets.map((p) => (
+              <FilterChip
+                key={p.id}
+                label={`${p.label} (${p.ec})`}
+                isSelected={selectedPreset === p.id}
+                onPress={() => setSelectedPreset(p.id)}
+              />
             ))}
           </ScrollView>
         </View>
 
-        <Pressable style={styles.calculateButton} onPress={calculateRecipe}>
-          <Text style={styles.calculateButtonText}>Calculate Recipe</Text>
-        </Pressable>
-      </View>
+        <CustomButton
+          label="Generate Mix Recipe"
+          isLoading={isLoading}
+          onPress={handleGenerate}
+          fullWidth={true}
+        />
 
-      {/* Result Section */}
-      {showResult && (
-        <View style={styles.section}>
-          <View style={styles.resultHeader}>
-            <Text style={[styles.sectionTitle, { color: isDark ? "#fff" : "#1c4a22" }]}>Your Recipe</Text>
-            <View style={styles.resultSummary}>
-              <Text style={[styles.summaryItem, { color: isDark ? "rgba(255,255,255,0.7)" : "rgba(28,74,34,0.7)" }]}>
-                Total: {totalML.toFixed(1)} ml
-              </Text>
-              <Text style={[styles.summaryItem, { color: isDark ? "rgba(255,255,255,0.7)" : "rgba(28,74,34,0.7)" }]}>
-                Est. Cost: ${estimatedCost.toFixed(2)}
-              </Text>
-            </View>
-          </View>
+        {showResults && (
+          <View style={{ gap: Spacing.md, marginTop: Spacing.sm }}>
+            <RecipeResultCard
+              reservoirSize={`${volume} ${unit === 'metric' ? 'Liters' : 'Gallons'}`}
+              nutrients={calculateNutrients()}
+              phMin={activePreset.phMin}
+              phTarget={activePreset.phTarget}
+              phMax={activePreset.phMax}
+              ecValue={activePreset.ec}
+              warningText={activePreset.id === 'flush' ? 'Flush phase does not require Cal-Mag unless severe calcium deficiency is present.' : undefined}
+              onSave={() => {
+                alert('Mix Recipe saved successfully to your logs!');
+              }}
+              onSchedule={() => {
+                router.push('/tools/smart-scheduler');
+              }}
+            />
 
-          <View style={styles.recipeGrid}>
-            {nutrientParts.map((part) => (
-              <View key={part.id} style={[
-                styles.recipeCard,
-                { borderColor: part.color },
-              ]}>
-                <View style={[
-                  styles.recipeCardHeader,
-                  { backgroundColor: part.color + "20" },
-                ]}>
-                  <View style={[
-                    styles.recipeColorDot,
-                    { backgroundColor: part.color },
-                  ]} />
-                  <Text style={[styles.recipePartName, { color: isDark ? "#fff" : "#1c4a22" }]}>{part.name}</Text>
-                  <Text style={[styles.recipeNPK, { color: isDark ? "rgba(255,255,255,0.6)" : "rgba(28,74,34,0.6)" }]}>{part.npk}</Text>
-                </View>
-                <View style={styles.recipeAmount}>
-                  <Text style={[styles.recipeAmountValue, { color: part.color }]}>{recipe[part.id] || "0"}</Text>
-                  <Text style={[styles.recipeAmountUnit, { color: isDark ? "rgba(255,255,255,0.5)" : "rgba(28,74,34,0.5)" }]}>ml</Text>
-                </View>
-                <View style={styles.recipePerLiter}>
-                  <Text style={[styles.recipePerLiterText, { color: isDark ? "rgba(255,255,255,0.5)" : "rgba(28,74,34,0.5)" }]}>
-                    {(parseFloat(recipe[part.id] || "0") / (parseFloat(volume) || 1)).toFixed(1)} ml/L
-                  </Text>
-                </View>
-              </View>
-            ))}
+            <CustomButton
+              label="Export Premium PDF Recipe"
+              variant="secondary"
+              onPress={() => setRewardPromptVisible(true)}
+              fullWidth={true}
+              leftIcon="file-text"
+            />
           </View>
+        )}
 
-          <View style={styles.resultActions}>
-            <Link href="/modals/export-share" asChild>
-              <Pressable style={styles.exportButton}>
-                <Image source={{ uri: "sf:square.and.arrow.up" }} style={styles.actionIcon} />
-                <Text style={styles.actionText}>Export Recipe</Text>
-              </Pressable>
-            </Link>
-            <Link href="/modals/rewarded-video" asChild>
-              <Pressable style={styles.saveButton}>
-                <Image source={{ uri: "sf:arrow.down.circle.fill" }} style={styles.actionIcon} />
-                <Text style={styles.actionText}>Save (Watch Ad)</Text>
-              </Pressable>
-            </Link>
-          </View>
-        </View>
-      )}
-
-      {/* Tips */}
-      <View style={styles.section}>
-        <Text style={[styles.sectionTitle, { color: isDark ? "#fff" : "#1c4a22" }]}>Pro Tips</Text>
-        <View style={styles.tipsList}>
-          <View style={styles.tipItem}>
-            <Image source={{ uri: "sf:lightbulb.fill" }} style={[styles.tipIcon, { tintColor: "#FFD700" }]} />
-            <Text style={[styles.tipText, { color: isDark ? "rgba(255,255,255,0.8)" : "rgba(28,74,34,0.8)" }]}>
-              Always add Part A first, then Part B, then Part C to prevent nutrient lockout
-            </Text>
-          </View>
-          <View style={styles.tipItem}>
-            <Image source={{ uri: "sf:lightbulb.fill" }} style={[styles.tipIcon, { tintColor: "#FFD700" }]} />
-            <Text style={[styles.tipText, { color: isDark ? "rgba(255,255,255,0.8)" : "rgba(28,74,34,0.8)" }]}>
-              Let each part dissolve completely before adding the next
-            </Text>
-          </View>
-          <View style={styles.tipItem}>
-            <Image source={{ uri: "sf:lightbulb.fill" }} style={[styles.tipIcon, { tintColor: "#FFD700" }]} />
-            <Text style={[styles.tipText, { color: isDark ? "rgba(255,255,255,0.8)" : "rgba(28,74,34,0.8)" }]}>
-              Check pH after mixing - target 5.5-6.5 for hydroponics, 6.0-6.8 for soil
-            </Text>
-          </View>
+        <View style={{ gap: Spacing.xs, marginTop: Spacing.sm }}>
+          <Text style={{ fontSize: Typography.sizes.base, fontWeight: 'bold', color: Colors.text.heading }}>
+            Pro Botanical Guides
+          </Text>
+          <ContextualTipCard
+            title="Understanding Nutrient Lockout: Why pH Tuning Matters"
+            tag="pH Management"
+            readTime="4 min read"
+            onPress={() => router.push('/modals/tips')}
+          />
         </View>
       </View>
-    </ScrollView>
+
+      {/* Interstitial Ad Simulation */}
+      <InterstitialAdContainer
+        visible={adVisible}
+        onClose={handleAdClose}
+        countdownSeconds={3}
+      >
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: Spacing.xl }}>
+          <Text style={{ color: '#FFD700', fontSize: Typography.sizes.lg, fontWeight: 'bold', marginBottom: Spacing.sm }}>
+            GrowMax Hydro Nutrients
+          </Text>
+          <Text style={{ color: '#FFF', textAlign: 'center', fontSize: Typography.sizes.sm }}>
+            Maximize flower density and terpene profiles with our premium organic formula.
+          </Text>
+        </View>
+      </InterstitialAdContainer>
+
+      {/* Rewarded Video Prompt Modal */}
+      <ModalDialog
+        visible={rewardPromptVisible}
+        title="Premium PDF Export"
+        description="Watch a 15-second sponsor video to generate and download a clean, printable PDF of this mixing recipe."
+        primaryAction={{
+          label: 'Watch Video',
+          onPress: () => {
+            setRewardPromptVisible(false);
+            // Simulate watching a video
+            setTimeout(() => {
+              setExportSuccessVisible(true);
+            }, 1000);
+          },
+        }}
+        secondaryAction={{
+          label: 'Cancel',
+          onPress: () => setRewardPromptVisible(false),
+        }}
+      />
+
+      {/* Export Success Modal */}
+      <ModalDialog
+        visible={exportSuccessVisible}
+        title="Export Complete"
+        description="Your recipe PDF has been compiled successfully. Tapping below will prompt the sharing menu."
+        primaryAction={{
+          label: 'Share PDF',
+          onPress: () => {
+            setExportSuccessVisible(false);
+            router.push('/modals/export-share');
+          },
+        }}
+        secondaryAction={{
+          label: 'Dismiss',
+          onPress: () => setExportSuccessVisible(false),
+        }}
+      />
+    </ScreenWrapper>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#F5F5F5",
-  },
-  contentContainer: {
-    padding: 16,
-    paddingBottom: 100,
-    gap: 24,
-  },
-  header: {
-    gap: 4,
-    marginTop: 8,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: "700",
-  },
-  subtitle: {
-    fontSize: 16,
-  },
-  section: {
-    gap: 16,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: "700",
-  },
-  inputRow: {
-    flexDirection: "row",
-    gap: 12,
-  },
-  inputGroup: {
-    flex: 1,
-    gap: 8,
-  },
-  label: {
-    fontSize: 14,
-    fontWeight: "500",
-  },
-  volumeInputContainer: {
-    flexDirection: "row",
-    gap: 8,
-  },
-  input: {
-    flex: 1,
-    height: 52,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: "#E0E0E0",
-    paddingHorizontal: 16,
-    fontSize: 16,
-  },
-  picker: {
-    width: 100,
-    height: 52,
-  },
-  unitLabel: {
-    fontSize: 14,
-    marginTop: -4,
-  },
-  presetContainer: {
-    gap: 10,
-  },
-  presetChip: {
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 12,
-    borderWidth: 1,
-    minWidth: 120,
-  },
-  presetChipText: {
-    fontSize: 13,
-    fontWeight: "600",
-  },
-  presetChipSub: {
-    fontSize: 11,
-    marginTop: 2,
-  },
-  calculateButton: {
-    height: 52,
-    borderRadius: 12,
-    backgroundColor: "#4CAF50",
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 8,
-  },
-  calculateButtonText: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#fff",
-  },
-  resultHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  resultSummary: {
-    flexDirection: "row",
-    gap: 16,
-  },
-  summaryItem: {
-    fontSize: 13,
-    fontWeight: "500",
-  },
-  recipeGrid: {
-    gap: 12,
-  },
-  recipeCard: {
-    padding: 16,
-    borderRadius: 12,
-    borderWidth: 2,
-    backgroundColor: "#fff",
-    gap: 12,
-  },
-  recipeCardHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    paddingBottom: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: "#F0F0F0",
-  },
-  recipeColorDot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-  },
-  recipePartName: {
-    fontSize: 14,
-    fontWeight: "600",
-    flex: 1,
-  },
-  recipeNPK: {
-    fontSize: 12,
-  },
-  recipeAmount: {
-    flexDirection: "row",
-    alignItems: "baseline",
-    gap: 4,
-  },
-  recipeAmountValue: {
-    fontSize: 28,
-    fontWeight: "700",
-  },
-  recipeAmountUnit: {
-    fontSize: 14,
-    fontWeight: "500",
-  },
-  recipePerLiter: {
-    paddingTop: 8,
-    borderTopWidth: 1,
-    borderTopColor: "#F0F0F0",
-  },
-  recipePerLiterText: {
-    fontSize: 12,
-  },
-  resultActions: {
-    flexDirection: "row",
-    gap: 12,
-    marginTop: 8,
-  },
-  exportButton: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
-    paddingVertical: 14,
-    borderRadius: 12,
-    backgroundColor: "#fff",
-    borderWidth: 1,
-    borderColor: "#4CAF50",
-  },
-  saveButton: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
-    paddingVertical: 14,
-    borderRadius: 12,
-    backgroundColor: "#FFD700",
-  },
-  actionIcon: {
-    width: 20,
-    height: 20,
-    tintColor: "#1c4a22",
-  },
-  actionText: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#1c4a22",
-  },
-  tipsList: {
-    gap: 12,
-  },
-  tipItem: {
-    flexDirection: "row",
-    gap: 12,
-    padding: 16,
-    borderRadius: 12,
-    backgroundColor: "#fff",
-    borderWidth: 1,
-    borderColor: "#E0E0E0",
-  },
-  tipIcon: {
-    width: 22,
-    height: 22,
-    marginTop: 2,
-  },
-  tipText: {
-    flex: 1,
-    fontSize: 14,
-    lineHeight: 20,
-  },
-});

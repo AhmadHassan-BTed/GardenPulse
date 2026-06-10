@@ -1,43 +1,18 @@
-import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
-import { useRouter } from "expo-router";
-import { useEffect } from "react";
+import React from 'react';
+import { useRouter } from 'expo-router';
+import ScreenWrapper from '../../components/common/ScreenWrapper';
+import SplashLogo from '../../components/common/SplashLogo';
 
 export default function SplashScreen() {
   const router = useRouter();
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      router.replace("/(onboarding)/welcome");
-    }, 2000);
-
-    return () => clearTimeout(timer);
-  }, [router]);
+  const handleAnimationComplete = () => {
+    router.replace('/(onboarding)/welcome');
+  };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>GardenPulse</Text>
-      <Text style={styles.subtitle}>Your Smart Garden Companion</Text>
-      <ActivityIndicator size="large" color="#4CAF50" style={{ marginTop: 24 }} />
-    </View>
+    <ScreenWrapper scrollable={false} withPadding={false}>
+      <SplashLogo onAnimationComplete={handleAnimationComplete} />
+    </ScreenWrapper>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#1c4a22",
-  },
-  title: {
-    fontSize: 48,
-    fontWeight: "700",
-    color: "#fff",
-    letterSpacing: 2,
-  },
-  subtitle: {
-    fontSize: 18,
-    color: "rgba(255,255,255,0.8)",
-    marginTop: 8,
-  },
-});

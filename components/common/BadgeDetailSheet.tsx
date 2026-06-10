@@ -160,7 +160,7 @@ const BadgeDetailSheet: React.FC<BadgeDetailSheetProps> = ({
           {badge.isEarned ? (
             <CustomButton 
               label="Share Achievement" 
-              iconName="share-2" 
+              leftIcon={<Feather name="share-2" size={16} color="white" />} 
               onPress={() => onShare && onShare(badge)} 
               fullWidth 
             />

@@ -1,472 +1,176 @@
-import { View, Text, StyleSheet, ScrollView, Pressable, Image, Alert } from "react-native";
-import { Link, useRouter } from "expo-router";
-import { useColorScheme } from "react-native";
-import { useState, useCallback } from "react";
+import React, { useState } from 'react';
+import { View, Text, ScrollView, Pressable } from 'react-native';
+import { useRouter } from 'expo-router';
+import { useTheme } from '../../../components/layout/ThemeProvider';
+import ScreenWrapper from '../../../components/common/ScreenWrapper';
+import CustomHeader from '../../../components/common/CustomHeader';
+import CameraViewfinder from '../../../components/common/CameraViewfinder';
+import DiagnosisResultCard from '../../../components/common/DiagnosisResultCard';
+import { DiagnosisHistoryRow, ScanningStateOverlay } from '../../../components/common/InsightAndMapCards';
+import CustomButton from '../../../components/common/CustomButton';
+import CustomCard from '../../../components/common/CustomCard';
+import SectionHeader from '../../../components/common/SectionHeader';
+import { ContextualTipCard } from '../../../components/common/InsightBanners';
 
-const recentScans = [
-  { id: "1", plant: "Monstera", date: "Jun 5", issue: "Nitrogen Deficiency", confidence: 94, status: "Treating", image: "🌿" },
-  { id: "2", plant: "Snake Plant", date: "Jun 2", issue: "Overwatering", confidence: 87, status: "Resolved", image: "🌱" },
-  { id: "3", plant: "Pothos", date: "May 28", issue: "Spider Mites", confidence: 91, status: "Treating", image: "🌿" },
+const recentScansData = [
+  { id: '1', date: 'Jun 8', plantName: 'Fiddle Leaf Fig', finding: 'Spider Mites Infestation', severity: 'high' as const },
+  { id: '2', date: 'Jun 4', plantName: 'Sweet Basil', finding: 'Downy Mildew fungus', severity: 'medium' as const },
+  { id: '3', date: 'May 29', plantName: 'Monstera Deliciosa', finding: 'Magnesium Deficiency', severity: 'low' as const },
 ];
 
-const commonIssues = [
-  { id: "nitrogen", name: "Nitrogen Deficiency", icon: "leaf.fill", color: "#FF9800", symptoms: "Yellowing lower leaves, stunted growth" },
-  { id: "phosphorus", name: "Phosphorus Deficiency", icon: "leaf.fill", color: "#9C27B0", symptoms: "Dark green/purple leaves, poor flowering" },
-  { id: "potassium", name: "Potassium Deficiency", icon: "leaf.fill", color: "#FF5722", symptoms: "Brown leaf edges, weak stems" },
-  { id: "overwatering", name: "Overwatering", icon: "drop.fill", color: "#2196F3", symptoms: "Yellow leaves, mushy roots, fungus gnats" },
-  { id: "underwatering", name: "Underwatering", icon: "drop.fill", color: "#FF9800", symptoms: "Crispy leaves, soil pulling from pot" },
-  { id: "spider-mites", name: "Spider Mites", icon: "ant.fill", color: "#F44336", symptoms: "Fine webbing, stippled leaves" },
-  { id: "powdery-mildew", name: "Powdery Mildew", icon: "cloud.fill", color: "#9E9E9E", symptoms: "White powdery spots on leaves" },
-  { id: "root-rot", name: "Root Rot", icon: "exclamationmark.triangle.fill", color: "#795548", symptoms: "Black mushy roots, foul smell" },
+const libraryIssues = [
+  { title: 'Nitrogen Deficiency', tag: 'Nutrition', readTime: '5 min read', desc: 'Lower leaves yellowing, slow vegetative growth.' },
+  { title: 'Root Rot (Overwatering)', tag: 'Watering', readTime: '6 min read', desc: 'Wilting, black mushy root system, stagnant smell.' },
+  { title: 'Thrips & Spiders', tag: 'Pest Alert', readTime: '4 min read', desc: 'Silvery speckles, thin white webbing, sticky sap.' },
 ];
 
 export default function LeafDiagnosticsScreen() {
   const router = useRouter();
-  const colorScheme = useColorScheme();
-  const isDark = colorScheme === "dark";
-  const [scanning, setScanning] = useState(false);
-  const [scanProgress, setScanProgress] = useState(0);
+  const theme = useTheme();
+  const { Colors, Spacing, Typography } = theme;
 
-  const startScan = useCallback(() => {
-    setScanning(true);
-    setScanProgress(0);
-    const interval = setInterval(() => {
-      setScanProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setScanning(false);
-          Alert.alert("Scan Complete", "Nitrogen deficiency detected (94% confidence). View treatment plan?");
-          return 0;
-        }
-        return prev + 10;
+  const [viewState, setViewState] = useState<'default' | 'camera' | 'scanning' | 'result'>('default');
+  const [flashOn, setFlashOn] = useState(false);
+  const [selectedScan, setSelectedScan] = useState<any>(null);
+
+  const handleStartScan = () => {
+    setViewState('camera');
+  };
+
+  const handleCapture = () => {
+    setViewState('scanning');
+    setTimeout(() => {
+      setSelectedScan({
+        plantName: 'Monstera Deliciosa',
+        confidence: 93,
+        issue: 'Nitrogen Deficiency',
+        severity: 'medium' as const,
+        explanation: 'The mature bottom leaves are yellowing from the tips inward, while veins remain faintly green. This signature pattern indicates Nitrogen depletion as the plant translocates mobile nitrogen to new upper foliage.',
       });
-    }, 300);
-  }, []);
+      setViewState('result');
+    }, 1800);
+  };
+
+  const handleSelectHistoryItem = (item: any) => {
+    setSelectedScan({
+      plantName: item.plantName,
+      confidence: 89,
+      issue: item.finding,
+      severity: item.severity,
+      explanation: `Historical scan data compiled on ${item.date}. Primary diagnosis identified ${item.finding} with high matching precision. Recommended treatments include isolated spraying and moisture balance monitoring.`,
+    });
+    setViewState('result');
+  };
+
+  if (viewState === 'camera') {
+    return (
+      <View style={{ flex: 1, backgroundColor: '#000' }}>
+        <CameraViewfinder
+          mode="leaf"
+          instructionLabel="Align leaf within the dashed area"
+          isFlashOn={flashOn}
+          onToggleFlash={() => setFlashOn(!flashOn)}
+          onClose={() => setViewState('default')}
+          onCapture={handleCapture}
+          onOpenGallery={() => {
+            alert('Gallery selection simulated!');
+            handleCapture();
+          }}
+        />
+      </View>
+    );
+  }
 
   return (
-    <ScrollView
-      contentInsetAdjustmentBehavior="automatic"
-      style={styles.container}
-      contentContainerStyle={styles.contentContainer}
-    >
-      <View style={styles.header}>
-        <Text style={[styles.title, { color: isDark ? "#fff" : "#1c4a22" }]}>Leaf Diagnostics</Text>
-        <Text style={[styles.subtitle, { color: isDark ? "rgba(255,255,255,0.7)" : "rgba(28,74,34,0.7)" }]}>
-          AI-powered plant health analysis
-        </Text>
-      </View>
+    <ScreenWrapper scrollable={true} withPadding={true}>
+      <CustomHeader
+        title="Leaf Diagnostics"
+        showBack={viewState !== 'default'}
+        onBack={() => setViewState('default')}
+      />
 
-      {/* Scan Button */}
-      <View style={styles.scanSection}>
-        {scanning ? (
-          <View style={styles.scanningCard}>
-            <View style={styles.scanProgressRing}>
-              <Text style={[styles.scanProgressText, { color: isDark ? "#fff" : "#1c4a22" }]}>{scanProgress}%</Text>
+      {viewState === 'scanning' && <ScanningStateOverlay />}
+
+      <View style={{ gap: Spacing.lg, paddingBottom: Spacing.xl }}>
+        {viewState === 'default' && (
+          <>
+            {/* Primary CTA */}
+            <CustomCard padding={Spacing.lg} style={{ backgroundColor: `${Colors.green.DEFAULT}10`, borderStyle: 'dashed', borderWidth: 2, borderColor: Colors.green.DEFAULT, alignItems: 'center', gap: Spacing.md }}>
+              <Text style={{ fontSize: Typography.sizes.base, color: Colors.text.body, textAlign: 'center', fontWeight: 'bold' }}>
+                Suspect a deficiency or pest infestation?
+              </Text>
+              <CustomButton
+                label="Scan Sick Leaf"
+                leftIcon="camera"
+                onPress={handleStartScan}
+                fullWidth={true}
+              />
+            </CustomCard>
+
+            {/* Diagnostics History list */}
+            <View style={{ gap: Spacing.sm }}>
+              <SectionHeader title="Recent Diagnoses" />
+              {recentScansData.map((scan) => (
+                <Pressable key={scan.id} onPress={() => handleSelectHistoryItem(scan)}>
+                  <DiagnosisHistoryRow
+                    date={scan.date}
+                    plantName={scan.plantName}
+                    finding={scan.finding}
+                    severity={scan.severity}
+                  />
+                </Pressable>
+              ))}
             </View>
-            <Text style={[styles.scanningText, { color: isDark ? "#fff" : "#1c4a22" }]}>Analyzing leaf image...</Text>
-            <View style={styles.progressBar}>
-              <View
-                style={[
-                  styles.progressFill,
-                  { width: `${scanProgress}%`, backgroundColor: "#4CAF50" },
-                ]}
+
+            {/* Common Issues Library */}
+            <View style={{ gap: Spacing.sm }}>
+              <SectionHeader title="Common Issues Library" />
+              {libraryIssues.map((issue, idx) => (
+                <ContextualTipCard
+                  key={idx}
+                  title={`${issue.title}: ${issue.desc}`}
+                  tag={issue.tag}
+                  readTime={issue.readTime}
+                  onPress={() => router.push('/modals/tips')}
+                />
+              ))}
+            </View>
+          </>
+        )}
+
+        {viewState === 'result' && selectedScan && (
+          <View style={{ gap: Spacing.md }}>
+            <DiagnosisResultCard
+              plantId={selectedScan.plantName}
+              confidence={selectedScan.confidence}
+              issue={selectedScan.issue}
+              severity={selectedScan.severity}
+              explanation={selectedScan.explanation}
+              onTreatIssue={() => {
+                alert('Treatment protocols added to your scheduler task list.');
+              }}
+              onReadMore={() => {
+                router.push('/modals/tips');
+              }}
+            />
+
+            <View style={{ flexDirection: 'row', gap: Spacing.sm }}>
+              <CustomButton
+                label="Retake Scan"
+                variant="secondary"
+                onPress={handleStartScan}
+                style={{ flex: 1 }}
+              />
+              <CustomButton
+                label="Share Report"
+                variant="secondary"
+                onPress={() => router.push('/modals/export-share')}
+                style={{ flex: 1 }}
               />
             </View>
           </View>
-        ) : (
-          <Pressable style={styles.scanButton} onPress={startScan}>
-            <View style={styles.scanButtonIcon}>
-              <Image source={{ uri: "sf:camera.fill" }} style={styles.scanButtonIconImage} />
-            </View>
-            <Text style={styles.scanButtonText}>Scan Leaf</Text>
-            <Text style={styles.scanButtonSub}>Tap to take a photo or choose from library</Text>
-          </Pressable>
         )}
       </View>
-
-      {/* Quick Actions */}
-      <View style={styles.quickActions}>
-        <Link href="/modals/qr-scanner" asChild>
-          <Pressable style={styles.quickActionBtn}>
-            <View style={[styles.quickActionBtnIcon, { backgroundColor: "#4CAF5020" }]}>
-              <Image source={{ uri: "sf:qrcode.viewfinder" }} style={[styles.quickActionBtnIconImage, { tintColor: "#4CAF50" }]} />
-            </View>
-            <Text style={styles.quickActionBtnLabel}>Scan Fertilizer</Text>
-          </Pressable>
-        </Link>
-        <Link href="/modals/permission" asChild>
-          <Pressable style={styles.quickActionBtn}>
-            <View style={[styles.quickActionBtnIcon, { backgroundColor: "#2196F320" }]}>
-              <Image source={{ uri: "sf:photo.fill" }} style={[styles.quickActionBtnIconImage, { tintColor: "#2196F3" }]} />
-            </View>
-            <Text style={styles.quickActionBtnLabel}>Import Photo</Text>
-          </Pressable>
-        </Link>
-        <Link href="/modals/tips" asChild>
-          <Pressable style={styles.quickActionBtn}>
-            <View style={[styles.quickActionBtnIcon, { backgroundColor: "#FF980020" }]}>
-              <Image source={{ uri: "sf:lightbulb.fill" }} style={[styles.quickActionBtnIconImage, { tintColor: "#FF9800" }]} />
-            </View>
-            <Text style={styles.quickActionBtnLabel}>Browse Issues</Text>
-          </Pressable>
-        </Link>
-      </View>
-
-      {/* Recent Scans */}
-      <View style={styles.section}>
-        <View style={styles.sectionHeader}>
-          <Text style={[styles.sectionTitle, { color: isDark ? "#fff" : "#1c4a22" }]}>Recent Scans</Text>
-          <Link href="/modals/scan-history" asChild>
-            <Pressable style={styles.seeAllLink}>
-              <Text style={styles.seeAllText}>See all</Text>
-            </Pressable>
-          </Link>
-        </View>
-        <View style={styles.recentScansList}>
-          {recentScans.map((scan) => (
-            <Link key={scan.id} href={`/modals/scan-result/${scan.id}`} asChild>
-              <Pressable style={styles.recentScanCard}>
-                <View style={styles.recentScanThumbnail}>
-                  <Text style={styles.recentScanThumbnailText}>{scan.image}</Text>
-                </View>
-                <View style={styles.recentScanInfo}>
-                  <View style={styles.recentScanHeader}>
-                    <Text style={[styles.recentScanPlant, { color: isDark ? "#fff" : "#1c4a22" }]}>{scan.plant}</Text>
-                    <Text style={[styles.recentScanDate, { color: isDark ? "rgba(255,255,255,0.5)" : "rgba(28,74,34,0.5)" }]}>{scan.date}</Text>
-                  </View>
-                  <Text style={[styles.recentScanIssue, { color: isDark ? "rgba(255,255,255,0.8)" : "rgba(28,74,34,0.8)" }]}>{scan.issue}</Text>
-                  <View style={styles.recentScanFooter}>
-                    <View style={styles.confidenceBadge}>
-                      <Text style={styles.confidenceText}>{scan.confidence}%</Text>
-                    </View>
-                    <View style={[
-                      styles.statusBadge,
-                      { backgroundColor: scan.status === "Treating" ? "#FF980020" : "#4CAF5020" },
-                    ]}>
-                      <Text style={[
-                        styles.statusText,
-                        { color: scan.status === "Treating" ? "#FF9800" : "#4CAF50" },
-                      ]}>{scan.status}</Text>
-                    </View>
-                  </View>
-                </View>
-                <Image source={{ uri: "sf:chevron.right" }} style={styles.chevron} />
-              </Pressable>
-            </Link>
-          ))}
-        </View>
-      </View>
-
-      {/* Common Issues Library */}
-      <View style={styles.section}>
-        <Text style={[styles.sectionTitle, { color: isDark ? "#fff" : "#1c4a22" }]}>Common Issues Library</Text>
-        <View style={styles.issuesGrid}>
-          {commonIssues.map((issue) => (
-            <Link key={issue.id} href={`/modals/issue-detail/${issue.id}`} asChild>
-              <Pressable style={[
-                styles.issueCard,
-                { borderColor: issue.color },
-              ]}>
-                <View style={[
-                  styles.issueIcon,
-                  { backgroundColor: issue.color + "20" },
-                ]}>
-                  <Image
-                    source={{ uri: `sf:${issue.icon}` }}
-                    style={[styles.issueIconImage, { tintColor: issue.color }]}
-                  />
-                </View>
-                <Text style={[styles.issueName, { color: isDark ? "#fff" : "#1c4a22" }]}>{issue.name}</Text>
-                <Text style={[styles.issueSymptoms, { color: isDark ? "rgba(255,255,255,0.6)" : "rgba(28,74,34,0.6)" }]}>{issue.symptoms}</Text>
-              </Pressable>
-            </Link>
-          ))}
-        </View>
-      </View>
-
-      {/* Pro Tip */}
-      <View style={styles.proTip}>
-        <Image source={{ uri: "sf:lightbulb.fill" }} style={[styles.proTipIcon, { tintColor: "#FFD700" }]} />
-        <View>
-          <Text style={styles.proTipTitle}>Pro Tip</Text>
-          <Text style={styles.proTipText}>
-            For best results, photograph leaves in natural daylight against a neutral background. Capture both top and bottom surfaces.
-          </Text>
-        </View>
-      </View>
-    </ScrollView>
+    </ScreenWrapper>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#F5F5F5",
-  },
-  contentContainer: {
-    padding: 16,
-    paddingBottom: 100,
-    gap: 24,
-  },
-  header: {
-    gap: 4,
-    marginTop: 8,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: "700",
-  },
-  subtitle: {
-    fontSize: 16,
-  },
-  scanSection: {
-    gap: 16,
-  },
-  scanButton: {
-    padding: 32,
-    borderRadius: 20,
-    backgroundColor: "#1c4a22",
-    alignItems: "center",
-    gap: 16,
-    borderWidth: 2,
-    borderColor: "#4CAF50",
-  },
-  scanButtonIcon: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
-    backgroundColor: "rgba(255,255,255,0.1)",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  scanButtonIconImage: {
-    width: 36,
-    height: 36,
-    tintColor: "#4CAF50",
-  },
-  scanButtonText: {
-    fontSize: 22,
-    fontWeight: "700",
-    color: "#fff",
-  },
-  scanButtonSub: {
-    fontSize: 14,
-    color: "rgba(255,255,255,0.7)",
-    textAlign: "center",
-  },
-  scanningCard: {
-    padding: 32,
-    borderRadius: 20,
-    backgroundColor: "#1c4a22",
-    alignItems: "center",
-    gap: 16,
-  },
-  scanProgressRing: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    borderWidth: 6,
-    borderColor: "#4CAF50",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  scanProgressText: {
-    fontSize: 24,
-    fontWeight: "700",
-  },
-  scanningText: {
-    fontSize: 18,
-    fontWeight: "500",
-  },
-  progressBar: {
-    width: "100%",
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: "rgba(255,255,255,0.2)",
-    overflow: "hidden",
-  },
-  progressFill: {
-    height: "100%",
-    borderRadius: 3,
-  },
-  quickActions: {
-    flexDirection: "row",
-    gap: 10,
-  },
-  quickActionBtn: {
-    flex: 1,
-    paddingVertical: 16,
-    paddingHorizontal: 12,
-    borderRadius: 12,
-    backgroundColor: "#fff",
-    borderWidth: 1,
-    borderColor: "#E0E0E0",
-    alignItems: "center",
-    gap: 8,
-  },
-  quickActionBtnIcon: {
-    width: 44,
-    height: 44,
-    borderRadius: 12,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  quickActionBtnIconImage: {
-    width: 22,
-    height: 22,
-  },
-  quickActionBtnLabel: {
-    fontSize: 12,
-    fontWeight: "600",
-    color: "#1c4a22",
-    textAlign: "center",
-  },
-  section: {
-    gap: 12,
-  },
-  sectionHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: "700",
-  },
-  seeAllLink: {
-    paddingHorizontal: 8,
-  },
-  seeAllText: {
-    fontSize: 14,
-    fontWeight: "500",
-    color: "#4CAF50",
-  },
-  recentScansList: {
-    gap: 12,
-  },
-  recentScanCard: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 16,
-    padding: 16,
-    borderRadius: 16,
-    backgroundColor: "#fff",
-    borderWidth: 1,
-    borderColor: "#E0E0E0",
-  },
-  recentScanThumbnail: {
-    width: 56,
-    height: 56,
-    borderRadius: 12,
-    backgroundColor: "#1c4a22",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  recentScanThumbnailText: {
-    fontSize: 24,
-  },
-  recentScanInfo: {
-    flex: 1,
-    gap: 6,
-  },
-  recentScanHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  recentScanPlant: {
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  recentScanDate: {
-    fontSize: 12,
-  },
-  recentScanIssue: {
-    fontSize: 14,
-    fontWeight: "500",
-  },
-  recentScanFooter: {
-    flexDirection: "row",
-    gap: 8,
-    marginTop: 4,
-  },
-  confidenceBadge: {
-    paddingHorizontal: 10,
-    paddingVertical: 3,
-    borderRadius: 6,
-    backgroundColor: "#4CAF5020",
-  },
-  confidenceText: {
-    fontSize: 11,
-    fontWeight: "600",
-    color: "#4CAF50",
-  },
-  statusBadge: {
-    paddingHorizontal: 10,
-    paddingVertical: 3,
-    borderRadius: 6,
-  },
-  statusText: {
-    fontSize: 11,
-    fontWeight: "600",
-  },
-  chevron: {
-    width: 20,
-    height: 20,
-    tintColor: "#9E9E9E",
-  },
-  issuesGrid: {
-    gap: 12,
-  },
-  issueCard: {
-    padding: 16,
-    borderRadius: 12,
-    borderWidth: 1,
-    backgroundColor: "#fff",
-    gap: 10,
-  },
-  issueIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 12,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  issueIconImage: {
-    width: 24,
-    height: 24,
-  },
-  issueName: {
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  issueSymptoms: {
-    fontSize: 13,
-    lineHeight: 18,
-  },
-  proTip: {
-    flexDirection: "row",
-    gap: 12,
-    padding: 16,
-    borderRadius: 12,
-    backgroundColor: "#1c4a22",
-    borderWidth: 1,
-    borderColor: "#FFD700",
-  },
-  proTipIcon: {
-    width: 28,
-    height: 28,
-    marginTop: 2,
-  },
-  proTipTitle: {
-    fontSize: 16,
-    fontWeight: "700",
-    color: "#FFD700",
-  },
-  proTipText: {
-    fontSize: 14,
-    color: "rgba(255,255,255,0.8)",
-    lineHeight: 20,
-    marginTop: 2,
-  },
-});

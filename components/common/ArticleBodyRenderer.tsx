@@ -5,8 +5,8 @@
 
 import React, { useMemo } from 'react';
 import { View, Text, Image, StyleSheet, ViewStyle } from 'react-native';
+import { Feather } from '@expo/vector-icons';
 import { useTheme } from '../layout/ThemeProvider';
-import NativeAdCard from './NativeAdCard'; // Reusing Phase 1 component
 
 export type ArticleBlockType = 'h2' | 'h3' | 'p' | 'bullet' | 'image' | 'ad';
 
@@ -83,6 +83,25 @@ const ArticleBodyRenderer: React.FC<ArticleBodyRendererProps> = ({ blocks, style
           marginTop: Spacing.xs,
           fontStyle: 'italic',
         },
+        adPlaceholder: {
+          marginVertical: Spacing.md,
+          padding: Spacing.lg,
+          borderWidth: 2,
+          borderColor: Colors.border.subtle,
+          borderRadius: Radius.md,
+          backgroundColor: Colors.surface.elevated,
+          borderStyle: 'dashed',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: Spacing.xs,
+        },
+        adPlaceholderText: {
+          fontSize: Typography.sizes.sm,
+          fontWeight: Typography.weights.bold,
+          color: Colors.text.muted,
+          textTransform: 'uppercase',
+          letterSpacing: 1,
+        }
       }),
     [Colors, Spacing, Radius, Typography, style]
   );
@@ -113,11 +132,11 @@ const ArticleBodyRenderer: React.FC<ArticleBodyRendererProps> = ({ blocks, style
             );
           case 'ad':
             return (
-              <NativeAdCard key={block.id} style={{ marginVertical: Spacing.md }}>
-                <View style={{ height: 100, justifyContent: 'center', alignItems: 'center' }}>
-                  <Text style={{ color: Colors.text.muted }}>[Inline AdMob Render]</Text>
-                </View>
-              </NativeAdCard>
+              <View key={block.id} style={styles.adPlaceholder}>
+                <Feather name="speaker" size={24} color={Colors.text.muted} />
+                <Text style={styles.adPlaceholderText}>Advertisement</Text>
+                <Text style={{ fontSize: 10, color: Colors.text.muted }}>[Inline AdMob Unit Placeholder]</Text>
+              </View>
             );
           default:
             return null;

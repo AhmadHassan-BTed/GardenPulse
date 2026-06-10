@@ -1,64 +1,150 @@
-import { View, Text, StyleSheet, Pressable, Image, ScrollView } from "react-native";
-import { useRouter, useLocalSearchParams } from "expo-router";
-import { useColorScheme } from "react-native";
+import React from 'react';
+import { View, Text } from 'react-native';
+import { useRouter, useLocalSearchParams } from 'expo-router';
+import { Feather } from '@expo/vector-icons';
+import { useTheme } from '../../components/layout/ThemeProvider';
+import ScreenWrapper from '../../components/common/ScreenWrapper';
+import CustomHeader from '../../components/common/CustomHeader';
+import PermissionIllustration, { PermissionType } from '../../components/common/PermissionIllustration';
+import CustomButton from '../../components/common/CustomButton';
+import TextLink from '../../components/common/TextLink';
 
-const permissions = {
-  location: { title: "Location Access", icon: "location.fill", color: "#2196F3", description: "Needed for Local Grow Map to find nearby growers and nurseries.", settingsText: "Open Settings" },
-  camera: { title: "Camera Access", icon: "camera.fill", color: "#4CAF50", description: "Required for Leaf Diagnostics to scan plant leaves and identify issues.", settingsText: "Open Settings" },
-  microphone: { title: "Microphone Access", icon: "mic.fill", color: "#FF9800", description: "Used for voice notes in care logs and quick logging.", settingsText: "Open Settings" },
-  notifications: { title: "Notifications", icon: "bell.fill", color: "#9C27B0", description: "Receive care reminders, bloom reports, and community updates.", settingsText: "Open Settings" },
-  photos: { title: "Photos Access", icon: "photo.fill", color: "#607D8B", description: "Add photos to plant profiles, progress reels, and community posts.", settingsText: "Open Settings" },
+interface PermissionContent {
+  title: string;
+  description: string;
+  reassurance: string;
+  allowLabel: string;
+}
+
+const permissionData: Record<PermissionType, PermissionContent> = {
+  location: {
+    title: 'Before we ask...',
+    description: 'GardenPulse uses location to give weather-aware care tips and detect your local planting zone.',
+    reassurance: 'Location data is only stored locally and never shared publicly.',
+    allowLabel: 'Allow Location',
+  },
+  camera: {
+    title: 'Use your camera?',
+    description: 'Required for Leaf Diagnostics to identify plant issues and recognize species directly on-device.',
+    reassurance: 'Photos are analyzed locally and never uploaded to the cloud.',
+    allowLabel: 'Allow Camera',
+  },
+  microphone: {
+    title: 'Voice logging?',
+    description: 'Enables hands-free logging. Talk to your garden journal to dictate care notes and activities.',
+    reassurance: 'Speech-to-text is computed entirely on-device.',
+    allowLabel: 'Allow Microphone',
+  },
+  notifications: {
+    title: 'Stay on top of your garden?',
+    description: 'Receive watering and feeding reminders, weekly bloom reports, and smart weather freeze alerts.',
+    reassurance: 'Smart notifications are timed specifically to your active hours.',
+    allowLabel: 'Allow Notifications',
+  },
 };
 
 export default function PermissionModal() {
   const router = useRouter();
-  const { type } = useLocalSearchParams<{ type?: string }>();
-  const colorScheme = useColorScheme();
-  const isDark = colorScheme === "dark";
-  const permission = permissions[type as keyof typeof permissions] || permissions.location;
+  const { type, next } = useLocalSearchParams<{ type?: PermissionType; next?: string }>();
+  const theme = useTheme();
+  const { Colors, Spacing, Typography } = theme;
+
+  const activeType: PermissionType = type || 'location';
+  const info = permissionData[activeType] || permissionData.location;
+
+  const handleAllow = () => {
+    console.log(`Permission granted for: ${activeType}`);
+    if (next) {
+      router.replace(next as any);
+    } else {
+      router.back();
+    }
+  };
+
+  const handleDismiss = () => {
+    console.log(`Permission dismissed for: ${activeType}`);
+    if (next) {
+      router.replace(next as any);
+    } else {
+      router.back();
+    }
+  };
+
+  const handleLearnPrivacy = () => {
+    router.push('/(tabs)/profile/privacy');
+  };
 
   return (
-    <ScrollView
-      contentInsetAdjustmentBehavior="automatic"
-      style={styles.container}
-      contentContainerStyle={styles.contentContainer}
-    >
-      <Pressable style={styles.closeButton} onPress={() => router.back()}>
-        <Image source={{ uri: "sf:xmark" }} style={styles.closeIcon} />
-      </Pressable>
+    <ScreenWrapper scrollable={true} withPadding={true}>
+      <CustomHeader
+        showBack={true}
+        onBack={handleDismiss}
+        transparent={true}
+      />
 
-      <View style={styles.iconContainer}>
-        <View style={[{ backgroundColor: permission.color + "20" }, styles.iconBg]}>
-          <Image source={{ uri: `sf:${permission.icon}` }} style={[styles.permissionIcon, { tintColor: permission.color }]} />
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', gap: Spacing.xl, paddingVertical: Spacing.xl }}>
+        <PermissionIllustration type={activeType} />
+
+        <View style={{ gap: Spacing.sm, alignItems: 'center' }}>
+          <Text style={{
+            fontSize: Typography.sizes.lg,
+            fontWeight: Typography.weights.bold,
+            color: Colors.text.heading,
+            textAlign: 'center',
+          }}>
+            {info.title}
+          </Text>
+          <Text style={{
+            fontSize: Typography.sizes.base,
+            color: Colors.text.body,
+            textAlign: 'center',
+            lineHeight: 22,
+            paddingHorizontal: Spacing.md,
+          }}>
+            {info.description}
+          </Text>
+        </View>
+
+        <View style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: Spacing.xs,
+          backgroundColor: Colors.surface.elevated,
+          paddingHorizontal: Spacing.md,
+          paddingVertical: Spacing.xs,
+          borderRadius: theme.Radius.full,
+          borderWidth: 1,
+          borderColor: Colors.border.subtle,
+        }}>
+          <Feather name="lock" size={12} color={Colors.text.muted} />
+          <Text style={{
+            fontSize: Typography.sizes.xs,
+            color: Colors.text.muted,
+          }}>
+            {info.reassurance}
+          </Text>
+        </View>
+
+        <View style={{ width: '100%', gap: Spacing.md, marginTop: Spacing.md, alignItems: 'center' }}>
+          <CustomButton
+            label={info.allowLabel}
+            fullWidth={true}
+            onPress={handleAllow}
+          />
+          <TextLink
+            label="Not Now"
+            onPress={handleDismiss}
+            variant="muted"
+            style={{ alignSelf: 'center' }}
+          />
+          <TextLink
+            label="Learn more about privacy →"
+            onPress={handleLearnPrivacy}
+            variant="primary"
+            style={{ alignSelf: 'center', marginTop: Spacing.xs }}
+          />
         </View>
       </View>
-
-      <Text style={[styles.title, { color: isDark ? "#fff" : "#1c4a22" }]}>{permission.title}</Text>
-      <Text style={[styles.description, { color: isDark ? "rgba(255,255,255,0.7)" : "rgba(28,74,34,0.7)" }]}>{permission.description}</Text>
-
-      <Pressable style={[{ backgroundColor: permission.color }, styles.actionButton]}>
-        <Text style={styles.actionButtonText}>{permission.settingsText}</Text>
-      </Pressable>
-
-      <Pressable style={styles.laterButton} onPress={() => router.back()}>
-        <Text style={styles.laterButtonText}>Not Now</Text>
-      </Pressable>
-    </ScrollView>
+    </ScreenWrapper>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#F5F5F5" },
-  contentContainer: { padding: 24, paddingBottom: 40, alignItems: "center", gap: 24 },
-  closeButton: { position: "absolute", top: 10, right: 10, width: 40, height: 40, borderRadius: 20, backgroundColor: "rgba(0,0,0,0.1)", justifyContent: "center", alignItems: "center" },
-  closeIcon: { width: 22, height: 22, tintColor: "#1c4a22" },
-  iconContainer: { marginTop: 20 },
-  iconBg: { width: 100, height: 100, borderRadius: 50, justifyContent: "center", alignItems: "center" },
-  permissionIcon: { width: 48, height: 48 },
-  title: { fontSize: 24, fontWeight: "700", textAlign: "center" },
-  description: { fontSize: 16, lineHeight: 24, textAlign: "center", paddingHorizontal: 20 },
-  actionButton: { width: "100%", paddingVertical: 16, borderRadius: 12, alignItems: "center" },
-  actionButtonText: { fontSize: 18, fontWeight: "600", color: "#fff" },
-  laterButton: { marginTop: 12 },
-  laterButtonText: { fontSize: 16, color: "#9E9E9E" },
-});
