@@ -188,7 +188,8 @@ export const useGardenStore = create<GardenStoreState>()(
         const plantId = `plant-${Date.now()}`;
         
         let imageUrl = plant.imageUrl;
-        if (imageUrl && !imageUrl.startsWith('http') && userId) {
+        const { isFirebaseConfigured } = require('../services/firebase');
+        if (imageUrl && !imageUrl.startsWith('http') && userId && isFirebaseConfigured) {
           try {
             const { uploadPlantImage } = require('../services/storage');
             imageUrl = await uploadPlantImage(imageUrl, `users/${userId}/plants/${plantId}.jpg`);
@@ -213,7 +214,7 @@ export const useGardenStore = create<GardenStoreState>()(
         }));
 
         // 2. Async Firestore write
-        if (userId) {
+        if (userId && isFirebaseConfigured) {
           try {
             const { doc, setDoc } = require('firebase/firestore');
             const { firestore } = require('../services/firebase');
@@ -230,7 +231,8 @@ export const useGardenStore = create<GardenStoreState>()(
         }));
 
         const userId = get().userProfile.userId;
-        if (userId) {
+        const { isFirebaseConfigured } = require('../services/firebase');
+        if (userId && isFirebaseConfigured) {
           const { doc, updateDoc } = require('firebase/firestore');
           const { firestore } = require('../services/firebase');
           updateDoc(doc(firestore, `users/${userId}/plants`, id), updates).catch((err: any) => {
@@ -247,7 +249,8 @@ export const useGardenStore = create<GardenStoreState>()(
         }));
 
         const userId = get().userProfile.userId;
-        if (userId) {
+        const { isFirebaseConfigured } = require('../services/firebase');
+        if (userId && isFirebaseConfigured) {
           const { doc, deleteDoc } = require('firebase/firestore');
           const { firestore } = require('../services/firebase');
           deleteDoc(doc(firestore, `users/${userId}/plants`, id)).catch((err: any) => {
@@ -272,7 +275,8 @@ export const useGardenStore = create<GardenStoreState>()(
         }));
 
         const userId = get().userProfile.userId;
-        if (userId) {
+        const { isFirebaseConfigured } = require('../services/firebase');
+        if (userId && isFirebaseConfigured) {
           const { doc, updateDoc } = require('firebase/firestore');
           const { firestore } = require('../services/firebase');
           updateDoc(doc(firestore, `users/${userId}/plants`, id), archivedUpdates).catch((err: any) => {
@@ -288,7 +292,8 @@ export const useGardenStore = create<GardenStoreState>()(
         const timestamp = new Date().toISOString();
 
         let imageUrl = entry.imageUrl;
-        if (imageUrl && !imageUrl.startsWith('http') && userId) {
+        const { isFirebaseConfigured } = require('../services/firebase');
+        if (imageUrl && !imageUrl.startsWith('http') && userId && isFirebaseConfigured) {
           try {
             const { uploadPlantImage } = require('../services/storage');
             imageUrl = await uploadPlantImage(imageUrl, `users/${userId}/logs/${logId}.jpg`);
@@ -314,7 +319,7 @@ export const useGardenStore = create<GardenStoreState>()(
           };
         });
 
-        if (userId) {
+        if (userId && isFirebaseConfigured) {
           try {
             const { doc, setDoc, updateDoc } = require('firebase/firestore');
             const { firestore } = require('../services/firebase');
@@ -334,7 +339,8 @@ export const useGardenStore = create<GardenStoreState>()(
         }));
 
         const userId = get().userProfile.userId;
-        if (userId) {
+        const { isFirebaseConfigured } = require('../services/firebase');
+        if (userId && isFirebaseConfigured) {
           const { doc, updateDoc } = require('firebase/firestore');
           const { firestore } = require('../services/firebase');
           updateDoc(doc(firestore, `users/${userId}/logs`, id), updates).catch((err: any) => {
@@ -349,7 +355,8 @@ export const useGardenStore = create<GardenStoreState>()(
         }));
 
         const userId = get().userProfile.userId;
-        if (userId) {
+        const { isFirebaseConfigured } = require('../services/firebase');
+        if (userId && isFirebaseConfigured) {
           const { doc, deleteDoc } = require('firebase/firestore');
           const { firestore } = require('../services/firebase');
           deleteDoc(doc(firestore, `users/${userId}/logs`, id)).catch((err: any) => {
@@ -372,7 +379,8 @@ export const useGardenStore = create<GardenStoreState>()(
         }));
 
         const userId = get().userProfile.userId;
-        if (userId) {
+        const { isFirebaseConfigured } = require('../services/firebase');
+        if (userId && isFirebaseConfigured) {
           const { doc, setDoc } = require('firebase/firestore');
           const { firestore } = require('../services/firebase');
           setDoc(doc(firestore, `users/${userId}/tasks`, taskId), newTask).catch((err: any) => {
@@ -400,7 +408,8 @@ export const useGardenStore = create<GardenStoreState>()(
         });
 
         const userId = get().userProfile.userId;
-        if (userId && updatedTask) {
+        const { isFirebaseConfigured } = require('../services/firebase');
+        if (userId && isFirebaseConfigured && updatedTask) {
           const { doc, updateDoc } = require('firebase/firestore');
           const { firestore } = require('../services/firebase');
           updateDoc(doc(firestore, `users/${userId}/tasks`, id), {
@@ -418,7 +427,8 @@ export const useGardenStore = create<GardenStoreState>()(
         }));
 
         const userId = get().userProfile.userId;
-        if (userId) {
+        const { isFirebaseConfigured } = require('../services/firebase');
+        if (userId && isFirebaseConfigured) {
           const { doc, deleteDoc } = require('firebase/firestore');
           const { firestore } = require('../services/firebase');
           deleteDoc(doc(firestore, `users/${userId}/tasks`, id)).catch((err: any) => {
@@ -439,7 +449,8 @@ export const useGardenStore = create<GardenStoreState>()(
         });
 
         const userId = get().userProfile.userId;
-        if (userId && completedTaskIds.length > 0) {
+        const { isFirebaseConfigured } = require('../services/firebase');
+        if (userId && isFirebaseConfigured && completedTaskIds.length > 0) {
           const { doc, deleteDoc } = require('firebase/firestore');
           const { firestore } = require('../services/firebase');
           completedTaskIds.forEach((id) => {
@@ -459,15 +470,26 @@ export const useGardenStore = create<GardenStoreState>()(
           
           // Trigger Firebase anonymous authentication if no userId is set
           if (!state.userProfile.userId) {
-            const { signInAnonymously } = require('../services/firebase');
-            signInAnonymously()
-              .then((user: any) => {
-                state.updateProfile({ userId: user.uid });
-                console.log('Successfully authenticated with Firebase UID:', user.uid);
-              })
-              .catch((err: any) => {
-                console.error('Failed to auto-sign in anonymously on hydration:', err);
-              });
+            try {
+              const { signInAnonymously, isFirebaseConfigured } = require('../services/firebase');
+              if (isFirebaseConfigured) {
+                signInAnonymously()
+                  .then((user: any) => {
+                    state.updateProfile({ userId: user.uid });
+                    console.log('Successfully authenticated with Firebase UID:', user.uid);
+                  })
+                  .catch((err: any) => {
+                    console.warn('Firebase anonymous sign in failed on hydration, falling back to local-mock-user-id:', err.message || err);
+                    state.updateProfile({ userId: 'local-mock-user-id' });
+                  });
+              } else {
+                console.log('Firebase not configured (using placeholders) — using local mock user ID.');
+                state.updateProfile({ userId: 'local-mock-user-id' });
+              }
+            } catch (err) {
+              console.warn('Failed to load Firebase service on hydration, falling back to local-mock-user-id:', err);
+              state.updateProfile({ userId: 'local-mock-user-id' });
+            }
           }
         }
       },

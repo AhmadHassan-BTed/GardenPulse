@@ -10,6 +10,7 @@
     "expo-av": "~16.0.8",
     "expo-camera": "~17.0.10",
     "expo-constants": "~18.0.13",
+    "expo-dev-client": "~6.0.21",
     "expo-image-picker": "~17.0.11",
     "expo-linking": "~8.0.12",
     "expo-location": "~19.0.8",

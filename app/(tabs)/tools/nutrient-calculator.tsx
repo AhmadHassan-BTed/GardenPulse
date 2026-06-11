@@ -53,7 +53,20 @@ export default function NutrientCalculatorScreen() {
   const interstitialRef = useRef<any>(null);
 
   useEffect(() => {
-    if (Platform.OS === 'web') return;
+    let hasAdMob = false;
+    if (Platform.OS !== 'web') {
+      try {
+        const { TurboModuleRegistry } = require('react-native');
+        hasAdMob = TurboModuleRegistry.get('RNGoogleMobileAdsModule') != null;
+      } catch (e) {
+        hasAdMob = false;
+      }
+    }
+
+    if (!hasAdMob) {
+      console.log('AdMob native module not available — skipping Interstitial Ad setup.');
+      return;
+    }
 
     try {
       const { InterstitialAd, AdEventType, TestIds } = require('react-native-google-mobile-ads');

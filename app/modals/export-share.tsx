@@ -23,7 +23,20 @@ export default function ExportShareModal() {
   const [adUnlockedPDF, setAdUnlockedPDF] = useState(false);
 
   useEffect(() => {
-    if (Platform.OS === 'web') return;
+    let hasAdMob = false;
+    if (Platform.OS !== 'web') {
+      try {
+        const { TurboModuleRegistry } = require('react-native');
+        hasAdMob = TurboModuleRegistry.get('RNGoogleMobileAdsModule') != null;
+      } catch (e) {
+        hasAdMob = false;
+      }
+    }
+
+    if (!hasAdMob) {
+      console.log('AdMob native module not available — skipping Rewarded Ad setup.');
+      return;
+    }
 
     try {
       const { RewardedAd, RewardedAdEventType, TestIds } = require('react-native-google-mobile-ads');

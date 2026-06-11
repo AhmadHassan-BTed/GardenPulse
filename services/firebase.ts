@@ -22,6 +22,12 @@ const firebaseConfig = {
   measurementId: process.env.EXPO_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
+export const isFirebaseConfigured = !!(
+  firebaseConfig.apiKey &&
+  firebaseConfig.apiKey !== 'your_firebase_api_key_here' &&
+  !firebaseConfig.apiKey.startsWith('your_')
+);
+
 // Initialize Firebase
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
 
@@ -41,6 +47,10 @@ const storage: FirebaseStorage = getStorage(app);
 
 // Helper authentication functions
 export async function signInAnonymously() {
+  if (!isFirebaseConfigured) {
+    console.log('Firebase not configured (using placeholders) — using local mock user ID.');
+    return { uid: 'local-mock-user-id' } as any;
+  }
   try {
     const userCredential = await fbSignInAnonymously(auth);
     return userCredential.user;

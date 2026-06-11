@@ -7,7 +7,7 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#0A0F0D"
     },
@@ -26,14 +26,27 @@
       "package": "com.gardenpulse.app",
       "adaptiveIcon": {
         "backgroundColor": "#0A0F0D",
-        "foregroundImage": "./assets/adaptive-icon.png"
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
       "permissions": [
         "ACCESS_COARSE_LOCATION",
         "ACCESS_FINE_LOCATION",
         "CAMERA",
-        "RECORD_AUDIO"
+        "RECORD_AUDIO",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.READ_MEDIA_VISUAL_USER_SELECTED",
+        "android.permission.READ_MEDIA_IMAGES",
+        "android.permission.READ_MEDIA_VIDEO",
+        "android.permission.READ_MEDIA_AUDIO",
+        "android.permission.MODIFY_AUDIO_SETTINGS"
       ]
     },
     "web": {
@@ -71,6 +84,12 @@
     "react-native-google-mobile-ads": {
       "android_app_id": "ca-app-pub-3940256099942544~3347511713",
       "ios_app_id": "ca-app-pub-3940256099942544~1458002511"
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "4d58b862-839a-4dad-a374-0643670da78c"
+      }
     }
   }
 }

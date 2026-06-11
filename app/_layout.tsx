@@ -10,6 +10,7 @@ import { Platform } from 'react-native';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import Constants from 'expo-constants';
 
 import { ThemeProvider, useThemeController } from '../components/layout/ThemeProvider';
 
@@ -35,7 +36,17 @@ function RootStack() {
 
 export default function RootLayout() {
   useEffect(() => {
+    let hasAdMob = false;
     if (Platform.OS !== 'web') {
+      try {
+        const { TurboModuleRegistry } = require('react-native');
+        hasAdMob = TurboModuleRegistry.get('RNGoogleMobileAdsModule') != null;
+      } catch (e) {
+        hasAdMob = false;
+      }
+    }
+
+    if (hasAdMob) {
       try {
         const mobileAds = require('react-native-google-mobile-ads').default;
         mobileAds()
@@ -49,6 +60,8 @@ export default function RootLayout() {
       } catch (error) {
         console.error('Failed to require react-native-google-mobile-ads:', error);
       }
+    } else {
+      console.log('AdMob native module not available (e.g. running in Web or Expo Go) — skipping initialization.');
     }
   }, []);
 
