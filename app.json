@@ -79,17 +79,18 @@
           "microphonePermission": "GardenPulse uses microphone access for voice-logging soil metrics and hands-free logging."
         }
       ],
-      "expo-router"
+      "expo-router",
+      "expo-font"
     ],
-    "react-native-google-mobile-ads": {
-      "android_app_id": "ca-app-pub-3940256099942544~3347511713",
-      "ios_app_id": "ca-app-pub-3940256099942544~1458002511"
-    },
     "extra": {
       "router": {},
       "eas": {
         "projectId": "4d58b862-839a-4dad-a374-0643670da78c"
       }
     }
+  },
+  "react-native-google-mobile-ads": {
+    "android_app_id": "ca-app-pub-3940256099942544~3347511713",
+    "ios_app_id": "ca-app-pub-3940256099942544~1458002511"
   }
 }

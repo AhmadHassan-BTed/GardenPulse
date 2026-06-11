@@ -1,10 +1,22 @@
 import React from 'react';
 import { View, Text, Image, Pressable, StyleSheet } from 'react-native';
-import { Feather } from '@expo/vector-icons';
+import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTheme } from '../layout/ThemeProvider';
 import CustomCard from './CustomCard';
 import CustomButton from './CustomButton';
 import CustomSwitch from './CustomSwitch';
+
+const categoryIconMap: { [key: string]: string } = {
+  herb: 'leaf',
+  vegetable: 'carrot',
+  fruit: 'food-apple',
+  flower: 'flower',
+  houseplant: 'pot-plant',
+  microgreen: 'sprout',
+  indoor: 'home-variant',
+  veggie: 'carrot',
+  micro: 'sprout',
+};
 
 export const CarePlanSummaryCard = ({ method, light, waterFreq }: any) => {
   const { Colors, Spacing, Radius } = useTheme();
@@ -43,12 +55,15 @@ export const PlantBrowseGrid = ({ categories }: { categories: string[] }) => {
   const { Colors, Spacing, Radius } = useTheme();
   return (
     <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm, marginBottom: Spacing.md }}>
-      {categories.map(c => (
-        <View key={c} style={{ width: '31%', aspectRatio: 1, backgroundColor: Colors.surface.elevated, borderRadius: Radius.md, justifyContent: 'center', alignItems: 'center' }}>
-          <Feather name="grid" size={24} color={Colors.text.muted} style={{ marginBottom: 4 }} />
-          <Text style={{ fontSize: 12, color: Colors.text.heading, fontWeight: 'bold' }}>{c}</Text>
-        </View>
-      ))}
+      {categories.map(c => {
+        const iconName = categoryIconMap[c.toLowerCase()] || 'sprout';
+        return (
+          <View key={c} style={{ width: '31%', aspectRatio: 1, backgroundColor: Colors.surface.elevated, borderRadius: Radius.md, justifyContent: 'center', alignItems: 'center' }}>
+            <MaterialCommunityIcons name={iconName as any} size={28} color={Colors.green.DEFAULT} style={{ marginBottom: 4 }} />
+            <Text style={{ fontSize: 12, color: Colors.text.heading, fontWeight: 'bold' }}>{c}</Text>
+          </View>
+        );
+      })}
     </View>
   );
 };
