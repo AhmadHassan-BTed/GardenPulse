@@ -45,21 +45,41 @@ export default function DashboardScreen() {
       try {
         const { status } = await Location.requestForegroundPermissionsAsync();
         if (status !== 'granted') {
-          if (active) setWeatherError(true);
+          if (active) {
+            setWeatherError(true);
+            setWeatherData(null);
+          }
           return;
         }
 
-        const loc = await Location.getCurrentPositionAsync({});
+        let lat: number;
+        let lon: number;
+        try {
+          const loc = await Location.getCurrentPositionAsync({});
+          lat = loc.coords.latitude;
+          lon = loc.coords.longitude;
+        } catch (e) {
+          console.warn('getCurrentPositionAsync failed:', e);
+          if (active) {
+            setWeatherError(true);
+            setWeatherData(null);
+          }
+          return;
+        }
+
         if (!active) return;
 
         const { fetchLocalWeather } = require('../../services/weather');
-        const data = await fetchLocalWeather(loc.coords.latitude, loc.coords.longitude);
+        const data = await fetchLocalWeather(lat, lon);
         if (active) {
           setWeatherData(data);
         }
       } catch (error) {
         console.error('Failed to load local weather:', error);
-        if (active) setWeatherError(true);
+        if (active) {
+          setWeatherError(true);
+          setWeatherData(null);
+        }
       }
     };
 
@@ -143,7 +163,7 @@ export default function DashboardScreen() {
               name="settings" 
               size={20} 
               color={Colors.text.heading} 
-              onPress={() => router.push('/(tabs)/profile/settings')} 
+              onPress={() => router.push('/profile/settings')} 
             />
           </View>
         }
@@ -191,7 +211,7 @@ export default function DashboardScreen() {
             ctaLabel="See What Needs Attention →"
             onPress={() => {
               setShowComeback(false);
-              router.push('/(tabs)/garden');
+              router.push('/garden');
             }}
           />
         )}
@@ -201,7 +221,7 @@ export default function DashboardScreen() {
           <SectionHeader 
             title="Today in Your Garden" 
             actionLabel="See full schedule →"
-            onActionPress={() => router.push('/(tabs)/tools/smart-scheduler')}
+            onActionPress={() => router.push('/tools/smart-scheduler')}
           />
           {pendingTasks.length > 0 ? (
             <HorizontalScrollRow>
@@ -229,7 +249,7 @@ export default function DashboardScreen() {
           <SectionHeader 
             title="Garden Health Score" 
             actionLabel="View Details →"
-            onActionPress={() => router.push('/(tabs)/profile')}
+            onActionPress={() => router.push('/profile')}
           />
           <View style={{ 
             backgroundColor: Colors.surface.glass, 
@@ -269,11 +289,11 @@ export default function DashboardScreen() {
           <SectionHeader 
             title="My Garden" 
             actionLabel="See All →"
-            onActionPress={() => router.push('/(tabs)/garden')}
+            onActionPress={() => router.push('/garden')}
           />
           {activePlants.length > 0 ? (
             <HorizontalScrollRow>
-              {activePlants.map(plant => (
+              {(activePlants || []).map(plant => (
                 <PlantCard
                   key={plant.id}
                   name={plant.name}
@@ -281,7 +301,7 @@ export default function DashboardScreen() {
                   method={plant.method}
                   healthStatus={plant.healthStatus}
                   lastLoggedDays={plant.lastLoggedDays}
-                  onPress={() => router.push(`/(tabs)/garden/plant/${plant.id}`)}
+                  onPress={() => router.push(`/garden/plant/${plant.id}`)}
                   style={{ width: 220 }}
                 />
               ))}

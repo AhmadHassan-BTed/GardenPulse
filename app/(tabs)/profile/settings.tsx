@@ -41,7 +41,7 @@ export default function SettingsScreen() {
     try {
       await clearAllData();
       Alert.alert('Account & Data Deleted', 'All data has been successfully erased from this device and cloud sync.');
-      router.replace('/(onboarding)');
+      router.replace('/');
     } catch (err: any) {
       console.error('Deletion failed:', err);
       Alert.alert('Error', 'Failed to erase data. Please try again.');

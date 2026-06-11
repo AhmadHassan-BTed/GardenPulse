@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Alert } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useTheme } from '../../components/layout/ThemeProvider';
 import ScreenWrapper from '../../components/common/ScreenWrapper';
@@ -44,7 +44,50 @@ export default function QuickLogModal() {
     return null;
   }
 
-  const activePlants = storePlants.filter((p) => !p.isArchived).map((p) => ({
+  const handleOpenCamera = async () => {
+    try {
+      const ImagePicker = require('expo-image-picker');
+      const { status } = await ImagePicker.requestCameraPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permission Required', 'Camera permission is required to take a plant photo.');
+        return;
+      }
+      const result = await ImagePicker.launchCameraAsync({
+        allowsEditing: true,
+        quality: 0.5,
+      });
+      if (!result.canceled && result.assets?.[0]?.uri) {
+        setPhotoUri(result.assets[0].uri);
+      }
+    } catch (error: any) {
+      console.error('Camera launch failed:', error);
+      Alert.alert('Error', 'Failed to open camera: ' + (error.message || 'Unknown error'));
+    }
+  };
+
+  const handleOpenGallery = async () => {
+    try {
+      const ImagePicker = require('expo-image-picker');
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permission Required', 'Gallery permission is required to select a plant photo.');
+        return;
+      }
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        quality: 0.5,
+      });
+      if (!result.canceled && result.assets?.[0]?.uri) {
+        setPhotoUri(result.assets[0].uri);
+      }
+    } catch (error: any) {
+      console.error('Gallery launch failed:', error);
+      Alert.alert('Error', 'Failed to open gallery: ' + (error.message || 'Unknown error'));
+    }
+  };
+
+  const activePlants = (storePlants || []).filter((p) => !p.isArchived).map((p) => ({
     id: p.id,
     name: p.nickname || p.name,
     imageUrl: p.imageUrl,
@@ -112,8 +155,8 @@ export default function QuickLogModal() {
         <SectionHeader title="Photos" style={{ marginTop: Spacing.sm }} />
         <PhotoCaptureArea
           capturedPhotoUri={photoUri || undefined}
-          onOpenCamera={() => setPhotoUri('https://images.unsplash.com/photo-1545241047-6083a3684587?w=500')}
-          onOpenGallery={() => setPhotoUri('https://images.unsplash.com/photo-1545241047-6083a3684587?w=500')}
+          onOpenCamera={handleOpenCamera}
+          onOpenGallery={handleOpenGallery}
           onClearPhoto={() => setPhotoUri(null)}
         />
 

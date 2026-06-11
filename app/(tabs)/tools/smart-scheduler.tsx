@@ -47,13 +47,31 @@ export default function SmartSchedulerScreen() {
     const loadWeather = async () => {
       try {
         const { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== 'granted') return;
+        if (status !== 'granted') {
+          if (active) {
+            setWeatherData(null);
+          }
+          return;
+        }
 
-        const loc = await Location.getCurrentPositionAsync({});
+        let lat: number;
+        let lon: number;
+        try {
+          const loc = await Location.getCurrentPositionAsync({});
+          lat = loc.coords.latitude;
+          lon = loc.coords.longitude;
+        } catch (e) {
+          console.warn('getCurrentPositionAsync failed:', e);
+          if (active) {
+            setWeatherData(null);
+          }
+          return;
+        }
+
         if (!active) return;
 
         const { fetchLocalWeather } = require('../../../services/weather');
-        const data = await fetchLocalWeather(loc.coords.latitude, loc.coords.longitude);
+        const data = await fetchLocalWeather(lat, lon);
         if (active) {
           setWeatherData({
             city: data.locationName,
@@ -66,6 +84,9 @@ export default function SmartSchedulerScreen() {
         }
       } catch (error) {
         console.error('Failed to load local weather:', error);
+        if (active) {
+          setWeatherData(null);
+        }
       }
     };
 
@@ -77,7 +98,7 @@ export default function SmartSchedulerScreen() {
 
   // Active unarchived plants to populate reminder selectors
   const activePlants = useMemo(() => {
-    return storePlants
+    return (storePlants || [])
       .filter((p) => !p.isArchived)
       .map((p) => ({
         id: p.id,
@@ -87,7 +108,7 @@ export default function SmartSchedulerScreen() {
 
   // Tasks due on the selected date
   const selectedDateTasks = useMemo(() => {
-    return storeTasks.filter((t) => {
+    return (storeTasks || []).filter((t) => {
       const taskDate = new Date(t.dueDate);
       return (
         taskDate.getDate() === selectedDate.getDate() &&
@@ -107,7 +128,7 @@ export default function SmartSchedulerScreen() {
       const d = new Date();
       d.setDate(today.getDate() + i);
       
-      const dayTasks = storeTasks.filter((t) => {
+      const dayTasks = (storeTasks || []).filter((t) => {
         const taskDate = new Date(t.dueDate);
         return (
           taskDate.getDate() === d.getDate() &&
@@ -117,7 +138,7 @@ export default function SmartSchedulerScreen() {
         );
       });
 
-      const taskColors = dayTasks.map((t) => {
+      const taskColors = (dayTasks || []).map((t) => {
         if (t.taskType === 'Water') return Colors.info;
         if (t.taskType === 'Feed') return Colors.success;
         if (t.taskType === 'Prune') return Colors.warning;
@@ -143,7 +164,7 @@ export default function SmartSchedulerScreen() {
     toggleTaskDone(id);
     
     // Check if remaining tasks for the day are complete
-    const tasksAfterToggle = selectedDateTasks.map((t) =>
+    const tasksAfterToggle = (selectedDateTasks || []).map((t) =>
       t.id === id ? { ...t, isDone: true } : t
     );
     
@@ -177,10 +198,16 @@ export default function SmartSchedulerScreen() {
         />
 
         {/* Real-time local weather context banner */}
-        {weatherData && (
+        {weatherData ? (
           <CustomCard padding={Spacing.md} style={{ backgroundColor: `${Colors.green.DEFAULT}10`, marginBottom: Spacing.sm, alignItems: 'center' }}>
             <CustomText style={{ fontSize: Typography.sizes.sm, color: Colors.text.body, fontWeight: 'bold' }}>
               📍 {weatherData.city} — {weatherData.condition}, {weatherData.temp}°C ({weatherData.humidity}% humidity)
+            </CustomText>
+          </CustomCard>
+        ) : (
+          <CustomCard padding={Spacing.md} style={{ backgroundColor: `${Colors.text.error}10`, marginBottom: Spacing.sm, alignItems: 'center' }}>
+            <CustomText style={{ fontSize: Typography.sizes.sm, color: Colors.text.body, fontWeight: 'bold' }}>
+              ⚠️ Weather-aware alerts and insights are unavailable. Please enable location access.
             </CustomText>
           </CustomCard>
         )}
@@ -204,7 +231,7 @@ export default function SmartSchedulerScreen() {
             
             <View style={{ gap: Spacing.sm }}>
               {selectedDateTasks.length > 0 ? (
-                selectedDateTasks.map((task) => (
+                (selectedDateTasks || []).map((task) => (
                   <TaskCard
                     key={task.id}
                     plantName={task.plantName}

@@ -74,7 +74,6 @@ interface GardenStoreState {
 
   // Destructive actions
   clearAllData: () => Promise<void>;
-  seedDemoData: () => void;
 }
 
 // Production-clean initial profile — all zeroed out
@@ -684,81 +683,6 @@ export const useGardenStore = create<GardenStoreState>()(
             console.error('Failed to delete user document from Firestore:', err);
           }
         }
-      },
-      seedDemoData: () => {
-        set((state) => {
-          if (state.clusters.length > 0) return {};
-          const defaultClusters: Cluster[] = [
-            { id: '1', name: 'Urban Jungle Collective', members: 1247, method: 'Apartment', hasRecentActivity: true, isJoined: true, location: 'Berlin Region', createdAt: 'Est. January 2024', description: 'A group for indoor plant growers sharing tips for apartment microclimates, humidity challenges, and vertical shelving.' },
-            { id: '2', name: 'Hydroponics Heroes', members: 892, method: 'Hydroponics', hasRecentActivity: false, isJoined: true, location: 'Online', createdAt: 'Est. February 2024', description: 'Hydroponic enthusiasts discussing DIY nutrient formulations, lighting setups, and automated monitoring.' },
-            { id: '3', name: 'Balcony Veggie Growers', members: 512, method: 'Soil', hasRecentActivity: false, isJoined: false, location: 'Mitte, Berlin', createdAt: 'Est. March 2024', description: 'Organic vegetable growing on city balconies.' },
-            { id: '4', name: 'Rare Orchid Collectors', members: 234, method: 'Indoor', hasRecentActivity: false, isJoined: false, location: 'Charlottenburg, Berlin', createdAt: 'Est. April 2024', description: 'Caring for orchids and exotic tropical flowers.' }
-          ];
-          const defaultPosts: CommunityPost[] = [
-            {
-              id: 'post-1',
-              clusterId: '1',
-              username: 'Sarah M.',
-              content: 'My Monstera deliciosa has finally fenestrated! 🎉 Watering every 7 days, bright indirect light. Also using the recipe calculator from Tools tab for monthly feeds.',
-              likesCount: 47,
-              commentsCount: 12,
-              methodTag: 'Hydroponics',
-              isLiked: true,
-              timestamp: new Date().toISOString()
-            },
-            {
-              id: 'post-2',
-              clusterId: '1',
-              username: 'Mike R.',
-              content: 'Question: My Pothos leaves are curling. The soil feels moist but leaves are limp. Any ideas or suggestions?',
-              likesCount: 8,
-              commentsCount: 15,
-              methodTag: 'Soil',
-              isLiked: false,
-              timestamp: new Date().toISOString()
-            }
-          ];
-          const defaultSwaps: SwapItem[] = [
-            { id: 'swap-1', clusterId: '1', itemName: 'Golden Pothos Cuttings', type: 'Cutting', location: 'Kreuzberg' },
-            { id: 'swap-2', clusterId: '1', itemName: 'Organic Fertilizer Pellets', type: 'Nutrient', location: 'Neukölln' }
-          ];
-          const defaultGuides: CreatorGuide[] = [
-            { id: 'guide-1', title: 'Hydroponic Basil Masterclass', status: 'Live', views: 1420, revenue: '$145.20', content: 'Step by step guide to growing basil hydroponically.' },
-            { id: 'guide-2', title: 'Monstera Propagation Secrets', status: 'Draft', views: 0, revenue: '$0.00', content: 'Secrets to propagate Monstera plants successfully.' }
-          ];
-          const defaultSuccessStats = [
-            { plantName: 'Cherry Tomatoes', successRate: 87, growerCount: 342, trend: 'up' as const },
-            { plantName: 'Genovese Basil', successRate: 92, growerCount: 512, trend: 'flat' as const },
-            { plantName: 'Fiddle Leaf Fig', successRate: 78, growerCount: 124, trend: 'down' as const },
-          ];
-          const defaultFeaturedWinner = {
-            username: 'green_thumb_berlin',
-            challengeName: 'Best Apartment Herb Harvest',
-            methodTag: 'Balcony',
-            prizeLabel: 'Full Grow Light Kit'
-          };
-
-          // Sync seed data to Firestore asynchronously if logged in
-          const userId = state.userProfile.userId;
-          const { isFirebaseConfigured } = require('../services/firebase');
-          if (userId && isFirebaseConfigured) {
-            const { doc, setDoc } = require('firebase/firestore');
-            const { firestore } = require('../services/firebase');
-            defaultClusters.forEach(c => setDoc(doc(firestore, `users/${userId}/clusters`, c.id), c).catch(() => {}));
-            defaultPosts.forEach(p => setDoc(doc(firestore, `users/${userId}/posts`, p.id), p).catch(() => {}));
-            defaultSwaps.forEach(s => setDoc(doc(firestore, `users/${userId}/swaps`, s.id), s).catch(() => {}));
-            defaultGuides.forEach(g => setDoc(doc(firestore, `users/${userId}/guides`, g.id), g).catch(() => {}));
-          }
-
-          return {
-            clusters: defaultClusters,
-            posts: defaultPosts,
-            swaps: defaultSwaps,
-            creatorGuides: defaultGuides,
-            successStats: defaultSuccessStats,
-            featuredWinner: defaultFeaturedWinner
-          };
-        });
       }
     }),
     {
@@ -776,25 +700,18 @@ export const useGardenStore = create<GardenStoreState>()(
                 signInAnonymously()
                   .then((user: any) => {
                     state.updateProfile({ userId: user.uid });
-                    console.log('Successfully authenticated with Firebase UID:', user.uid);
                   })
                   .catch((err: any) => {
                     console.warn('Firebase anonymous sign in failed on hydration, falling back to local-mock-user-id:', err.message || err);
                     state.updateProfile({ userId: 'local-mock-user-id' });
                   });
               } else {
-                console.log('Firebase not configured (using placeholders) — using local mock user ID.');
                 state.updateProfile({ userId: 'local-mock-user-id' });
               }
             } catch (err) {
               console.warn('Failed to load Firebase service on hydration, falling back to local-mock-user-id:', err);
               state.updateProfile({ userId: 'local-mock-user-id' });
             }
-          }
-
-          // If clusters/guides are empty, seed them with demo data so the app has content
-          if (!state.clusters || state.clusters.length === 0) {
-            state.seedDemoData();
           }
         }
       },

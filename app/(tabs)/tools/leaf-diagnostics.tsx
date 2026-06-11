@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { View, ScrollView, Pressable, StyleSheet } from 'react-native';
+import { View, ScrollView, Pressable, StyleSheet, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { useTheme } from '../../../components/layout/ThemeProvider';
@@ -43,7 +43,7 @@ export default function LeafDiagnosticsScreen() {
     if (!permission || !permission.granted) {
       const result = await requestPermission();
       if (!result.granted) {
-        alert('Camera permission is required to analyze leaf diseases.');
+        Alert.alert('Permission Required', 'Camera permission is required to analyze leaf diseases.');
         return;
       }
     }
@@ -83,7 +83,7 @@ export default function LeafDiagnosticsScreen() {
       }
     } catch (error: any) {
       console.error('Leaf analysis failed:', error);
-      alert('AI Diagnosis failed: ' + (error.message || 'Unknown error. Please check your connection and API keys.'));
+      Alert.alert('AI Diagnosis Failed', error.message || 'Unknown error. Please check your connection and API keys.');
       setViewState('default');
     }
   };
@@ -91,6 +91,11 @@ export default function LeafDiagnosticsScreen() {
   const handleOpenGallery = async () => {
     try {
       const ImagePicker = require('expo-image-picker');
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permission Required', 'Gallery permission is required to select a leaf image.');
+        return;
+      }
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
@@ -116,7 +121,7 @@ export default function LeafDiagnosticsScreen() {
       }
     } catch (error: any) {
       console.error('Gallery analysis failed:', error);
-      alert('AI Diagnosis failed: ' + (error.message || 'Unknown error. Please check your connection and API keys.'));
+      Alert.alert('AI Diagnosis Failed', error.message || 'Unknown error. Please check your connection and API keys.');
       setViewState('default');
     }
   };

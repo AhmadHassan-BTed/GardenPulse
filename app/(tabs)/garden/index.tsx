@@ -39,7 +39,7 @@ export default function PlantListScreen() {
     return null;
   }
 
-  const activePlants = storePlants.filter((p) => !p.isArchived);
+  const activePlants = (storePlants || []).filter((p) => !p.isArchived);
 
   // Filter & Search Logic
   const filteredPlants = useMemo(() => {
@@ -71,7 +71,6 @@ export default function PlantListScreen() {
   };
 
   const handleBatchWater = () => {
-    console.log(`Watering batch of ${selectedIds.length} plants`);
     selectedIds.forEach((id) => {
       updatePlant(id, { lastLoggedDays: 0, healthStatus: 'healthy' });
     });
@@ -79,7 +78,6 @@ export default function PlantListScreen() {
   };
 
   const handleBatchFeed = () => {
-    console.log(`Feeding batch of ${selectedIds.length} plants`);
     selectedIds.forEach((id) => {
       updatePlant(id, { lastLoggedDays: 0 });
     });
@@ -92,7 +90,6 @@ export default function PlantListScreen() {
   };
 
   const handleBatchArchive = () => {
-    console.log(`Archiving batch of ${selectedIds.length} plants`);
     selectedIds.forEach((id) => {
       archivePlant(id, 'Batch Archived');
     });
@@ -159,7 +156,7 @@ export default function PlantListScreen() {
         {/* Plant Cards Layout */}
         {filteredPlants.length > 0 ? (
           <View style={isGrid ? { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.xs } : { gap: Spacing.sm }}>
-            {filteredPlants.map((plant) => (
+            {(filteredPlants || []).map((plant) => (
               <View 
                 key={plant.id} 
                 style={[

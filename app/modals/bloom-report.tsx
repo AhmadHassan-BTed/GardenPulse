@@ -29,8 +29,8 @@ export default function WeeklyBloomReportModal() {
   const weeklyStats = useMemo(() => {
     const now = new Date();
     const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-    const weekLogs = storeLogs.filter((l) => new Date(l.timestamp) >= oneWeekAgo);
-    const plantsLoggedSet = new Set(weekLogs.map((l) => l.plantId));
+    const weekLogs = (storeLogs || []).filter((l) => new Date(l.timestamp) >= oneWeekAgo);
+    const plantsLoggedSet = new Set((weekLogs || []).map((l) => l.plantId));
     return {
       plantsLogged: plantsLoggedSet.size,
       logEntries: weekLogs.length,
@@ -39,7 +39,7 @@ export default function WeeklyBloomReportModal() {
 
   // Compute health delta by comparing older vs newer plants
   const healthDelta = useMemo(() => {
-    const activePlants = storePlants.filter((p) => !p.isArchived);
+    const activePlants = (storePlants || []).filter((p) => !p.isArchived);
     if (activePlants.length < 2) return 0;
     
     const now = new Date();
@@ -75,18 +75,34 @@ export default function WeeklyBloomReportModal() {
       try {
         const { status } = await Location.requestForegroundPermissionsAsync();
         if (status !== 'granted') {
-          if (active) setInsight('Environmental data unavailable — check location permissions.');
+          if (active) {
+            setInsight('Weather-aware environmental insights are unavailable because location permission is disabled.');
+          }
           return;
         }
-        const loc = await Location.getCurrentPositionAsync({});
+
+        let lat: number;
+        let lon: number;
+        try {
+          const loc = await Location.getCurrentPositionAsync({});
+          lat = loc.coords.latitude;
+          lon = loc.coords.longitude;
+        } catch (e) {
+          console.warn('getCurrentPositionAsync failed:', e);
+          if (active) {
+            setInsight('Weather-aware environmental insights are unavailable because your location could not be determined.');
+          }
+          return;
+        }
+
         if (!active) return;
         const { fetchLocalWeather } = require('../../services/weather');
-        const data = await fetchLocalWeather(loc.coords.latitude, loc.coords.longitude);
+        const data = await fetchLocalWeather(lat, lon);
         if (active && data) {
           setInsight(`A warm spell of ${data.temp}°C with ${data.humidity}% humidity in ${data.locationName} affected transpirational growth. High lighting conditions (UV index ${data.uvIndex}) helped speed up growth!`);
         }
       } catch (err) {
-        if (active) setInsight('Unable to contact weather service for local report.');
+        if (active) setInsight('Weather-aware environmental insights are unavailable due to a weather service connection issue.');
       }
     };
     loadWeather();

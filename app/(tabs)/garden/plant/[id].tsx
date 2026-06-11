@@ -83,13 +83,13 @@ export default function PlantDetailScreen() {
   }, [plant?.id, plant?.method]);
 
   const plantLogs = useMemo(() => {
-    return storeLogs
+    return (storeLogs || [])
       .filter((l) => l.plantId === id)
       .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
   }, [storeLogs, id]);
 
   const plantTasks = useMemo(() => {
-    return storeTasks.filter((t) => t.plantId === id);
+    return (storeTasks || []).filter((t) => t.plantId === id);
   }, [storeTasks, id]);
 
   const formattedDate = useMemo(() => {
@@ -117,7 +117,7 @@ export default function PlantDetailScreen() {
   };
 
   const formattedLogs = useMemo(() => {
-    return plantLogs.map((log) => {
+    return (plantLogs || []).map((log) => {
       const date = new Date(log.timestamp);
       const formattedTimestamp = date.toLocaleDateString('en-US', {
         month: 'short',
@@ -129,7 +129,7 @@ export default function PlantDetailScreen() {
         hour12: true,
       });
 
-      const activities = log.activities.map((act, idx) => ({
+      const activities = (log.activities || []).map((act, idx) => ({
         id: `${log.id}-act-${idx}`,
         label: act,
         color: getActivityColor(act),
@@ -262,7 +262,7 @@ export default function PlantDetailScreen() {
               onActionPress={() => router.push('/tools/smart-scheduler')}
             />
             <View style={{ gap: Spacing.xs }}>
-              {plantTasks.map((task) => (
+              {(plantTasks || []).map((task) => (
                 <TaskCard
                   key={task.id}
                   plantName={plant.nickname || plant.name}

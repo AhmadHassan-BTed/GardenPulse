@@ -23,7 +23,7 @@ export default function CommunityHubScreen() {
   const { Colors, Spacing, Typography } = theme;
 
   const [activeTab, setActiveTab] = useState('Local');
-  const [city, setCity] = useState('Berlin');
+  const [city, setCity] = useState('Locating...');
   const [weatherData, setWeatherData] = useState<any | null>(null);
 
   const clusters = useGardenStore((state) => state.clusters);
@@ -38,25 +38,50 @@ export default function CommunityHubScreen() {
     const loadLocationAndWeather = async () => {
       try {
         const { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== 'granted') return;
-        const loc = await Location.getCurrentPositionAsync({});
+        if (status !== 'granted') {
+          if (active) {
+            setCity('Location Access Required');
+            setWeatherData(null);
+          }
+          return;
+        }
+
+        let lat: number;
+        let lon: number;
+        try {
+          const loc = await Location.getCurrentPositionAsync({});
+          lat = loc.coords.latitude;
+          lon = loc.coords.longitude;
+        } catch (e) {
+          console.warn('getCurrentPositionAsync failed:', e);
+          if (active) {
+            setCity('Location Access Required');
+            setWeatherData(null);
+          }
+          return;
+        }
+
         if (!active) return;
         const { fetchLocalWeather } = require('../../../services/weather');
-        const data = await fetchLocalWeather(loc.coords.latitude, loc.coords.longitude);
+        const data = await fetchLocalWeather(lat, lon);
         if (active) {
           setCity(data.locationName);
           setWeatherData(data);
         }
       } catch (err) {
         console.warn('Failed to load local weather for community:', err);
+        if (active) {
+          setCity('Location Access Required');
+          setWeatherData(null);
+        }
       }
     };
     loadLocationAndWeather();
     return () => { active = false; };
   }, []);
 
-  const clustersList = useMemo(() => clusters.filter((c) => c.isJoined), [clusters]);
-  const suggestedList = useMemo(() => clusters.filter((c) => !c.isJoined), [clusters]);
+  const clustersList = useMemo(() => (clusters || []).filter((c) => c.isJoined), [clusters]);
+  const suggestedList = useMemo(() => (clusters || []).filter((c) => !c.isJoined), [clusters]);
 
   const handleJoinPress = (clusterId: string, fromJoined: boolean) => {
     updateCluster(clusterId, { isJoined: !fromJoined, hasRecentActivity: !fromJoined });
@@ -80,7 +105,13 @@ export default function CommunityHubScreen() {
         {/* Top Local Insight card */}
         <LocalContextCard
           city={city}
-          insight={weatherData ? `Tomato & herb success rate is high at ${weatherData.humidity}% humidity in ${city}. Monitor watering!` : `Urban gardening success rates in ${city} are stable. Check the local grow map!`}
+          insight={
+            city === 'Location Access Required'
+              ? 'To see what is thriving nearby, view your environmental factors, or connect with other growers in your area, please enable location access.'
+              : weatherData
+                ? `Tomato & herb success rate is high at ${weatherData.humidity}% humidity in ${city}. Monitor watering!`
+                : `Urban gardening success rates in ${city} are stable. Check the local grow map!`
+          }
           onPress={() => router.push('/community/local-map')}
         />
 
@@ -95,7 +126,7 @@ export default function CommunityHubScreen() {
           <View style={{ gap: Spacing.md }}>
             <SectionHeader title="What's Thriving Nearby" />
             <HorizontalScrollRow>
-              {successStats.map((stat, idx) => (
+              {(successStats || []).map((stat, idx) => (
                 <SuccessStatCard
                   key={idx}
                   plantName={stat.plantName}
@@ -120,31 +151,43 @@ export default function CommunityHubScreen() {
         {activeTab === 'Clusters' && (
           <View style={{ gap: Spacing.md }}>
             <SectionHeader title="My Clusters" />
-            {clustersList.map((cluster) => (
-              <ClusterCard
-                key={cluster.id}
-                name={cluster.name}
-                memberCount={cluster.members}
-                method={cluster.method}
-                isJoined={true}
-                hasRecentActivity={cluster.hasRecentActivity}
-                onJoinPress={() => handleJoinPress(cluster.id, true)}
-                onPress={() => handleClusterSelect(cluster.id)}
-              />
-            ))}
+            {clustersList.length > 0 ? (
+              (clustersList || []).map((cluster) => (
+                <ClusterCard
+                  key={cluster.id}
+                  name={cluster.name}
+                  memberCount={cluster.members}
+                  method={cluster.method}
+                  isJoined={true}
+                  hasRecentActivity={cluster.hasRecentActivity}
+                  onJoinPress={() => handleJoinPress(cluster.id, true)}
+                  onPress={() => handleClusterSelect(cluster.id)}
+                />
+              ))
+            ) : (
+              <CustomText style={{ color: Colors.text.muted, textAlign: 'center', marginVertical: Spacing.md }}>
+                You have not joined any clusters yet.
+              </CustomText>
+            )}
 
             <SectionHeader title="Suggested Clusters" style={{ marginTop: Spacing.md }} />
-            {suggestedList.map((cluster) => (
-              <ClusterCard
-                key={cluster.id}
-                name={cluster.name}
-                memberCount={cluster.members}
-                method={cluster.method}
-                isJoined={false}
-                onJoinPress={() => handleJoinPress(cluster.id, false)}
-                onPress={() => handleClusterSelect(cluster.id)}
-              />
-            ))}
+            {suggestedList.length > 0 ? (
+              (suggestedList || []).map((cluster) => (
+                <ClusterCard
+                  key={cluster.id}
+                  name={cluster.name}
+                  memberCount={cluster.members}
+                  method={cluster.method}
+                  isJoined={false}
+                  onJoinPress={() => handleJoinPress(cluster.id, false)}
+                  onPress={() => handleClusterSelect(cluster.id)}
+                />
+              ))
+            ) : (
+              <CustomText style={{ color: Colors.text.muted, textAlign: 'center', marginVertical: Spacing.md }}>
+                No suggested clusters available.
+              </CustomText>
+            )}
           </View>
         )}
 

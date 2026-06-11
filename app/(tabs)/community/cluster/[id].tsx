@@ -29,10 +29,10 @@ export default function ClusterDetailScreen() {
   const swaps = useGardenStore((state) => state.swaps);
   const userProfile = useGardenStore((state) => state.userProfile);
 
-  const cluster = useMemo(() => clusters.find((c) => c.id === id), [clusters, id]);
+  const cluster = useMemo(() => (clusters || []).find((c) => c.id === id), [clusters, id]);
 
-  const clusterPosts = useMemo(() => allPosts.filter((p) => p.clusterId === id), [allPosts, id]);
-  const clusterSwaps = useMemo(() => swaps.filter((s) => s.clusterId === id), [swaps, id]);
+  const clusterPosts = useMemo(() => (allPosts || []).filter((p) => p.clusterId === id), [allPosts, id]);
+  const clusterSwaps = useMemo(() => (swaps || []).filter((s) => s.clusterId === id), [swaps, id]);
 
   const mockMembers = useMemo(() => [
     { name: 'Sarah M.', joinedDate: 'Jan 12, 2024' },
@@ -107,7 +107,7 @@ export default function ClusterDetailScreen() {
             <SectionHeader title="Recent Activity" />
             <View style={{ gap: Spacing.sm }}>
               {clusterPosts.length > 0 ? (
-                clusterPosts.map((post) => (
+                (clusterPosts || []).map((post) => (
                   <PostCard
                     key={post.id}
                     username={post.username}
@@ -116,10 +116,18 @@ export default function ClusterDetailScreen() {
                     commentsCount={post.commentsCount}
                     isLiked={post.isLiked}
                     methodTag={post.methodTag}
-                    onLike={() => {}}
-                    onComment={() => {}}
-                    onSave={() => {}}
-                    onReport={() => {}}
+                    onLike={() => {
+                      Alert.alert('Post Liked', 'You liked this post!');
+                    }}
+                    onComment={() => {
+                      Alert.alert('Comments', 'Comments section will be available soon.');
+                    }}
+                    onSave={() => {
+                      Alert.alert('Saved', 'This post has been saved to your bookmarks.');
+                    }}
+                    onReport={() => {
+                      Alert.alert('Reported', 'Thank you for reporting. This post has been sent to moderation.');
+                    }}
                   />
                 ))
               ) : (
@@ -133,7 +141,7 @@ export default function ClusterDetailScreen() {
           <View style={{ gap: Spacing.sm }}>
             <SectionHeader title="Cluster Members" />
             <View style={{ gap: Spacing.sm }}>
-              {mockMembers.map((member, idx) => (
+              {(mockMembers || []).map((member, idx) => (
                 <MemberRow
                   key={idx}
                   name={member.name}
@@ -149,7 +157,7 @@ export default function ClusterDetailScreen() {
             <SectionHeader title="Seed & Clipping Swaps" />
             <View style={{ gap: Spacing.sm }}>
               {clusterSwaps.length > 0 ? (
-                clusterSwaps.map((swap) => (
+                (clusterSwaps || []).map((swap) => (
                   <SwapCard
                     key={swap.id}
                     itemName={swap.itemName}

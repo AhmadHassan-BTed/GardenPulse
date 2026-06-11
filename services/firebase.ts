@@ -48,7 +48,6 @@ const storage: FirebaseStorage = getStorage(app);
 // Helper authentication functions
 export async function signInAnonymously() {
   if (!isFirebaseConfigured) {
-    console.log('Firebase not configured (using placeholders) — using local mock user ID.');
     return { uid: 'local-mock-user-id' } as any;
   }
   try {

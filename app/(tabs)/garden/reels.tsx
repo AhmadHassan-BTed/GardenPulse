@@ -19,7 +19,8 @@ export default function ReelsScreen() {
   const theme = useTheme();
   const { Colors, Spacing, Radius, Typography } = theme;
 
-  const reels = useGardenStore((state) => state.reels);
+  const storeReels = useGardenStore((state) => state.reels);
+  const reels = storeReels || [];
   const addReel = useGardenStore((state) => state.addReel);
   const plants = useGardenStore((state) => state.plants);
 

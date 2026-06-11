@@ -42,16 +42,30 @@ export default function LocalGrowMapScreen() {
         const { status } = await Location.requestForegroundPermissionsAsync();
         if (status !== 'granted') {
           if (active) {
-            setCity('Permissions Denied');
+            setCity('Location Access Required');
+            setMarkers([]);
             setLoading(false);
           }
           return;
         }
 
-        const loc = await Location.getCurrentPositionAsync({});
-        if (!active) return;
+        let latitude: number;
+        let longitude: number;
+        try {
+          const loc = await Location.getCurrentPositionAsync({});
+          latitude = loc.coords.latitude;
+          longitude = loc.coords.longitude;
+        } catch (e) {
+          console.warn('getCurrentPositionAsync failed:', e);
+          if (active) {
+            setCity('Location Access Required');
+            setMarkers([]);
+            setLoading(false);
+          }
+          return;
+        }
 
-        const { latitude, longitude } = loc.coords;
+        if (!active) return;
 
         // Try to fetch local weather / city name
         try {
@@ -62,10 +76,18 @@ export default function LocalGrowMapScreen() {
           }
         } catch {
           // Geocode fallback
-          const geo = await Location.reverseGeocodeAsync({ latitude, longitude });
-          if (active && geo && geo.length > 0) {
-            const first = geo[0];
-            setCity(first.city || first.region || 'Local Area');
+          try {
+            const geo = await Location.reverseGeocodeAsync({ latitude, longitude });
+            if (active && geo && geo.length > 0) {
+              const first = geo[0];
+              setCity(first.city || first.region || 'Local Area');
+            } else if (active) {
+              setCity('Local Area');
+            }
+          } catch {
+            if (active) {
+              setCity('Local Area');
+            }
           }
         }
 
@@ -85,7 +107,8 @@ export default function LocalGrowMapScreen() {
       } catch (error) {
         console.error('Failed to load location for map:', error);
         if (active) {
-          setCity('Unknown Location');
+          setCity('Location Access Required');
+          setMarkers([]);
           setLoading(false);
         }
       }

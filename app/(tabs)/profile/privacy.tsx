@@ -96,7 +96,7 @@ export default function PrivacyDashboardScreen() {
     try {
       await clearAllData();
       Alert.alert('Success', 'All data has been permanently deleted.');
-      router.replace('/(onboarding)');
+      router.replace('/');
     } catch (err) {
       Alert.alert('Error', 'Failed to delete account data.');
     }

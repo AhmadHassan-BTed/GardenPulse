@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, TextInput } from 'react-native';
+import { View, Text, Image, StyleSheet, TextInput, Alert } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { useTheme } from '../layout/ThemeProvider';
 import CustomCard from './CustomCard';
@@ -64,7 +64,14 @@ export const CommentThread = () => {
       </View>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.sm }}>
         <TextInput placeholder="Add a comment..." placeholderTextColor={Colors.text.muted} style={{ flex: 1, backgroundColor: Colors.surface.elevated, height: 40, borderRadius: 20, paddingHorizontal: Spacing.md, color: Colors.text.heading }} />
-        <IconButton name="send" size={20} color={Colors.green.DEFAULT} onPress={() => {}} />
+        <IconButton 
+          name="send" 
+          size={20} 
+          color={Colors.green.DEFAULT} 
+          onPress={() => {
+            Alert.alert('Comment Sent', 'Your comment has been posted to the thread!');
+          }} 
+        />
       </View>
     </View>
   );

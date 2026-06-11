@@ -5,7 +5,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import React, { useState, useMemo } from 'react';
-import { View, Text, StyleSheet, ScrollView, ViewStyle, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, ViewStyle, ActivityIndicator, Alert } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { useTheme } from '../layout/ThemeProvider';
 import CustomCard from './CustomCard';
@@ -131,10 +131,23 @@ const ReelGeneratorFlow: React.FC<ReelGeneratorFlowProps> = ({ onClose, onComple
             </CustomCard>
             
             <Text style={styles.sectionTitle}>Date Range</Text>
-            {/* Using text links as placeholders for Date Pickers to keep it contained */}
             <View style={{ flexDirection: 'row', gap: Spacing.md, marginBottom: Spacing.xl }}>
-              <CustomButton label="Start: Jan 1" variant="secondary" onPress={() => {}} style={{ flex: 1 }} />
-              <CustomButton label="End: Today" variant="secondary" onPress={() => {}} style={{ flex: 1 }} />
+              <CustomButton 
+                label="Start: Jan 1" 
+                variant="secondary" 
+                onPress={() => {
+                  Alert.alert('Date Range', 'Automatic date range selection requires native platform modal integration.');
+                }} 
+                style={{ flex: 1 }} 
+              />
+              <CustomButton 
+                label="End: Today" 
+                variant="secondary" 
+                onPress={() => {
+                  Alert.alert('Date Range', 'Automatic date range selection requires native platform modal integration.');
+                }} 
+                style={{ flex: 1 }} 
+              />
             </View>
           </>
         )}

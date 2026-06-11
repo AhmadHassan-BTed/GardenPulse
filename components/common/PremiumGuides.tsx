@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Alert } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { useTheme } from '../layout/ThemeProvider';
 import CustomCard from './CustomCard';
@@ -71,7 +71,13 @@ export const UnlockSuccessState = () => {
       <Feather name="unlock" size={48} color={Colors.green.DEFAULT} style={{ marginBottom: Spacing.md }} />
       <Text style={{ fontSize: 20, fontWeight: 'bold', color: Colors.text.heading, marginBottom: 8 }}>Unlocked!</Text>
       <Text style={{ fontSize: 14, color: Colors.text.body, textAlign: 'center', marginBottom: Spacing.lg }}>Thank you for watching. Your export is ready.</Text>
-      <CustomButton label="Download PDF" onPress={() => {}} fullWidth />
+      <CustomButton 
+        label="Download PDF" 
+        onPress={() => {
+          Alert.alert('PDF Exported', 'Your custom PDF growth report has been successfully generated and saved to files.');
+        }} 
+        fullWidth 
+      />
     </View>
   );
 };

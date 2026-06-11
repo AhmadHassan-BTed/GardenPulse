@@ -19,7 +19,8 @@ export default function CreatorStudioScreen() {
   const theme = useTheme();
   const { Colors, Spacing, Typography } = theme;
 
-  const creatorGuides = useGardenStore((state) => state.creatorGuides);
+  const storeCreatorGuides = useGardenStore((state) => state.creatorGuides);
+  const creatorGuides = storeCreatorGuides || [];
   const addCreatorGuide = useGardenStore((state) => state.addCreatorGuide);
   const updateCreatorGuide = useGardenStore((state) => state.updateCreatorGuide);
 

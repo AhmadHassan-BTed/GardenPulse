@@ -118,10 +118,20 @@ const GrowMapView: React.FC<GrowMapViewProps> = ({
           ))}
         </MapView>
       */}
-      <View style={styles.mapPlaceholder}>
-        <Feather name="map" size={48} color={Colors.text.muted} />
-        <Text style={{ color: Colors.text.muted, marginTop: 8 }}>Map View Active</Text>
-      </View>
+      {city === 'Location Access Required' ? (
+        <View style={styles.mapPlaceholder}>
+          <Feather name="map-pin" size={48} color={Colors.text.muted} />
+          <Text style={{ color: Colors.text.heading, fontWeight: 'bold', marginTop: 12 }}>Location Access Required</Text>
+          <Text style={{ color: Colors.text.muted, marginTop: 4, textAlign: 'center', paddingHorizontal: Spacing.lg }}>
+            Please enable location services in your device settings to view local growth data.
+          </Text>
+        </View>
+      ) : (
+        <View style={styles.mapPlaceholder}>
+          <Feather name="map" size={48} color={Colors.text.muted} />
+          <Text style={{ color: Colors.text.muted, marginTop: 8 }}>Map View Active</Text>
+        </View>
+      )}
 
       {/* Floating Controls */}
       <View style={styles.controlsOverlay}>
@@ -134,13 +144,15 @@ const GrowMapView: React.FC<GrowMapViewProps> = ({
       </View>
 
       {/* Bottom Stats Strip (MapStatsStrip) */}
-      <CustomCard variant="default" padding={Spacing.md} style={styles.statsStrip}>
-        <View style={styles.statsTextWrapper}>
-          <Text style={styles.statsPrimary}>{totalTracked} plants tracked in {city}</Text>
-          <Text style={styles.statsSecondary}>Most popular: {popularPlant}</Text>
-        </View>
-        <ZoneBadge zone={currentZone} style={{ backgroundColor: `${Colors.green.DEFAULT}15` }} />
-      </CustomCard>
+      {city !== 'Location Access Required' && (
+        <CustomCard variant="default" padding={Spacing.md} style={styles.statsStrip}>
+          <View style={styles.statsTextWrapper}>
+            <Text style={styles.statsPrimary}>{totalTracked} plants tracked in {city}</Text>
+            <Text style={styles.statsSecondary}>Most popular: {popularPlant}</Text>
+          </View>
+          <ZoneBadge zone={currentZone} style={{ backgroundColor: `${Colors.green.DEFAULT}15` }} />
+        </CustomCard>
+      )}
     </View>
   );
 };

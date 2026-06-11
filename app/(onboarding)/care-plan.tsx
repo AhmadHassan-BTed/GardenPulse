@@ -102,7 +102,7 @@ export default function CarePlanScreen() {
         <LocalContextCard
           city={location || 'Berlin'}
           insight={`Growers in this region report a high success rate for ${plantType || 'this variety'} matching your setup.`}
-          onPress={() => console.log('View Map pressed')}
+          onPress={() => router.push('/community/local-map')}
         />
 
         <View style={{ gap: Spacing.md }}>

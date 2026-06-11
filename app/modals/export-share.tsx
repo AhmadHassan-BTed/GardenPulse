@@ -34,7 +34,6 @@ export default function ExportShareModal() {
     }
 
     if (!hasAdMob) {
-      console.log('AdMob native module not available — skipping Rewarded Ad setup.');
       return;
     }
 

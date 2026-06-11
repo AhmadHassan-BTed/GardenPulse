@@ -5,7 +5,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import React, { useState, useMemo } from 'react';
-import { View, Text, Image, StyleSheet, Pressable, LayoutAnimation, ViewStyle } from 'react-native';
+import { View, Text, Image, StyleSheet, Pressable, LayoutAnimation, ViewStyle, Alert } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { useTheme } from '../layout/ThemeProvider';
 import CustomCard from './CustomCard';
@@ -226,7 +226,15 @@ const LogTimelineEntry: React.FC<LogTimelineEntryProps> = ({
                   )}
                   {hasVoiceNote && (
                     <View style={styles.voiceNoteCard}>
-                      <IconButton name="play" size={16} color={Colors.green.DEFAULT} onPress={() => {}} filled />
+                      <IconButton 
+                        name="play" 
+                        size={16} 
+                        color={Colors.green.DEFAULT} 
+                        onPress={() => {
+                          Alert.alert('Playback', 'Voice notes playback requires expo-av and native audio hardware permission.');
+                        }} 
+                        filled 
+                      />
                       {/* Visual placeholder for an audio waveform */}
                       <Image 
                         source={require('../../assets/waveform-placeholder.png')} // Replace with your asset/SVG

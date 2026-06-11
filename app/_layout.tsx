@@ -52,7 +52,7 @@ export default function RootLayout() {
         mobileAds()
           .initialize()
           .then((adapterStatuses: any) => {
-            console.log('AdMob initialization complete:', adapterStatuses);
+            // AdMob initialization complete
           })
           .catch((err: any) => {
             console.error('AdMob initialization failed:', err);
@@ -60,8 +60,6 @@ export default function RootLayout() {
       } catch (error) {
         console.error('Failed to require react-native-google-mobile-ads:', error);
       }
-    } else {
-      console.log('AdMob native module not available (e.g. running in Web or Expo Go) — skipping initialization.');
     }
   }, []);
 

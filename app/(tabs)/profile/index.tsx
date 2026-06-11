@@ -54,16 +54,38 @@ export default function ProfileScreen() {
     const loadWeather = async () => {
       try {
         const { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== 'granted') return;
-        const loc = await Location.getCurrentPositionAsync({});
+        if (status !== 'granted') {
+          if (active) {
+            setHumidity('N/A');
+          }
+          return;
+        }
+
+        let lat: number;
+        let lon: number;
+        try {
+          const loc = await Location.getCurrentPositionAsync({});
+          lat = loc.coords.latitude;
+          lon = loc.coords.longitude;
+        } catch (e) {
+          console.warn('getCurrentPositionAsync failed:', e);
+          if (active) {
+            setHumidity('N/A');
+          }
+          return;
+        }
+
         if (!active) return;
         const { fetchLocalWeather } = require('../../../services/weather');
-        const data = await fetchLocalWeather(loc.coords.latitude, loc.coords.longitude);
+        const data = await fetchLocalWeather(lat, lon);
         if (active && data) {
           setHumidity(`${data.humidity}%`);
         }
       } catch (err) {
         console.warn('Failed to load weather for profile:', err);
+        if (active) {
+          setHumidity('N/A');
+        }
       }
     };
     loadWeather();
@@ -93,7 +115,7 @@ export default function ProfileScreen() {
       { id: '1', name: 'Soil Moisture', value: avgMoisture, status: avgMoisture !== 'N/A' && parseInt(avgMoisture) > 30 && parseInt(avgMoisture) < 70 ? 'healthy' as const : 'warning' as const, icon: 'droplet' },
       { id: '2', name: 'Light UV Index', value: avgUv !== 'N/A' ? `${avgUv}` : '—', status: 'healthy' as const, icon: 'sun' },
       { id: '3', name: 'Ambient Temp', value: avgTemp, status: avgTemp !== 'N/A' && parseInt(avgTemp) > 15 && parseInt(avgTemp) < 35 ? 'healthy' as const : 'warning' as const, icon: 'thermometer' },
-      { id: '4', name: 'Relative Humidity', value: humidity, status: humidity !== '—' && parseInt(humidity) > 40 && parseInt(humidity) < 80 ? 'healthy' as const : 'warning' as const, icon: 'wind' },
+      { id: '4', name: 'Relative Humidity', value: humidity, status: humidity !== '—' && humidity !== 'N/A' && parseInt(humidity) > 40 && parseInt(humidity) < 80 ? 'healthy' as const : 'warning' as const, icon: 'wind' },
       { id: '5', name: 'Water pH', value: avgPh, status: 'healthy' as const, icon: 'sliders' },
       { id: '6', name: 'Water EC', value: avgEc !== 'N/A' ? `${avgEc} mS/cm` : 'N/A', status: 'healthy' as const, icon: 'zap' },
     ];
@@ -113,9 +135,9 @@ export default function ProfileScreen() {
 
   // Determine earned badges based on store data
   const badges = useMemo(() => {
-    const totalPlants = storePlants.length;
-    const hasHydro = storePlants.some((p) => p.method === 'Hydro');
-    return badgeDefinitions.map((b) => {
+    const totalPlants = (storePlants || []).length;
+    const hasHydro = (storePlants || []).some((p) => p.method === 'Hydro');
+    return (badgeDefinitions || []).map((b) => {
       let isEarned = false;
       let earnedDate: string | undefined;
       if (b.id === '1' && totalPlants >= 3) { isEarned = true; earnedDate = 'Auto-earned'; }
@@ -199,7 +221,7 @@ export default function ProfileScreen() {
 
         <SectionHeader title="Earned Badges" />
         <BadgeGrid
-          badges={badges.map(b => ({
+          badges={(badges || []).map(b => ({
             id: b.id,
             name: b.name,
             icon: b.icon,

@@ -54,7 +54,6 @@ export default function PermissionModal() {
   const info = permissionData[activeType] || permissionData.location;
 
   const handleAllow = () => {
-    console.log(`Permission granted for: ${activeType}`);
     if (next) {
       router.replace(next as any);
     } else {
@@ -63,7 +62,6 @@ export default function PermissionModal() {
   };
 
   const handleDismiss = () => {
-    console.log(`Permission dismissed for: ${activeType}`);
     if (next) {
       router.replace(next as any);
     } else {
@@ -72,7 +70,7 @@ export default function PermissionModal() {
   };
 
   const handleLearnPrivacy = () => {
-    router.push('/(tabs)/profile/privacy');
+    router.push('/profile/privacy');
   };
 
   return (

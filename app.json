@@ -14,6 +14,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.gardenpulse.app",
+      "buildNumber": "1",
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "GardenPulse uses location to provide hyper-local planting recommendations and weather-aware care alerts.",
         "NSCameraUsageDescription": "GardenPulse needs camera access to analyze leaf diagnostics and scan plant labels/QR codes.",
@@ -24,6 +25,7 @@
     },
     "android": {
       "package": "com.gardenpulse.app",
+      "versionCode": 1,
       "adaptiveIcon": {
         "backgroundColor": "#0A0F0D",
         "foregroundImage": "./assets/android-icon-foreground.png",

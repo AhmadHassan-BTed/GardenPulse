@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View } from 'react-native';
+import { View, Alert } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useTheme } from '../../components/layout/ThemeProvider';
 import CustomText from '../../components/common/CustomText';
@@ -186,7 +186,7 @@ export default function AddPlantScreen() {
               <ZoneBadge zone="Zone 7b" location="Berlin" />
               <TextLink
                 label="Enter location manually"
-                onPress={() => console.log('Location edit')}
+                onPress={() => Alert.alert('Manual Location', 'Location customization will be available in the next release.')}
                 variant="primary"
               />
             </View>

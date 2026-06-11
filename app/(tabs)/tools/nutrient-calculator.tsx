@@ -64,7 +64,6 @@ export default function NutrientCalculatorScreen() {
     }
 
     if (!hasAdMob) {
-      console.log('AdMob native module not available — skipping Interstitial Ad setup.');
       return;
     }
 

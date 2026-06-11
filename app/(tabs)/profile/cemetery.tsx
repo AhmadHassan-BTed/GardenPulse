@@ -25,7 +25,7 @@ export default function CemeteryScreen() {
     return null;
   }
 
-  const lostPlants = storePlants.filter((p) => p.isArchived);
+  const lostPlants = (storePlants || []).filter((p) => p.isArchived);
 
   const handleRestore = (id: string) => {
     updatePlant(id, {
@@ -79,7 +79,7 @@ export default function CemeteryScreen() {
             description="All your plants are alive and kicking! Any archived plants will appear here."
             iconName="heart"
             actionLabel="View Active Plants"
-            onActionPress={() => router.push('/(tabs)/garden')}
+            onActionPress={() => router.push('/garden')}
           />
         )}
 
