@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, StyleSheet, Alert } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, StyleSheet, Alert, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTheme } from '../../components/layout/ThemeProvider';
 import ScreenWrapper from '../../components/common/ScreenWrapper';
@@ -18,6 +18,52 @@ export default function ExportShareModal() {
   const isHydrated = useGardenStore((state) => state.isHydrated);
   const isSupporter = useGardenStore((state) => state.userProfile.isSupporter);
 
+  const rewardedRef = useRef<any>(null);
+  const [rewardedLoaded, setRewardedLoaded] = useState(false);
+  const [adUnlockedPDF, setAdUnlockedPDF] = useState(false);
+
+  useEffect(() => {
+    if (Platform.OS === 'web') return;
+
+    try {
+      const { RewardedAd, RewardedAdEventType, TestIds } = require('react-native-google-mobile-ads');
+      const adUnitId = process.env.EXPO_PUBLIC_ADMOB_REWARDED_ANDROID || TestIds.REWARDED;
+
+      const rewarded = RewardedAd.createForAdRequest(adUnitId, {
+        requestNonPersonalizedAdsOnly: true,
+      });
+
+      const unsubscribeLoaded = rewarded.addAdEventListener(RewardedAdEventType.LOADED, () => {
+        setRewardedLoaded(true);
+      });
+
+      const unsubscribeEarned = rewarded.addAdEventListener(RewardedAdEventType.EARNED_REWARD, () => {
+        setAdUnlockedPDF(true);
+        Alert.alert('Unlocked!', 'Thank you for supporting us! PDF export has been unlocked for this session.', [
+          { text: 'Generate PDF', onPress: () => {
+            Alert.alert('Export Successful', 'PDF generated successfully.', [{ text: 'OK', onPress: () => router.back() }]);
+          }}
+        ]);
+      });
+
+      const unsubscribeError = rewarded.addAdEventListener(RewardedAdEventType.ERROR, (error: any) => {
+        console.warn('AdMob Rewarded failed to load:', error);
+        setRewardedLoaded(false);
+      });
+
+      rewardedRef.current = rewarded;
+      rewarded.load();
+
+      return () => {
+        unsubscribeLoaded();
+        unsubscribeEarned();
+        unsubscribeError();
+      };
+    } catch (e) {
+      console.error('Failed to setup AdMob Rewarded:', e);
+    }
+  }, []);
+
   if (!isHydrated) {
     return null;
   }
@@ -26,12 +72,59 @@ export default function ExportShareModal() {
     Alert.alert('Export Successful', 'Image saved to gallery.', [{ text: 'OK', onPress: () => router.back() }]);
   };
 
+  const handleShowRewardedAd = () => {
+    if (rewardedLoaded && rewardedRef.current) {
+      try {
+        rewardedRef.current.show();
+      } catch (err) {
+        console.error('Failed to show Rewarded Ad:', err);
+        Alert.alert('Error', 'Unable to play video ad. Please try again.');
+      }
+    } else {
+      Alert.alert(
+        'Ad Unavailable',
+        'Could not load the sponsor video. Would you like to bypass and unlock it anyway?',
+        [
+          {
+            text: 'Bypass & Unlock',
+            onPress: () => {
+              setAdUnlockedPDF(true);
+              Alert.alert('Unlocked', 'PDF Export unlocked.', [
+                { text: 'OK', onPress: () => Alert.alert('Export Successful', 'PDF generated successfully.', [{ text: 'OK', onPress: () => router.back() }]) }
+              ]);
+            }
+          },
+          {
+            text: 'Cancel',
+            style: 'cancel'
+          }
+        ]
+      );
+    }
+  };
+
   const handleSelectPDF = () => {
-    if (isSupporter) {
+    if (isSupporter || adUnlockedPDF) {
       Alert.alert('Export Successful', 'PDF generated successfully.', [{ text: 'OK', onPress: () => router.back() }]);
     } else {
-      // Directs to rewarded video to unlock the feature
-      router.push('/modals/rewarded-video');
+      Alert.alert(
+        'Unlock PDF Export',
+        'PDF Export is a premium feature. Watch a quick sponsor video to unlock it for this session.',
+        [
+          {
+            text: 'Watch Video Ad',
+            onPress: handleShowRewardedAd,
+          },
+          {
+            text: 'Become a Supporter',
+            onPress: () => router.push('/modals/supporter-badge'),
+          },
+          {
+            text: 'Cancel',
+            style: 'cancel',
+          },
+        ]
+      );
     }
   };
 

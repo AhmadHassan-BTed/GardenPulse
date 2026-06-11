@@ -5,6 +5,8 @@
 // useThemeController() without crashing.
 // ─────────────────────────────────────────────────────────────────────────────
 
+import { useEffect } from 'react';
+import { Platform } from 'react-native';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -32,6 +34,24 @@ function RootStack() {
 }
 
 export default function RootLayout() {
+  useEffect(() => {
+    if (Platform.OS !== 'web') {
+      try {
+        const mobileAds = require('react-native-google-mobile-ads').default;
+        mobileAds()
+          .initialize()
+          .then((adapterStatuses: any) => {
+            console.log('AdMob initialization complete:', adapterStatuses);
+          })
+          .catch((err: any) => {
+            console.error('AdMob initialization failed:', err);
+          });
+      } catch (error) {
+        console.error('Failed to require react-native-google-mobile-ads:', error);
+      }
+    }
+  }, []);
+
   return (
     <SafeAreaProvider>
       <ThemeProvider>

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, ScrollView } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, ScrollView, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTheme } from '../../../components/layout/ThemeProvider';
 import ScreenWrapper from '../../../components/common/ScreenWrapper';
@@ -49,15 +49,70 @@ export default function NutrientCalculatorScreen() {
   const [rewardPromptVisible, setRewardPromptVisible] = useState(false);
   const [exportSuccessVisible, setExportSuccessVisible] = useState(false);
 
+  const [adLoaded, setAdLoaded] = useState(false);
+  const interstitialRef = useRef<any>(null);
+
+  useEffect(() => {
+    if (Platform.OS === 'web') return;
+
+    try {
+      const { InterstitialAd, AdEventType, TestIds } = require('react-native-google-mobile-ads');
+      const adUnitId = process.env.EXPO_PUBLIC_ADMOB_INTERSTITIAL_ANDROID || TestIds.INTERSTITIAL;
+      
+      const interstitial = InterstitialAd.createForAdRequest(adUnitId, {
+        requestNonPersonalizedAdsOnly: true,
+      });
+
+      const unsubscribeLoaded = interstitial.addAdEventListener(AdEventType.LOADED, () => {
+        setAdLoaded(true);
+      });
+
+      const unsubscribeClosed = interstitial.addAdEventListener(AdEventType.CLOSED, () => {
+        setAdLoaded(false);
+        setShowResults(true);
+        setIsLoading(false);
+        interstitial.load();
+      });
+
+      const unsubscribeError = interstitial.addAdEventListener(AdEventType.ERROR, (error: any) => {
+        console.warn('AdMob Interstitial failed to load:', error);
+        setAdLoaded(false);
+      });
+
+      interstitialRef.current = interstitial;
+      interstitial.load();
+
+      return () => {
+        unsubscribeLoaded();
+        unsubscribeClosed();
+        unsubscribeError();
+      };
+    } catch (e) {
+      console.error('Failed to setup AdMob Interstitial:', e);
+    }
+  }, []);
+
   const activePreset = presets.find(p => p.id === selectedPreset) || presets[1];
 
   const handleGenerate = () => {
     setIsLoading(true);
-    // Simulate generation with loading overlay and interstitial ad
-    setTimeout(() => {
-      setIsLoading(false);
-      setAdVisible(true);
-    }, 1200);
+
+    if (adLoaded && interstitialRef.current) {
+      try {
+        interstitialRef.current.show();
+      } catch (err) {
+        console.error('Failed to show Interstitial Ad, falling back:', err);
+        setTimeout(() => {
+          setIsLoading(false);
+          setShowResults(true);
+        }, 1500);
+      }
+    } else {
+      setTimeout(() => {
+        setIsLoading(false);
+        setShowResults(true);
+      }, 1500);
+    }
   };
 
   const handleAdClose = () => {
