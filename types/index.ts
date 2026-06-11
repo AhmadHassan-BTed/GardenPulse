@@ -39,6 +39,7 @@ export interface LogEntry {
   };
   notes: string;
   hasVoiceNote: boolean;
+  imageUrl?: string;
 }
 
 export interface Task {
@@ -53,6 +54,7 @@ export interface Task {
 
 export interface UserProfile {
   id: string;
+  userId?: string;
   name: string;
   growerTag: string;
   avatarUrl?: string;

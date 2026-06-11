@@ -19,16 +19,15 @@ interface GardenStoreState {
   resetStreak: () => void;
 
   // Plant CRUD actions
-  addPlant: (plant: Omit<Plant, 'id' | 'isArchived' | 'healthScore' | 'healthStatus' | 'lastLoggedDays'>) => void;
+  addPlant: (plant: Omit<Plant, 'id' | 'isArchived' | 'healthScore' | 'healthStatus' | 'lastLoggedDays'>) => Promise<void>;
   updatePlant: (id: string, updates: Partial<Plant>) => void;
   deletePlant: (id: string) => void;
   archivePlant: (id: string, causeOfDeath: string) => void;
 
   // Log CRUD actions
-  addLogEntry: (entry: Omit<LogEntry, 'id' | 'timestamp'>) => void;
+  addLogEntry: (entry: Omit<LogEntry, 'id' | 'timestamp'>) => Promise<void>;
   updateLogEntry: (id: string, updates: Partial<LogEntry>) => void;
   deleteLogEntry: (id: string) => void;
-
   // Task CRUD actions
   addTask: (task: Omit<Task, 'id' | 'isDone'>) => void;
   toggleTaskDone: (id: string) => void;
@@ -38,6 +37,7 @@ interface GardenStoreState {
 
 const initialUserProfile: UserProfile = {
   id: 'user-1',
+  userId: undefined,
   name: 'Ahmad Hassan',
   growerTag: 'green_thumb_berlin',
   avatarUrl: undefined,
@@ -121,7 +121,7 @@ const initialTasks: Task[] = [
 
 export const useGardenStore = create<GardenStoreState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       plants: initialPlants,
       logs: initialLogs,
       tasks: initialTasks,
@@ -131,82 +131,180 @@ export const useGardenStore = create<GardenStoreState>()(
       setHydrated: (state) => set({ isHydrated: state }),
 
       // User Profile actions
-      updateProfile: (updates) =>
+      updateProfile: (updates) => {
         set((state) => ({
           userProfile: { ...state.userProfile, ...updates },
-        })),
+        }));
+
+        const userId = get().userProfile.userId;
+        if (userId) {
+          const { doc, setDoc } = require('firebase/firestore');
+          const { firestore } = require('../services/firebase');
+          setDoc(doc(firestore, 'users', userId), updates, { merge: true }).catch((err: any) => {
+            console.error('Failed to sync user profile updates to Firestore:', err);
+          });
+        }
+      },
 
       incrementStreak: () =>
         set((state) => {
           const nextStreak = state.userProfile.streakCount + 1;
           const nextLongest = Math.max(nextStreak, state.userProfile.longestStreak);
-          return {
-            userProfile: {
-              ...state.userProfile,
-              streakCount: nextStreak,
-              longestStreak: nextLongest,
-            },
+          const nextProfile = {
+            ...state.userProfile,
+            streakCount: nextStreak,
+            longestStreak: nextLongest,
           };
+          // Sync streak asynchronously to Firestore
+          const userId = state.userProfile.userId;
+          if (userId) {
+            const { doc, setDoc } = require('firebase/firestore');
+            const { firestore } = require('../services/firebase');
+            setDoc(doc(firestore, 'users', userId), { streakCount: nextStreak, longestStreak: nextLongest }, { merge: true }).catch((err: any) => {
+              console.error('Failed to sync streak increment to Firestore:', err);
+            });
+          }
+          return { userProfile: nextProfile };
         }),
 
       resetStreak: () =>
-        set((state) => ({
-          userProfile: { ...state.userProfile, streakCount: 0 },
-        })),
-
-      // Plant CRUD actions
-      addPlant: (plant) =>
         set((state) => {
-          const newPlant: Plant = {
-            ...plant,
-            id: `plant-${Date.now()}`,
-            healthScore: 100,
-            healthStatus: 'healthy',
-            lastLoggedDays: 0,
-            isArchived: false,
-          };
-          return {
-            plants: [newPlant, ...state.plants],
-          };
+          const nextProfile = { ...state.userProfile, streakCount: 0 };
+          // Sync streak reset asynchronously to Firestore
+          const userId = state.userProfile.userId;
+          if (userId) {
+            const { doc, setDoc } = require('firebase/firestore');
+            const { firestore } = require('../services/firebase');
+            setDoc(doc(firestore, 'users', userId), { streakCount: 0 }, { merge: true }).catch((err: any) => {
+              console.error('Failed to sync streak reset to Firestore:', err);
+            });
+          }
+          return { userProfile: nextProfile };
         }),
 
-      updatePlant: (id, updates) =>
+      // Plant CRUD actions
+      addPlant: async (plant) => {
+        const userId = get().userProfile.userId;
+        const plantId = `plant-${Date.now()}`;
+        
+        let imageUrl = plant.imageUrl;
+        if (imageUrl && !imageUrl.startsWith('http') && userId) {
+          try {
+            const { uploadPlantImage } = require('../services/storage');
+            imageUrl = await uploadPlantImage(imageUrl, `users/${userId}/plants/${plantId}.jpg`);
+          } catch (error) {
+            console.error('Failed to upload plant image:', error);
+          }
+        }
+
+        const newPlant: Plant = {
+          ...plant,
+          id: plantId,
+          imageUrl,
+          healthScore: 100,
+          healthStatus: 'healthy',
+          lastLoggedDays: 0,
+          isArchived: false,
+        };
+
+        // 1. Optimistic UI update
+        set((state) => ({
+          plants: [newPlant, ...state.plants],
+        }));
+
+        // 2. Async Firestore write
+        if (userId) {
+          try {
+            const { doc, setDoc } = require('firebase/firestore');
+            const { firestore } = require('../services/firebase');
+            await setDoc(doc(firestore, `users/${userId}/plants`, plantId), newPlant);
+          } catch (error) {
+            console.error('Failed to write plant to Firestore:', error);
+          }
+        }
+      },
+
+      updatePlant: (id, updates) => {
         set((state) => ({
           plants: state.plants.map((p) => (p.id === id ? { ...p, ...updates } : p)),
-        })),
+        }));
 
-      deletePlant: (id) =>
+        const userId = get().userProfile.userId;
+        if (userId) {
+          const { doc, updateDoc } = require('firebase/firestore');
+          const { firestore } = require('../services/firebase');
+          updateDoc(doc(firestore, `users/${userId}/plants`, id), updates).catch((err: any) => {
+            console.error('Failed to update plant in Firestore:', err);
+          });
+        }
+      },
+
+      deletePlant: (id) => {
         set((state) => ({
           plants: state.plants.filter((p) => p.id !== id),
           logs: state.logs.filter((l) => l.plantId !== id),
           tasks: state.tasks.filter((t) => t.plantId !== id),
-        })),
+        }));
 
-      archivePlant: (id, causeOfDeath) =>
+        const userId = get().userProfile.userId;
+        if (userId) {
+          const { doc, deleteDoc } = require('firebase/firestore');
+          const { firestore } = require('../services/firebase');
+          deleteDoc(doc(firestore, `users/${userId}/plants`, id)).catch((err: any) => {
+            console.error('Failed to delete plant from Firestore:', err);
+          });
+        }
+      },
+
+      archivePlant: (id, causeOfDeath) => {
+        const archivedUpdates = {
+          isArchived: true,
+          archivedDate: new Date().toISOString(),
+          causeOfDeath,
+          healthScore: 0,
+          healthStatus: 'critical' as const,
+        };
+
         set((state) => ({
           plants: state.plants.map((p) =>
-            p.id === id
-              ? {
-                  ...p,
-                  isArchived: true,
-                  archivedDate: new Date().toISOString(),
-                  causeOfDeath,
-                  healthScore: 0,
-                  healthStatus: 'critical',
-                }
-              : p
+            p.id === id ? { ...p, ...archivedUpdates } : p
           ),
-        })),
+        }));
+
+        const userId = get().userProfile.userId;
+        if (userId) {
+          const { doc, updateDoc } = require('firebase/firestore');
+          const { firestore } = require('../services/firebase');
+          updateDoc(doc(firestore, `users/${userId}/plants`, id), archivedUpdates).catch((err: any) => {
+            console.error('Failed to archive plant in Firestore:', err);
+          });
+        }
+      },
 
       // Log CRUD actions
-      addLogEntry: (entry) =>
+      addLogEntry: async (entry) => {
+        const userId = get().userProfile.userId;
+        const logId = `log-${Date.now()}`;
+        const timestamp = new Date().toISOString();
+
+        let imageUrl = entry.imageUrl;
+        if (imageUrl && !imageUrl.startsWith('http') && userId) {
+          try {
+            const { uploadPlantImage } = require('../services/storage');
+            imageUrl = await uploadPlantImage(imageUrl, `users/${userId}/logs/${logId}.jpg`);
+          } catch (error) {
+            console.error('Failed to upload log image:', error);
+          }
+        }
+
+        const newLog: LogEntry = {
+          ...entry,
+          id: logId,
+          timestamp,
+          imageUrl,
+        };
+
         set((state) => {
-          const newLog: LogEntry = {
-            ...entry,
-            id: `log-${Date.now()}`,
-            timestamp: new Date().toISOString(),
-          };
-          // Automatically update the matching plant's lastLoggedDays to 0 when a log is added
           const updatedPlants = state.plants.map((p) =>
             p.id === entry.plantId ? { ...p, lastLoggedDays: 0 } : p
           );
@@ -214,55 +312,164 @@ export const useGardenStore = create<GardenStoreState>()(
             logs: [newLog, ...state.logs],
             plants: updatedPlants,
           };
-        }),
+        });
 
-      updateLogEntry: (id, updates) =>
+        if (userId) {
+          try {
+            const { doc, setDoc, updateDoc } = require('firebase/firestore');
+            const { firestore } = require('../services/firebase');
+            await setDoc(doc(firestore, `users/${userId}/logs`, logId), newLog);
+            await updateDoc(doc(firestore, `users/${userId}/plants`, entry.plantId), {
+              lastLoggedDays: 0,
+            });
+          } catch (error) {
+            console.error('Failed to save log entry to Firestore:', error);
+          }
+        }
+      },
+
+      updateLogEntry: (id, updates) => {
         set((state) => ({
           logs: state.logs.map((l) => (l.id === id ? { ...l, ...updates } : l)),
-        })),
+        }));
 
-      deleteLogEntry: (id) =>
+        const userId = get().userProfile.userId;
+        if (userId) {
+          const { doc, updateDoc } = require('firebase/firestore');
+          const { firestore } = require('../services/firebase');
+          updateDoc(doc(firestore, `users/${userId}/logs`, id), updates).catch((err: any) => {
+            console.error('Failed to update log entry in Firestore:', err);
+          });
+        }
+      },
+
+      deleteLogEntry: (id) => {
         set((state) => ({
           logs: state.logs.filter((l) => l.id !== id),
-        })),
+        }));
+
+        const userId = get().userProfile.userId;
+        if (userId) {
+          const { doc, deleteDoc } = require('firebase/firestore');
+          const { firestore } = require('../services/firebase');
+          deleteDoc(doc(firestore, `users/${userId}/logs`, id)).catch((err: any) => {
+            console.error('Failed to delete log entry from Firestore:', err);
+          });
+        }
+      },
 
       // Task CRUD actions
-      addTask: (task) =>
-        set((state) => {
-          const newTask: Task = {
-            ...task,
-            id: `task-${Date.now()}`,
-            isDone: false,
-          };
-          return {
-            tasks: [newTask, ...state.tasks],
-          };
-        }),
+      addTask: (task) => {
+        const taskId = `task-${Date.now()}`;
+        const newTask: Task = {
+          ...task,
+          id: taskId,
+          isDone: false,
+        };
 
-      toggleTaskDone: (id) =>
         set((state) => ({
-          tasks: state.tasks.map((t) =>
-            t.id === id
-              ? { ...t, isDone: !t.isDone, completedDate: !t.isDone ? new Date().toISOString() : undefined }
-              : t
-          ),
-        })),
+          tasks: [newTask, ...state.tasks],
+        }));
 
-      deleteTask: (id) =>
+        const userId = get().userProfile.userId;
+        if (userId) {
+          const { doc, setDoc } = require('firebase/firestore');
+          const { firestore } = require('../services/firebase');
+          setDoc(doc(firestore, `users/${userId}/tasks`, taskId), newTask).catch((err: any) => {
+            console.error('Failed to save task to Firestore:', err);
+          });
+        }
+      },
+
+      toggleTaskDone: (id) => {
+        let updatedTask: Task | undefined;
+
+        set((state) => {
+          const updatedTasks = state.tasks.map((t) => {
+            if (t.id === id) {
+              updatedTask = {
+                ...t,
+                isDone: !t.isDone,
+                completedDate: !t.isDone ? new Date().toISOString() : undefined,
+              };
+              return updatedTask;
+            }
+            return t;
+          });
+          return { tasks: updatedTasks };
+        });
+
+        const userId = get().userProfile.userId;
+        if (userId && updatedTask) {
+          const { doc, updateDoc } = require('firebase/firestore');
+          const { firestore } = require('../services/firebase');
+          updateDoc(doc(firestore, `users/${userId}/tasks`, id), {
+            isDone: updatedTask.isDone,
+            completedDate: updatedTask.completedDate || null,
+          }).catch((err: any) => {
+            console.error('Failed to update task done status in Firestore:', err);
+          });
+        }
+      },
+
+      deleteTask: (id) => {
         set((state) => ({
           tasks: state.tasks.filter((t) => t.id !== id),
-        })),
+        }));
 
-      clearCompletedTasks: () =>
-        set((state) => ({
-          tasks: state.tasks.filter((t) => !t.isDone),
-        })),
+        const userId = get().userProfile.userId;
+        if (userId) {
+          const { doc, deleteDoc } = require('firebase/firestore');
+          const { firestore } = require('../services/firebase');
+          deleteDoc(doc(firestore, `users/${userId}/tasks`, id)).catch((err: any) => {
+            console.error('Failed to delete task from Firestore:', err);
+          });
+        }
+      },
+
+      clearCompletedTasks: () => {
+        let completedTaskIds: string[] = [];
+
+        set((state) => {
+          const completed = state.tasks.filter((t) => t.isDone);
+          completedTaskIds = completed.map((t) => t.id);
+          return {
+            tasks: state.tasks.filter((t) => !t.isDone),
+          };
+        });
+
+        const userId = get().userProfile.userId;
+        if (userId && completedTaskIds.length > 0) {
+          const { doc, deleteDoc } = require('firebase/firestore');
+          const { firestore } = require('../services/firebase');
+          completedTaskIds.forEach((id) => {
+            deleteDoc(doc(firestore, `users/${userId}/tasks`, id)).catch((err: any) => {
+              console.error(`Failed to delete completed task ${id} from Firestore:`, err);
+            });
+          });
+        }
+      },
     }),
     {
       name: 'gardenpulse-state-store',
       storage: createJSONStorage(() => AsyncStorage),
       onRehydrateStorage: () => (state) => {
-        state?.setHydrated(true);
+        if (state) {
+          state.setHydrated(true);
+          
+          // Trigger Firebase anonymous authentication if no userId is set
+          if (!state.userProfile.userId) {
+            const { signInAnonymously } = require('../services/firebase');
+            signInAnonymously()
+              .then((user: any) => {
+                state.updateProfile({ userId: user.uid });
+                console.log('Successfully authenticated with Firebase UID:', user.uid);
+              })
+              .catch((err: any) => {
+                console.error('Failed to auto-sign in anonymously on hydration:', err);
+              });
+          }
+        }
       },
     }
   )
