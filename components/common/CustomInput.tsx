@@ -61,49 +61,68 @@ const CustomInput = React.forwardRef<TextInput, CustomInputProps>(
     const isActive = isFocused || value.length > 0;
 
     const anim = useRef(new Animated.Value(isActive ? 1 : 0)).current;
+    const colorAnim = useRef(new Animated.Value(isActive ? 1 : 0)).current;
 
     const animateTo = useCallback(
-      (toValue: number) =>
-        Animated.timing(anim, {
-          toValue,
-          duration: ANIM_MS,
-          useNativeDriver: false,
-        }).start(),
-      [anim],
+      (toValue: number) => {
+        Animated.parallel([
+          Animated.timing(anim, {
+            toValue,
+            duration: ANIM_MS,
+            useNativeDriver: true,
+          }),
+          Animated.timing(colorAnim, {
+            toValue,
+            duration: ANIM_MS,
+            useNativeDriver: false,
+          }),
+        ]).start();
+      },
+      [anim, colorAnim],
     );
 
     const handleFocus = useCallback(
-      (e: any) => { setIsFocused(true); animateTo(1); onFocus?.(e); },
+      (e: any) => {
+        setIsFocused(true);
+        animateTo(1);
+        onFocus?.(e);
+      },
       [animateTo, onFocus],
     );
     const handleBlur = useCallback(
-      (e: any) => { setIsFocused(false); if (!value) animateTo(0); onBlur?.(e); },
+      (e: any) => {
+        setIsFocused(false);
+        if (!value) {
+          animateTo(0);
+        }
+        onBlur?.(e);
+      },
       [animateTo, onBlur, value],
     );
 
     // ── Label interpolations ──────────────────────────────────────────────
-    const labelTop = anim.interpolate({
-      inputRange:  [0, 1],
-      outputRange: [LABEL_RESTING_TOP, LABEL_FLOATING_TOP],
+    const labelTranslateY = anim.interpolate({
+      inputRange: [0, 1],
+      outputRange: [0, LABEL_FLOATING_TOP - LABEL_RESTING_TOP],
     });
-    const labelLeft = anim.interpolate({
-      inputRange:  [0, 1],
-      outputRange: [LABEL_RESTING_X, LABEL_FLOATING_X],
+    const labelTranslateX = anim.interpolate({
+      inputRange: [0, 1],
+      outputRange: [0, LABEL_FLOATING_X - LABEL_RESTING_X],
     });
-    const labelFontSize = anim.interpolate({
-      inputRange:  [0, 1],
-      outputRange: [theme.Typography.sizes.base, theme.Typography.sizes.xs],
+    const labelScale = anim.interpolate({
+      inputRange: [0, 1],
+      outputRange: [1, theme.Typography.sizes.xs / theme.Typography.sizes.base],
     });
 
     const labelColor = error
       ? theme.Colors.text.error
-      : anim.interpolate({
+      : colorAnim.interpolate({
           inputRange:  [0, 1],
           outputRange: [theme.Colors.text.muted, theme.Colors.green.DEFAULT],
         });
 
     const labelBg = isDark
-      ? anim.interpolate({
+      ? colorAnim.interpolate({
           inputRange:  [0, 1],
           outputRange: ['transparent', fieldSurface],
         })
@@ -116,7 +135,7 @@ const CustomInput = React.forwardRef<TextInput, CustomInputProps>(
       ? theme.Colors.border.focus
       : theme.Colors.border.muted;
 
-    const borderWidth = isFocused || !!error ? 1.5 : 1;
+    const borderWidth = 1;
 
     const glowColor = error
       ? 'rgba(248,113,113,0.28)'
@@ -152,14 +171,23 @@ const CustomInput = React.forwardRef<TextInput, CustomInputProps>(
         <Animated.View
           style={[
             styles.labelSlot,
-            { top: labelTop, left: labelLeft },
+            {
+              top: LABEL_RESTING_TOP,
+              left: LABEL_RESTING_X,
+              transform: [
+                { translateY: labelTranslateY },
+                { translateX: labelTranslateX },
+                { scale: labelScale },
+              ],
+              transformOrigin: [0, '50%', 0] as any,
+            },
           ]}
           pointerEvents="none"
         >
           <Animated.Text
             numberOfLines={1}
             style={{
-              fontSize:          labelFontSize,
+              fontSize:          theme.Typography.sizes.base,
               fontWeight:        theme.Typography.weights.medium,
               letterSpacing:     0.3,
               color:             labelColor as any,
@@ -178,11 +206,6 @@ const CustomInput = React.forwardRef<TextInput, CustomInputProps>(
               backgroundColor: fieldSurface,
               borderColor,
               borderWidth,
-              shadowColor:   isFocused || !!error ? glowColor : 'transparent',
-              shadowOffset:  { width: 0, height: 0 },
-              shadowOpacity: isFocused || !!error ? 1 : 0,
-              shadowRadius:  isFocused || !!error ? 10 : 0,
-              elevation:     isFocused || !!error ? 4 : 0,
             },
           ]}
         >
@@ -242,7 +265,7 @@ const styles = StyleSheet.create({
   rightIconWrap: { marginLeft: 12, justifyContent: 'center', alignItems: 'center' },
   inputArea: { flex: 1, justifyContent: 'center' },
   inputAreaMultiline: { paddingTop: 12, paddingBottom: 12 },
-  input: { fontSize: 16, paddingVertical: 0, paddingHorizontal: 0, margin: 0, minHeight: FIELD_HEIGHT - 2, backgroundColor: 'transparent' },
+  input: { flex: 1, width: '100%', fontSize: 16, paddingVertical: 0, paddingHorizontal: 0, margin: 0, minHeight: FIELD_HEIGHT - 2, backgroundColor: 'transparent' },
   inputMultiline: { minHeight: 100, textAlignVertical: 'top' },
   subText: { marginTop: 4, marginLeft: 4, fontSize: 12, lineHeight: 16 },
 });

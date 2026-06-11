@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { View, Alert } from 'react-native';
+import React, { useState, useMemo } from 'react';
+import { View, Alert, Keyboard, Modal, Pressable, StyleSheet } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
+import * as ImagePicker from 'expo-image-picker'; // ADDED: The actual camera library
 import { useTheme } from '../../components/layout/ThemeProvider';
 import CustomText from '../../components/common/CustomText';
 import ScreenWrapper from '../../components/common/ScreenWrapper';
@@ -13,8 +14,8 @@ import CustomButton from '../../components/common/CustomButton';
 import Divider from '../../components/common/Divider';
 import RadioGroup from '../../components/common/RadioGroup';
 import ZoneBadge from '../../components/common/ZoneBadge';
-import TextLink from '../../components/common/TextLink';
 import CustomDateTimePicker from '../../components/common/CustomDateTimePicker';
+import TextLink from '../../components/common/TextLink';
 import { PlantBrowseGrid, SelectedPlantPreviewCard } from '../../components/common/OnboardingAndModals';
 
 interface PlantSpecies {
@@ -29,9 +30,20 @@ const plantDatabase: PlantSpecies[] = [
   { name: 'Monstera', scientific: 'Monstera deliciosa', methodBadge: 'Indoor' },
   { name: 'Snake Plant', scientific: 'Sansevieria trifasciata', methodBadge: 'Indoor' },
   { name: 'Pothos', scientific: 'Epipremnum aureum', methodBadge: 'Indoor' },
+  { name: 'Sunflower', scientific: 'Helianthus annuus', methodBadge: 'Soil' },
+  { name: 'Wheatgrass', scientific: 'Triticum aestivum', methodBadge: 'Hydro' },
 ];
 
 const categories = ['Herb', 'Vegetable', 'Fruit', 'Flower', 'Houseplant', 'Microgreen'];
+
+const categoryToPlantMap: Record<string, string> = {
+  herb: 'Basil',
+  vegetable: 'Tomato',
+  fruit: 'Tomato',
+  houseplant: 'Monstera',
+  flower: 'Sunflower',
+  microgreen: 'Wheatgrass',
+};
 
 const methodOptions = [
   { label: 'Soil', value: 'soil' },
@@ -52,6 +64,73 @@ export default function AddPlantScreen() {
   const [growingMethod, setGrowingMethod] = useState<string>(method || 'soil');
   const [startedDate, setStartedDate] = useState<Date>(new Date());
 
+  const [zone, setZone] = useState('Zone 7b');
+  const [location, setLocation] = useState('Local');
+  const [tempZone, setTempZone] = useState('Zone 7b');
+  const [tempLocation, setTempLocation] = useState('Local');
+  const [showLocationModal, setShowLocationModal] = useState(false);
+
+  const styles = useMemo(
+    () =>
+      StyleSheet.create({
+        modalBackdrop: {
+          flex: 1,
+          backgroundColor: Colors.surface.overlay,
+          justifyContent: 'center',
+          alignItems: 'center',
+          padding: Spacing.lg,
+        },
+        modalCard: {
+          width: '100%',
+          maxWidth: 320,
+          backgroundColor: Colors.surface.base,
+          borderRadius: theme.Radius.xl,
+          borderWidth: 1,
+          borderColor: Colors.surface.glassBorder,
+          padding: Spacing.lg,
+          alignItems: 'center',
+          elevation: 5,
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 4 },
+          shadowOpacity: 0.15,
+          shadowRadius: 8,
+        },
+        modalTitle: {
+          fontSize: Typography.sizes.md,
+          fontWeight: Typography.weights.bold,
+          color: Colors.text.heading,
+          marginBottom: Spacing.md,
+        },
+        modalActions: {
+          flexDirection: 'row',
+          width: '100%',
+          gap: Spacing.sm,
+          marginTop: Spacing.md,
+        },
+        modalButton: {
+          flex: 1,
+          height: 44,
+          borderRadius: theme.Radius.md,
+          justifyContent: 'center',
+          alignItems: 'center',
+        },
+        cancelButton: {
+          borderWidth: 1,
+          borderColor: Colors.border.muted,
+        },
+        saveButton: {
+          elevation: 2,
+        },
+        disabledButton: {
+          opacity: 0.5,
+        },
+        buttonText: {
+          fontSize: Typography.sizes.sm,
+        },
+      }),
+    [Colors, Spacing, Typography, theme.Radius]
+  );
+
   const handleSelectPlant = (name: string) => {
     setSearchValue(name);
     const found = plantDatabase.find(p => p.name.toLowerCase() === name.toLowerCase());
@@ -66,14 +145,39 @@ export default function AddPlantScreen() {
     }
   };
 
-  const handleScanLeaf = () => {
-    router.push({
-      pathname: '/modals/permission',
-      params: { 
-        type: 'camera', 
-        next: `/(onboarding)/add-plant?method=${growingMethod}`
+  // FIXED: Actually opens the camera instead of infinitely looping the router
+  const handleScanLeaf = async () => {
+    Keyboard.dismiss();
+    try {
+      const { status } = await ImagePicker.requestCameraPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Camera Required', 'Please allow camera access to scan a seed packet or leaf.');
+        return;
       }
-    });
+      const result = await ImagePicker.launchCameraAsync({
+        allowsEditing: true,
+        quality: 0.5,
+      });
+
+      if (!result.canceled && result.assets?.[0]?.uri) {
+        Alert.alert('Scan Successful', 'Image captured. AI analysis integration will process this image.');
+        // Here is where you would pass this to the Gemini service.
+      }
+    } catch (error) {
+      Alert.alert('Error', 'The camera failed to open.');
+    }
+  };
+
+  const handleOpenLocationModal = () => {
+    setTempZone(zone);
+    setTempLocation(location);
+    setShowLocationModal(true);
+  };
+
+  const handleSaveLocation = () => {
+    setZone(tempZone);
+    setLocation(tempLocation);
+    setShowLocationModal(false);
   };
 
   const handleContinue = () => {
@@ -85,7 +189,7 @@ export default function AddPlantScreen() {
         method: growingMethod,
         plantName: finalName,
         plantType: finalType,
-        location: 'Indoor Balcony'
+        location: location
       }
     });
   };
@@ -97,7 +201,7 @@ export default function AddPlantScreen() {
         method: growingMethod,
         plantName: 'My First Plant',
         plantType: 'Unknown Species',
-        location: 'Garden Bed'
+        location: location !== 'Local' ? location : 'Garden Bed'
       }
     });
   };
@@ -147,15 +251,26 @@ export default function AddPlantScreen() {
           <CustomText style={{ fontSize: Typography.sizes.xs, fontWeight: Typography.weights.bold, color: Colors.text.heading, textTransform: 'uppercase', letterSpacing: 0.5 }}>
             Browse Categories
           </CustomText>
-          <PlantBrowseGrid categories={categories} />
+          <PlantBrowseGrid 
+            categories={categories} 
+            onSelectCategory={(cat) => {
+              Keyboard.dismiss();
+              const plantName = categoryToPlantMap[cat.toLowerCase()];
+              if (plantName) {
+                handleSelectPlant(plantName);
+              }
+            }}
+          />
         </View>
 
-        {selectedPlant && (
+        {selectedPlant ? (
           <SelectedPlantPreviewCard
             name={selectedPlant.name}
             scientific={selectedPlant.scientific}
             methodBadge={selectedPlant.methodBadge}
           />
+        ) : (
+          <View style={{ height: 72 }} />
         )}
 
         <View style={{ gap: Spacing.lg }}>
@@ -183,11 +298,12 @@ export default function AddPlantScreen() {
               Location & Climate
             </CustomText>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.md }}>
-              <ZoneBadge zone="Zone 7b" location="Berlin" />
+              <ZoneBadge zone={zone} location={location} />
               <TextLink
                 label="Enter location manually"
-                onPress={() => Alert.alert('Manual Location', 'Location customization will be available in the next release.')}
+                onPress={handleOpenLocationModal}
                 variant="primary"
+                labelStyle={{ fontSize: Typography.sizes.sm }}
               />
             </View>
           </View>
@@ -207,14 +323,69 @@ export default function AddPlantScreen() {
             onPress={handleContinue}
             isDisabled={!searchValue && !selectedPlant}
           />
-          <TextLink
+          <CustomButton
             label="Skip for now"
             onPress={handleSkip}
-            variant="muted"
-            style={{ alignSelf: 'center' }}
+            variant="ghost"
           />
         </View>
       </View>
+
+      {/* Manual Location Setup Modal */}
+      {showLocationModal && (
+        <Modal
+          transparent={true}
+          visible={showLocationModal}
+          animationType="fade"
+          onRequestClose={() => setShowLocationModal(false)}
+        >
+          <Pressable style={styles.modalBackdrop} onPress={() => setShowLocationModal(false)}>
+            <Pressable style={styles.modalCard} onPress={(e) => e.stopPropagation()}>
+              <CustomText style={styles.modalTitle}>
+                Manual Location Setup
+              </CustomText>
+              
+              <View style={{ width: '100%', gap: Spacing.md, marginTop: Spacing.sm }}>
+                <CustomInput
+                  label="Hardiness Zone"
+                  placeholder="e.g. Zone 7b"
+                  value={tempZone}
+                  onChangeText={setTempZone}
+                />
+                
+                <CustomInput
+                  label="City / Region"
+                  placeholder="e.g. Berlin"
+                  value={tempLocation}
+                  onChangeText={setTempLocation}
+                />
+              </View>
+
+              {/* Action Buttons */}
+              <View style={styles.modalActions}>
+                <Pressable
+                  style={[styles.modalButton, styles.cancelButton]}
+                  onPress={() => setShowLocationModal(false)}
+                >
+                  <CustomText style={[styles.buttonText, { color: Colors.text.muted }]}>Cancel</CustomText>
+                </Pressable>
+                <Pressable
+                  style={[
+                    styles.modalButton,
+                    styles.saveButton,
+                    { backgroundColor: Colors.green.DEFAULT },
+                    (!tempZone.trim() || !tempLocation.trim()) && styles.disabledButton
+                  ]}
+                  disabled={!tempZone.trim() || !tempLocation.trim()}
+                  onPress={handleSaveLocation}
+                >
+                  <CustomText style={[styles.buttonText, { color: '#FFF', fontWeight: '600' }]}>Save</CustomText>
+                </Pressable>
+              </View>
+            </Pressable>
+          </Pressable>
+        </Modal>
+      )}
     </ScreenWrapper>
   );
 }

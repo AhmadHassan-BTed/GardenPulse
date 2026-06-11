@@ -193,7 +193,7 @@ const BottomSheetModal: React.FC<BottomSheetModalProps> = ({
     >
       <KeyboardAvoidingView
         style={styles.root}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
         <Animated.View
           style={[styles.backdrop, { opacity: backdropOpac }, backdropStyle]}

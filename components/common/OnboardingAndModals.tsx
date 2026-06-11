@@ -11,7 +11,7 @@ const categoryIconMap: { [key: string]: string } = {
   vegetable: 'carrot',
   fruit: 'food-apple',
   flower: 'flower',
-  houseplant: 'pot-plant',
+  houseplant: 'flower-tulip',
   microgreen: 'sprout',
   indoor: 'home-variant',
   veggie: 'carrot',
@@ -51,17 +51,36 @@ export const NotificationOptInRow = ({ isEnabled, onToggle, plantName }: any) =>
   );
 };
 
-export const PlantBrowseGrid = ({ categories }: { categories: string[] }) => {
+export const PlantBrowseGrid = ({ 
+  categories, 
+  onSelectCategory 
+}: { 
+  categories: string[]; 
+  onSelectCategory?: (category: string) => void;
+}) => {
   const { Colors, Spacing, Radius } = useTheme();
   return (
     <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm, marginBottom: Spacing.md }}>
       {categories.map(c => {
         const iconName = categoryIconMap[c.toLowerCase()] || 'sprout';
         return (
-          <View key={c} style={{ width: '31%', aspectRatio: 1, backgroundColor: Colors.surface.elevated, borderRadius: Radius.md, justifyContent: 'center', alignItems: 'center' }}>
+          <Pressable 
+            key={c} 
+            onPress={() => onSelectCategory?.(c)}
+            style={({ pressed }) => [
+              { 
+                width: '31%', 
+                aspectRatio: 1, 
+                backgroundColor: pressed ? Colors.surface.glass : Colors.surface.elevated, 
+                borderRadius: Radius.md, 
+                justifyContent: 'center', 
+                alignItems: 'center',
+              }
+            ]}
+          >
             <MaterialCommunityIcons name={iconName as any} size={28} color={Colors.green.DEFAULT} style={{ marginBottom: 4 }} />
             <Text style={{ fontSize: 12, color: Colors.text.heading, fontWeight: 'bold' }}>{c}</Text>
-          </View>
+          </Pressable>
         );
       })}
     </View>

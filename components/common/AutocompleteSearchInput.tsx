@@ -4,7 +4,7 @@
 // dropdown menu for plant database queries or other search filters.
 // ─────────────────────────────────────────────────────────────────────────────
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { View, Text, Pressable, StyleSheet, ScrollView, ViewStyle, Keyboard } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import CustomInput, { CustomInputProps } from './CustomInput';
@@ -33,6 +33,15 @@ const AutocompleteSearchInput: React.FC<AutocompleteSearchInputProps> = ({
   const theme = useTheme();
   const { Colors, Spacing, Radius, Typography } = theme;
   const [isFocused, setIsFocused] = useState(false);
+  const blurTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (blurTimeoutRef.current) {
+        clearTimeout(blurTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const filteredData = useMemo(() => {
     if (!value) return [];
@@ -89,12 +98,21 @@ const AutocompleteSearchInput: React.FC<AutocompleteSearchInputProps> = ({
         value={value}
         onChangeText={onChangeText}
         onFocus={(e) => {
+          if (blurTimeoutRef.current) {
+            clearTimeout(blurTimeoutRef.current);
+            blurTimeoutRef.current = null;
+          }
           setIsFocused(true);
           rest.onFocus?.(e);
         }}
         onBlur={(e) => {
-          // Delay hiding dropdown so tap events on items register first
-          setTimeout(() => setIsFocused(false), 150);
+          if (blurTimeoutRef.current) {
+            clearTimeout(blurTimeoutRef.current);
+          }
+          blurTimeoutRef.current = setTimeout(() => {
+            setIsFocused(false);
+            blurTimeoutRef.current = null;
+          }, 150);
           rest.onBlur?.(e);
         }}
         leftIcon={<Feather name="search" size={20} color={Colors.text.muted} />}
