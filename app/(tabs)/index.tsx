@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View } from 'react-native';
 import { useRouter } from 'expo-router';
+import * as Location from 'expo-location';
 import { useTheme } from '../../components/layout/ThemeProvider';
 import CustomText from '../../components/common/CustomText';
 import ScreenWrapper from '../../components/common/ScreenWrapper';
@@ -39,6 +40,53 @@ export default function DashboardScreen() {
   const userProfile = useGardenStore((state) => state.userProfile);
 
   const [showComeback, setShowComeback] = useState(true);
+  const [weatherData, setWeatherData] = useState<{
+    city: string;
+    temp: number;
+    humidity: number;
+    condition: string;
+  } | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    const loadWeather = async () => {
+      try {
+        const { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== 'granted') return;
+
+        const loc = await Location.getCurrentPositionAsync({});
+        if (!active) return;
+
+        const { fetchLocalWeather } = require('../../services/weather');
+        const data = await fetchLocalWeather(loc.coords.latitude, loc.coords.longitude);
+        if (active) {
+          setWeatherData({
+            city: data.locationName,
+            temp: data.temp,
+            humidity: data.humidity,
+            condition: data.condition,
+          });
+        }
+      } catch (error) {
+        console.error('Failed to load local weather:', error);
+      }
+    };
+
+    loadWeather();
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const conditionIconMap = (cond: string): any => {
+    const c = cond.toLowerCase();
+    if (c.includes('rain') || c.includes('drizzle')) return 'cloud-rain';
+    if (c.includes('thunder')) return 'cloud-lightning';
+    if (c.includes('snow')) return 'cloud-snow';
+    if (c.includes('cloud')) return 'cloud';
+    if (c.includes('clear')) return 'sun';
+    return 'sun';
+  };
 
   if (!isHydrated) {
     return null;
@@ -97,15 +145,19 @@ export default function DashboardScreen() {
       <View style={{ gap: Spacing.lg, paddingBottom: Spacing.xl + 64 }}>
         {/* Weather Widget */}
         <WeatherWidget
-          city="Berlin"
+          city={weatherData?.city || 'Berlin'}
           zone="Zone 7b"
-          currentTemp={22}
-          conditionIcon="sun"
-          humidity={65}
+          currentTemp={weatherData?.temp ?? 22}
+          conditionIcon={conditionIconMap(weatherData?.condition || 'clear')}
+          humidity={weatherData?.humidity ?? 65}
           uvIndex={5}
-          rainChance={10}
+          rainChance={weatherData?.condition.toLowerCase().includes('rain') ? 90 : 10}
           forecast={mockForecast}
-          alertMessage="Rain tomorrow → skip watering today"
+          alertMessage={
+            weatherData?.condition.toLowerCase().includes('rain')
+              ? 'Rain forecast → skip watering today'
+              : 'Sunny/Clear conditions → monitor soil moisture'
+          }
         />
 
         {/* Comeback Banner */}

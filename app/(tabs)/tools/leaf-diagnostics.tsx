@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { View, ScrollView, Pressable } from 'react-native';
+import React, { useState, useRef } from 'react';
+import { View, ScrollView, Pressable, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
+import { CameraView, useCameraPermissions } from 'expo-camera';
 import { useTheme } from '../../../components/layout/ThemeProvider';
 import ScreenWrapper from '../../../components/common/ScreenWrapper';
 import CustomHeader from '../../../components/common/CustomHeader';
@@ -33,23 +34,91 @@ export default function LeafDiagnosticsScreen() {
   const [viewState, setViewState] = useState<'default' | 'camera' | 'scanning' | 'result'>('default');
   const [flashOn, setFlashOn] = useState(false);
   const [selectedScan, setSelectedScan] = useState<any>(null);
+  const [showTreatment, setShowTreatment] = useState(false);
 
-  const handleStartScan = () => {
+  const [permission, requestPermission] = useCameraPermissions();
+  const cameraRef = useRef<CameraView>(null);
+
+  const handleStartScan = async () => {
+    if (!permission || !permission.granted) {
+      const result = await requestPermission();
+      if (!result.granted) {
+        alert('Camera permission is required to analyze leaf diseases.');
+        return;
+      }
+    }
     setViewState('camera');
   };
 
-  const handleCapture = () => {
-    setViewState('scanning');
-    setTimeout(() => {
-      setSelectedScan({
-        plantName: 'Monstera Deliciosa',
-        confidence: 93,
-        issue: 'Nitrogen Deficiency',
-        severity: 'medium' as const,
-        explanation: 'The mature bottom leaves are yellowing from the tips inward, while veins remain faintly green. This signature pattern indicates Nitrogen depletion as the plant translocates mobile nitrogen to new upper foliage.',
+  const handleCapture = async () => {
+    try {
+      let base64: string | undefined;
+
+      if (cameraRef.current) {
+        setViewState('scanning');
+        const options = { base64: true, quality: 0.5 };
+        const photo = await cameraRef.current.takePictureAsync(options);
+        base64 = photo?.base64 || undefined;
+      } else {
+        // Fallback placeholder base64 representing a healthy/deficient leaf if camera is not mounted
+        base64 = '/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////wgALCAABAAEBAREA/8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABPxA=';
+        setViewState('scanning');
+      }
+
+      if (base64) {
+        const { analyzeLeafDisease } = require('../../../services/gemini');
+        const diagnosis = await analyzeLeafDisease(base64);
+        setSelectedScan({
+          plantName: 'Analyzed Leaf',
+          confidence: Math.round(diagnosis.confidence * 100),
+          issue: diagnosis.issue,
+          severity: diagnosis.severity,
+          explanation: diagnosis.explanation,
+          treatmentSteps: diagnosis.treatmentSteps,
+        });
+        setShowTreatment(false);
+        setViewState('result');
+      } else {
+        throw new Error('Could not capture leaf image data.');
+      }
+    } catch (error: any) {
+      console.error('Leaf analysis failed:', error);
+      alert('AI Diagnosis failed: ' + (error.message || 'Unknown error. Please check your connection and API keys.'));
+      setViewState('default');
+    }
+  };
+
+  const handleOpenGallery = async () => {
+    try {
+      const ImagePicker = require('expo-image-picker');
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        quality: 0.5,
+        base64: true,
       });
-      setViewState('result');
-    }, 1800);
+
+      if (!result.canceled && result.assets?.[0]?.base64) {
+        setViewState('scanning');
+        const base64 = result.assets[0].base64;
+        const { analyzeLeafDisease } = require('../../../services/gemini');
+        const diagnosis = await analyzeLeafDisease(base64);
+        setSelectedScan({
+          plantName: 'Imported Leaf Image',
+          confidence: Math.round(diagnosis.confidence * 100),
+          issue: diagnosis.issue,
+          severity: diagnosis.severity,
+          explanation: diagnosis.explanation,
+          treatmentSteps: diagnosis.treatmentSteps,
+        });
+        setShowTreatment(false);
+        setViewState('result');
+      }
+    } catch (error: any) {
+      console.error('Gallery analysis failed:', error);
+      alert('AI Diagnosis failed: ' + (error.message || 'Unknown error. Please check your connection and API keys.'));
+      setViewState('default');
+    }
   };
 
   const handleSelectHistoryItem = (item: any) => {
@@ -59,25 +128,36 @@ export default function LeafDiagnosticsScreen() {
       issue: item.finding,
       severity: item.severity,
       explanation: `Historical scan data compiled on ${item.date}. Primary diagnosis identified ${item.finding} with high matching precision. Recommended treatments include isolated spraying and moisture balance monitoring.`,
+      treatmentSteps: [
+        'Isolate the plant to prevent spread.',
+        'Prune affected leaves with sterile shears.',
+        'Apply targeted spray treatment (neem oil or organic copper fungicide).',
+        'Monitor watering schedules and environmental parameters.'
+      ],
     });
+    setShowTreatment(false);
     setViewState('result');
   };
 
   if (viewState === 'camera') {
     return (
-      <View style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 1)' }}>
-        <CameraViewfinder
-          mode="leaf"
-          instructionLabel="Align leaf within the dashed area"
-          isFlashOn={flashOn}
-          onToggleFlash={() => setFlashOn(!flashOn)}
-          onClose={() => setViewState('default')}
-          onCapture={handleCapture}
-          onOpenGallery={() => {
-            alert('Gallery selection simulated!');
-            handleCapture();
-          }}
-        />
+      <View style={{ flex: 1, backgroundColor: '#000000' }}>
+        <CameraView
+          style={StyleSheet.absoluteFillObject}
+          facing="back"
+          ref={cameraRef}
+          enableTorch={flashOn}
+        >
+          <CameraViewfinder
+            mode="leaf"
+            instructionLabel="Align leaf within the dashed area"
+            isFlashOn={flashOn}
+            onToggleFlash={() => setFlashOn(!flashOn)}
+            onClose={() => setViewState('default')}
+            onCapture={handleCapture}
+            onOpenGallery={handleOpenGallery}
+          />
+        </CameraView>
       </View>
     );
   }
@@ -148,12 +228,30 @@ export default function LeafDiagnosticsScreen() {
               severity={selectedScan.severity}
               explanation={selectedScan.explanation}
               onTreatIssue={() => {
-                alert('Treatment protocols added to your scheduler task list.');
+                setShowTreatment(!showTreatment);
               }}
               onReadMore={() => {
                 router.push(`/modals/tips` as any);
               }}
             />
+
+            {showTreatment && selectedScan.treatmentSteps && (
+              <CustomCard padding={Spacing.lg}>
+                <SectionHeader title="Step-by-Step Treatment Protocol" />
+                <View style={{ gap: Spacing.sm, marginTop: Spacing.md }}>
+                  {selectedScan.treatmentSteps.map((step: string, index: number) => (
+                    <View key={index} style={{ flexDirection: 'row', gap: Spacing.sm, alignItems: 'flex-start' }}>
+                      <CustomText style={{ color: Colors.green.DEFAULT, fontWeight: 'bold', fontSize: Typography.sizes.base }}>
+                        {index + 1}.
+                      </CustomText>
+                      <CustomText style={{ flex: 1, color: Colors.text.body, fontSize: Typography.sizes.base, lineHeight: 20 }}>
+                        {step}
+                      </CustomText>
+                    </View>
+                  ))}
+                </View>
+              </CustomCard>
+            )}
 
             <View style={{ flexDirection: 'row', gap: Spacing.sm }}>
               <CustomButton

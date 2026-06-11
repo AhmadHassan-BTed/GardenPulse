@@ -1,6 +1,7 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { View } from 'react-native';
 import { useRouter } from 'expo-router';
+import * as Location from 'expo-location';
 import { useTheme } from '../../../components/layout/ThemeProvider';
 import ScreenWrapper from '../../../components/common/ScreenWrapper';
 import CustomHeader from '../../../components/common/CustomHeader';
@@ -16,12 +17,13 @@ import ConfettiCelebration from '../../../components/common/ConfettiCelebration'
 import EmptyStateView from '../../../components/common/EmptyStateView';
 import { useGardenStore } from '../../../store/useGardenStore';
 import { TaskType } from '../../../components/common/TaskCard';
+import CustomCard from '../../../components/common/CustomCard';
+import CustomText from '../../../components/common/CustomText';
 
 export default function SmartSchedulerScreen() {
   const router = useRouter();
   const theme = useTheme();
-  const { Colors, Spacing } = theme;
-
+  const { Colors, Spacing, Typography } = theme;
   const isHydrated = useGardenStore((state) => state.isHydrated);
   const storeTasks = useGardenStore((state) => state.tasks);
   const storePlants = useGardenStore((state) => state.plants);
@@ -31,6 +33,43 @@ export default function SmartSchedulerScreen() {
   const [activeTab, setActiveTab] = useState('Tasks');
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showCelebration, setShowCelebration] = useState(false);
+  const [weatherData, setWeatherData] = useState<{
+    city: string;
+    temp: number;
+    humidity: number;
+    condition: string;
+  } | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    const loadWeather = async () => {
+      try {
+        const { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== 'granted') return;
+
+        const loc = await Location.getCurrentPositionAsync({});
+        if (!active) return;
+
+        const { fetchLocalWeather } = require('../../../services/weather');
+        const data = await fetchLocalWeather(loc.coords.latitude, loc.coords.longitude);
+        if (active) {
+          setWeatherData({
+            city: data.locationName,
+            temp: data.temp,
+            humidity: data.humidity,
+            condition: data.condition,
+          });
+        }
+      } catch (error) {
+        console.error('Failed to load local weather:', error);
+      }
+    };
+
+    loadWeather();
+    return () => {
+      active = false;
+    };
+  }, []);
 
   // Active unarchived plants to populate reminder selectors
   const activePlants = useMemo(() => {
@@ -132,6 +171,15 @@ export default function SmartSchedulerScreen() {
           selectedDate={selectedDate}
           onSelectDate={(d) => setSelectedDate(d)}
         />
+
+        {/* Real-time local weather context banner */}
+        {weatherData && (
+          <CustomCard padding={Spacing.md} style={{ backgroundColor: `${Colors.green.DEFAULT}10`, marginBottom: Spacing.sm, alignItems: 'center' }}>
+            <CustomText style={{ fontSize: Typography.sizes.sm, color: Colors.text.body, fontWeight: 'bold' }}>
+              📍 {weatherData.city} — {weatherData.condition}, {weatherData.temp}°C ({weatherData.humidity}% humidity)
+            </CustomText>
+          </CustomCard>
+        )}
 
         {/* Sunrise / Sunset times for weather context */}
         <SunriseSunsetRow
