@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Alert } from 'react-native';
+import { View, StyleSheet, Alert, TextInput, Modal, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTheme } from '../../../components/layout/ThemeProvider';
 import ScreenWrapper from '../../../components/common/ScreenWrapper';
@@ -11,6 +11,7 @@ import ThemeToggle from '../../../components/common/ThemeToggle';
 import UnitToggle, { UnitSystem } from '../../../components/common/UnitToggle';
 import CustomText from '../../../components/common/CustomText';
 import ModalDialog from '../../../components/common/ModalDialog';
+import CustomButton from '../../../components/common/CustomButton';
 import { useGardenStore } from '../../../store/useGardenStore';
 
 export default function SettingsScreen() {
@@ -21,21 +22,50 @@ export default function SettingsScreen() {
   const isHydrated = useGardenStore((state) => state.isHydrated);
   const userProfile = useGardenStore((state) => state.userProfile);
   const updateProfile = useGardenStore((state) => state.updateProfile);
+  const clearAllData = useGardenStore((state) => state.clearAllData);
 
   const [notifications, setNotifications] = useState(true);
   const [autoSync, setAutoSync] = useState(true);
   const [haptics, setHaptics] = useState(true);
   const [unitSystem, setUnitSystem] = useState<UnitSystem>('metric');
   const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
+  const [editField, setEditField] = useState<'name' | 'growerTag' | null>(null);
+  const [editValue, setEditValue] = useState('');
 
   if (!isHydrated) {
     return null;
   }
 
-  const handleDeleteAccount = () => {
+  const handleDeleteAccount = async () => {
     setDeleteDialogVisible(false);
-    // In production: clear all store data, reset AsyncStorage, navigate to onboarding
-    console.log('Account deletion requested');
+    try {
+      await clearAllData();
+      Alert.alert('Account & Data Deleted', 'All data has been successfully erased from this device and cloud sync.');
+      router.replace('/(onboarding)');
+    } catch (err: any) {
+      console.error('Deletion failed:', err);
+      Alert.alert('Error', 'Failed to erase data. Please try again.');
+    }
+  };
+
+  const handleEditProfile = () => {
+    setEditField('name');
+    setEditValue(userProfile.name);
+  };
+
+  const handleEditTag = () => {
+    setEditField('growerTag');
+    setEditValue(userProfile.growerTag);
+  };
+
+  const handleSaveField = () => {
+    if (editField === 'name') {
+      updateProfile({ name: editValue });
+    } else if (editField === 'growerTag') {
+      const sanitized = editValue.replace(/\s+/g, '_').toLowerCase();
+      updateProfile({ growerTag: sanitized });
+    }
+    setEditField(null);
   };
 
   return (
@@ -52,13 +82,13 @@ export default function SettingsScreen() {
         <SettingsSectionGroup title="Account">
           <NavigationLinkRow 
             label="Edit Profile" 
-            value={userProfile.name}
-            onPress={() => console.log('Edit Profile')} 
+            value={userProfile.name || 'Set Name'}
+            onPress={handleEditProfile} 
           />
           <NavigationLinkRow 
             label="Grower Tag" 
-            value={`@${userProfile.growerTag}`}
-            onPress={() => console.log('Edit Tag')} 
+            value={userProfile.growerTag ? `@${userProfile.growerTag}` : 'Set Tag'}
+            onPress={handleEditTag} 
           />
           <NavigationLinkRow 
             label="Supporter Status" 
@@ -123,11 +153,11 @@ export default function SettingsScreen() {
           />
           <NavigationLinkRow 
             label="Help Center" 
-            onPress={() => console.log('Help Center')} 
+            onPress={() => Alert.alert('Help Center', 'Help articles will be available soon.')} 
           />
           <NavigationLinkRow 
             label="Send Feedback" 
-            onPress={() => console.log('Send Feedback')} 
+            onPress={() => Alert.alert('Send Feedback', 'Feedback system is coming soon!')} 
           />
         </SettingsSectionGroup>
 
@@ -152,6 +182,62 @@ export default function SettingsScreen() {
         </View>
 
       </View>
+
+      {/* Edit Profile Field Modal */}
+      <Modal
+        visible={editField !== null}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setEditField(null)}
+      >
+        <View style={{
+          flex: 1,
+          backgroundColor: Colors.surface.overlay,
+          justifyContent: 'center',
+          alignItems: 'center',
+          padding: Spacing.lg,
+        }}>
+          <Pressable style={StyleSheet.absoluteFill} onPress={() => setEditField(null)} />
+          <View style={{
+            width: '100%',
+            maxWidth: 340,
+            backgroundColor: Colors.surface.base,
+            borderRadius: theme.Radius.xl,
+            borderWidth: 1,
+            borderColor: Colors.surface.glassBorder,
+            padding: Spacing.xl,
+            gap: Spacing.md,
+          }}>
+            <CustomText style={{ fontSize: Typography.sizes.lg, fontWeight: Typography.weights.bold, color: Colors.text.heading }}>
+              Edit {editField === 'name' ? 'Name' : 'Grower Tag'}
+            </CustomText>
+            <TextInput
+              style={{
+                backgroundColor: Colors.surface.glass,
+                color: Colors.text.heading,
+                borderRadius: theme.Radius.md,
+                padding: Spacing.md,
+                fontSize: Typography.sizes.base,
+                borderWidth: 1,
+                borderColor: Colors.border.subtle,
+              }}
+              value={editValue}
+              onChangeText={setEditValue}
+              autoFocus={true}
+              placeholder={editField === 'name' ? 'Enter your name' : 'Enter grower tag'}
+              placeholderTextColor={Colors.text.muted}
+            />
+            <View style={{ flexDirection: 'row', gap: Spacing.sm, marginTop: Spacing.sm }}>
+              <View style={{ flex: 1 }}>
+                <CustomButton label="Cancel" onPress={() => setEditField(null)} variant="secondary" />
+              </View>
+              <View style={{ flex: 1 }}>
+                <CustomButton label="Save" onPress={handleSaveField} />
+              </View>
+            </View>
+          </View>
+        </View>
+      </Modal>
 
       {/* Delete Confirmation Dialog */}
       <ModalDialog
@@ -187,3 +273,4 @@ const styles = StyleSheet.create({
     paddingVertical: 24,
   },
 });
+

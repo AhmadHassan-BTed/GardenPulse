@@ -38,6 +38,8 @@ export default function SmartSchedulerScreen() {
     temp: number;
     humidity: number;
     condition: string;
+    sunrise: string;
+    sunset: string;
   } | null>(null);
 
   useEffect(() => {
@@ -58,6 +60,8 @@ export default function SmartSchedulerScreen() {
             temp: data.temp,
             humidity: data.humidity,
             condition: data.condition,
+            sunrise: data.sunrise,
+            sunset: data.sunset,
           });
         }
       } catch (error) {
@@ -183,8 +187,8 @@ export default function SmartSchedulerScreen() {
 
         {/* Sunrise / Sunset times for weather context */}
         <SunriseSunsetRow
-          sunrise="05:24 AM"
-          sunset="09:12 PM"
+          sunrise={weatherData?.sunrise || "—"}
+          sunset={weatherData?.sunset || "—"}
         />
 
         {/* Tab switcher */}

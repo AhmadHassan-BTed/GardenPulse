@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { View } from 'react-native';
+import { View, Alert } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import * as Location from 'expo-location';
 import { useTheme } from '../../../../components/layout/ThemeProvider';
 import ScreenWrapper from '../../../../components/common/ScreenWrapper';
 import CustomHeader from '../../../../components/common/CustomHeader';
@@ -32,11 +33,54 @@ export default function PlantDetailScreen() {
     return storePlants.find((p) => p.id === id);
   }, [storePlants, id]);
 
+  const [weatherAlert, setWeatherAlert] = useState<string | null>(null);
+
   useEffect(() => {
     if (isHydrated && !plant) {
       router.replace('/(tabs)/garden');
     }
   }, [isHydrated, plant]);
+
+  // Fetch live weather for contextual alert
+  useEffect(() => {
+    if (!plant) return;
+    if (plant.method === 'Indoor') {
+      setWeatherAlert('☀️ Stable indoor environment — no weather impact expected');
+      return;
+    }
+
+    let active = true;
+    const loadWeather = async () => {
+      try {
+        const { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== 'granted') return;
+
+        const loc = await Location.getCurrentPositionAsync({});
+        if (!active) return;
+
+        const { fetchLocalWeather } = require('../../../../services/weather');
+        const data = await fetchLocalWeather(loc.coords.latitude, loc.coords.longitude);
+        if (!active) return;
+
+        if (data.condition.toLowerCase().includes('rain')) {
+          setWeatherAlert(`🌧 Rain expected in ${data.locationName} — reduce watering for ${plant.name}`);
+        } else if (data.humidity > 80) {
+          setWeatherAlert(`💧 High humidity (${data.humidity}%) — monitor ${plant.name} for fungal issues`);
+        } else if (data.temp > 35) {
+          setWeatherAlert(`🔥 Extreme heat (${data.temp}°C) — provide shade for ${plant.name}`);
+        } else if (data.uvIndex >= 8) {
+          setWeatherAlert(`☀️ High UV (${data.uvIndex}) — consider shade cloth for ${plant.name}`);
+        } else {
+          setWeatherAlert(null);
+        }
+      } catch {
+        // Weather is non-critical for plant detail
+      }
+    };
+
+    loadWeather();
+    return () => { active = false; };
+  }, [plant?.id, plant?.method]);
 
   const plantLogs = useMemo(() => {
     return storeLogs
@@ -115,18 +159,12 @@ export default function PlantDetailScreen() {
     return null;
   }
 
-  const weatherAlert = plant.method === 'Indoor'
-    ? '☀️ Stable indoor environment'
-    : '🌧 High humidity expected in 2 days → reduce reservoir topping.';
-
   const handleMicPress = () => {
-    setIsRecording(!isRecording);
-    if (!isRecording) {
-      setTimeout(() => {
-        setNoteText('Recorded simulated voice log: Sweet Basil moisture levels are stabilized.');
-        setIsRecording(false);
-      }, 2000);
-    }
+    Alert.alert(
+      'Voice Recording',
+      'Voice logging requires native microphone permissions and expo-av integration. This feature will be available in a future update.',
+      [{ text: 'OK' }]
+    );
   };
 
   const handleEdit = () => {
@@ -139,6 +177,13 @@ export default function PlantDetailScreen() {
       params: { type: 'camera', next: `/garden/plant/${plant.id}` },
     });
   };
+
+  // Dynamic tip based on plant health
+  const tipTitle = plant.healthScore < 50
+    ? `⚠️ ${plant.name} needs attention — health score at ${plant.healthScore}%`
+    : plant.healthScore < 75
+      ? `💡 Boost ${plant.name} health with consistent care routines`
+      : `🌱 ${plant.name} is thriving — keep up the great work!`;
 
   return (
     <ScreenWrapper scrollable={true} withPadding={false}>
@@ -201,7 +246,7 @@ export default function PlantDetailScreen() {
           onEdit={handleEdit}
         />
 
-        {/* Environment Alert */}
+        {/* Environment Alert — live weather context */}
         {weatherAlert && (
           <WeatherImpactBanner
             message={weatherAlert}
@@ -251,12 +296,12 @@ export default function PlantDetailScreen() {
           />
         </View>
 
-        {/* Learning tip card */}
+        {/* Dynamic learning tip card */}
         <View style={{ gap: Spacing.sm }}>
           <SectionHeader title="Grower Tip" />
           <ContextualTipCard
-            title="Recognizing Magnesium Deficiency in Monstera Leaves"
-            tag="Nutrition"
+            title={tipTitle}
+            tag={plant.method}
             readTime="3 min read"
             onPress={() => router.push(`/modals/tips` as any)}
           />

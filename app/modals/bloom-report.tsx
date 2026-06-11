@@ -1,6 +1,7 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
+import * as Location from 'expo-location';
 import { useTheme } from '../../components/layout/ThemeProvider';
 import ScreenWrapper from '../../components/common/ScreenWrapper';
 import CustomHeader from '../../components/common/CustomHeader';
@@ -22,6 +23,8 @@ export default function WeeklyBloomReportModal() {
   const storeLogs = useGardenStore((state) => state.logs);
   const userProfile = useGardenStore((state) => state.userProfile);
 
+  const [insight, setInsight] = useState('Loading local environment report...');
+
   // Compute weekly stats
   const weeklyStats = useMemo(() => {
     const now = new Date();
@@ -34,13 +37,23 @@ export default function WeeklyBloomReportModal() {
     };
   }, [storeLogs]);
 
-  // Compute health delta (simulated as a positive comparison)
+  // Compute health delta by comparing older vs newer plants
   const healthDelta = useMemo(() => {
     const activePlants = storePlants.filter((p) => !p.isArchived);
-    if (activePlants.length === 0) return 0;
-    const avgHealth = Math.round(activePlants.reduce((s, p) => s + p.healthScore, 0) / activePlants.length);
-    // Simulated delta from baseline 75
-    return Math.max(0, avgHealth - 75);
+    if (activePlants.length < 2) return 0;
+    
+    const now = new Date();
+    const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    
+    const olderPlants = activePlants.filter(p => new Date(p.dateAdded) < oneWeekAgo);
+    const newerPlants = activePlants.filter(p => new Date(p.dateAdded) >= oneWeekAgo);
+    
+    if (olderPlants.length === 0 || newerPlants.length === 0) return 0;
+    
+    const avgOlder = olderPlants.reduce((s, p) => s + p.healthScore, 0) / olderPlants.length;
+    const avgNewer = newerPlants.reduce((s, p) => s + p.healthScore, 0) / newerPlants.length;
+    
+    return Math.round(avgNewer - avgOlder);
   }, [storePlants]);
 
   // Find top performer (highest health score)
@@ -54,6 +67,31 @@ export default function WeeklyBloomReportModal() {
   const cemeteryCount = useMemo(() => {
     return storePlants.filter((p) => p.isArchived).length;
   }, [storePlants]);
+
+  // Fetch local weather for contextual insight
+  useEffect(() => {
+    let active = true;
+    const loadWeather = async () => {
+      try {
+        const { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== 'granted') {
+          if (active) setInsight('Environmental data unavailable — check location permissions.');
+          return;
+        }
+        const loc = await Location.getCurrentPositionAsync({});
+        if (!active) return;
+        const { fetchLocalWeather } = require('../../services/weather');
+        const data = await fetchLocalWeather(loc.coords.latitude, loc.coords.longitude);
+        if (active && data) {
+          setInsight(`A warm spell of ${data.temp}°C with ${data.humidity}% humidity in ${data.locationName} affected transpirational growth. High lighting conditions (UV index ${data.uvIndex}) helped speed up growth!`);
+        }
+      } catch (err) {
+        if (active) setInsight('Unable to contact weather service for local report.');
+      }
+    };
+    loadWeather();
+    return () => { active = false; };
+  }, []);
 
   if (!isHydrated) {
     return null;
@@ -94,7 +132,7 @@ export default function WeeklyBloomReportModal() {
 
         <SectionHeader title="Environmental Factor" style={{ marginTop: Spacing.sm }} />
         <BloomWeatherInsight
-          insightText="A warm spell of 26°C with 65% humidity increased transpirational growth. High lighting conditions helped double the leaf size on indoor cultivars!"
+          insightText={insight}
         />
 
         {cemeteryCount > 0 && (

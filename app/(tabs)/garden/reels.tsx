@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
+import React, { useState, useMemo } from 'react';
+import { View, StyleSheet, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTheme } from '../../../components/layout/ThemeProvider';
 import ScreenWrapper from '../../../components/common/ScreenWrapper';
@@ -11,57 +11,53 @@ import VideoPlayer from '../../../components/common/VideoPlayer';
 import ReelGeneratorFlow from '../../../components/common/ReelGeneratorFlow';
 import CustomCard from '../../../components/common/CustomCard';
 import CustomText from '../../../components/common/CustomText';
-
-interface ReelData {
-  id: string;
-  plantName: string;
-  dateRange: string;
-  duration: string;
-  methodTag: string;
-  views: number;
-  likes: number;
-}
-
-const initialReels: ReelData[] = [
-  { id: '1', plantName: 'Monstera Deliciosa', dateRange: 'March - June 2026', duration: '0:15', methodTag: 'Hydroponics', views: 245, likes: 62 },
-  { id: '2', plantName: 'Sweet Basil', dateRange: 'May - June 2026', duration: '0:10', methodTag: 'Soil Drench', views: 189, likes: 45 },
-  { id: '3', dateRange: 'Jan - June 2026', plantName: 'Fiddle Leaf Fig', duration: '0:18', methodTag: 'Container', views: 312, likes: 88 },
-];
+import EmptyStateView from '../../../components/common/EmptyStateView';
+import { useGardenStore } from '../../../store/useGardenStore';
 
 export default function ReelsScreen() {
   const router = useRouter();
   const theme = useTheme();
   const { Colors, Spacing, Radius, Typography } = theme;
 
-  const [reels, setReels] = useState<ReelData[]>(initialReels);
+  const reels = useGardenStore((state) => state.reels);
+  const addReel = useGardenStore((state) => state.addReel);
+  const plants = useGardenStore((state) => state.plants);
+
   const [selectedFilter, setSelectedFilter] = useState('All');
-  const [selectedReel, setSelectedReel] = useState<ReelData | null>(null);
+  const [selectedReel, setSelectedReel] = useState<typeof reels[number] | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
 
   const handleCreateReel = () => {
+    if (plants.filter((p) => !p.isArchived).length === 0) {
+      Alert.alert('No Plants', 'Add a plant to your garden before creating a timelapse reel.');
+      return;
+    }
     setIsGenerating(true);
   };
 
   const handleGeneratorComplete = () => {
-    const newReel: ReelData = {
-      id: String(reels.length + 1),
-      plantName: 'Cherry Tomatoes',
-      dateRange: 'April - June 2026',
+    const activePlants = plants.filter((p) => !p.isArchived);
+    const selectedPlant = activePlants[0];
+    if (!selectedPlant) return;
+
+    addReel({
+      plantId: selectedPlant.id,
+      plantName: selectedPlant.nickname || selectedPlant.name,
+      dateRange: `${new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}`,
       duration: '0:12',
-      methodTag: 'Balcony',
+      methodTag: selectedPlant.method,
       views: 0,
       likes: 0,
-    };
-    setReels([newReel, ...reels]);
+    });
     setIsGenerating(false);
-    alert('Timelapse Reel generated successfully and added to your gallery!');
+    Alert.alert('Success', 'Timelapse reel generated and added to your gallery!');
   };
 
   // Full-screen overlay configurations
   if (selectedReel) {
     return (
       <VideoPlayer
-        videoUrl="https://example.com/video.mp4"
+        videoUrl={selectedReel.videoUrl || ''}
         plantName={selectedReel.plantName}
         methodTag={selectedReel.methodTag}
         onClose={() => setSelectedReel(null)}
@@ -79,6 +75,11 @@ export default function ReelsScreen() {
       />
     );
   }
+
+  const filteredReels = useMemo(() => {
+    if (selectedFilter === 'All') return reels;
+    return reels.filter((r) => r.methodTag.toLowerCase().includes(selectedFilter.toLowerCase()));
+  }, [reels, selectedFilter]);
 
   const totalViews = reels.reduce((sum, r) => sum + r.views, 0);
   const totalLikes = reels.reduce((sum, r) => sum + r.likes, 0);
@@ -128,19 +129,29 @@ export default function ReelsScreen() {
         </View>
 
         {/* Reels Grid layout */}
-        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.xs }}>
-          {reels.map((reel) => (
-            <View key={reel.id} style={{ width: '48%' }}>
-              <ReelCard
-                plantName={reel.plantName}
-                dateRange={reel.dateRange}
-                duration={reel.duration}
-                onPlayPress={() => setSelectedReel(reel)}
-                onSharePress={() => router.push('/modals/export-share')}
-              />
-            </View>
-          ))}
-        </View>
+        {filteredReels.length > 0 ? (
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.xs }}>
+            {filteredReels.map((reel) => (
+              <View key={reel.id} style={{ width: '48%' }}>
+                <ReelCard
+                  plantName={reel.plantName}
+                  dateRange={reel.dateRange}
+                  duration={reel.duration}
+                  onPlayPress={() => setSelectedReel(reel)}
+                  onSharePress={() => router.push('/modals/export-share')}
+                />
+              </View>
+            ))}
+          </View>
+        ) : (
+          <EmptyStateView
+            title="No reels yet"
+            description="Create your first timelapse reel to see your plants grow over time!"
+            iconName="film"
+            actionLabel="Create a Reel"
+            onActionPress={handleCreateReel}
+          />
+        )}
       </View>
     </ScreenWrapper>
   );

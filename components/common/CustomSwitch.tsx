@@ -109,7 +109,7 @@ const CustomSwitch: React.FC<CustomSwitchProps> = ({
     Animated.parallel([
       Animated.spring(thumbX, {
         toValue: value ? THUMB_ON_X : THUMB_MARGIN,
-        useNativeDriver: true,
+        useNativeDriver: false,
         damping: 14, stiffness: 200, mass: 0.8,
       }),
       Animated.timing(colorAnim, {

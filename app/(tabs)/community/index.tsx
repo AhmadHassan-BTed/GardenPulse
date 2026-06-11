@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { View, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
+import * as Location from 'expo-location';
 import { useTheme } from '../../../components/layout/ThemeProvider';
 import ScreenWrapper from '../../../components/common/ScreenWrapper';
 import CustomHeader from '../../../components/common/CustomHeader';
@@ -14,22 +15,7 @@ import ReferralBanner from '../../../components/common/ReferralBanner';
 import SectionHeader from '../../../components/common/SectionHeader';
 import HorizontalScrollRow from '../../../components/common/HorizontalScrollRow';
 import CustomText from '../../../components/common/CustomText';
-
-const successStats = [
-  { plantName: 'Cherry Tomatoes', successRate: 87, growerCount: 342, trend: 'up' as const },
-  { plantName: 'Genovese Basil', successRate: 92, growerCount: 512, trend: 'flat' as const },
-  { plantName: 'Fiddle Leaf Fig', successRate: 78, growerCount: 124, trend: 'down' as const },
-];
-
-const joinedClusters = [
-  { id: '1', name: 'Urban Jungle Collective', members: 1247, method: 'Apartment', hasRecentActivity: true, isJoined: true },
-  { id: '2', name: 'Hydroponics Heroes', members: 892, method: 'Hydroponics', hasRecentActivity: false, isJoined: true },
-];
-
-const suggestedClusters = [
-  { id: '3', name: 'Balcony Veggie Growers', members: 512, method: 'Soil', isJoined: false },
-  { id: '4', name: 'Rare Orchid Collectors', members: 234, method: 'Indoor', isJoined: false },
-];
+import { useGardenStore } from '../../../store/useGardenStore';
 
 export default function CommunityHubScreen() {
   const router = useRouter();
@@ -37,30 +23,51 @@ export default function CommunityHubScreen() {
   const { Colors, Spacing, Typography } = theme;
 
   const [activeTab, setActiveTab] = useState('Local');
-  const [clustersList, setClustersList] = useState(joinedClusters);
-  const [suggestedList, setSuggestedList] = useState(suggestedClusters);
+  const [city, setCity] = useState('Berlin');
+  const [weatherData, setWeatherData] = useState<any | null>(null);
+
+  const clusters = useGardenStore((state) => state.clusters);
+  const updateCluster = useGardenStore((state) => state.updateCluster);
+  const successStats = useGardenStore((state) => state.successStats);
+  const featuredWinner = useGardenStore((state) => state.featuredWinner);
+  const posts = useGardenStore((state) => state.posts);
+  const userProfile = useGardenStore((state) => state.userProfile);
+
+  useEffect(() => {
+    let active = true;
+    const loadLocationAndWeather = async () => {
+      try {
+        const { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== 'granted') return;
+        const loc = await Location.getCurrentPositionAsync({});
+        if (!active) return;
+        const { fetchLocalWeather } = require('../../../services/weather');
+        const data = await fetchLocalWeather(loc.coords.latitude, loc.coords.longitude);
+        if (active) {
+          setCity(data.locationName);
+          setWeatherData(data);
+        }
+      } catch (err) {
+        console.warn('Failed to load local weather for community:', err);
+      }
+    };
+    loadLocationAndWeather();
+    return () => { active = false; };
+  }, []);
+
+  const clustersList = useMemo(() => clusters.filter((c) => c.isJoined), [clusters]);
+  const suggestedList = useMemo(() => clusters.filter((c) => !c.isJoined), [clusters]);
 
   const handleJoinPress = (clusterId: string, fromJoined: boolean) => {
-    if (fromJoined) {
-      // Leave cluster
-      const item = clustersList.find(c => c.id === clusterId);
-      if (item) {
-        setClustersList(clustersList.filter(c => c.id !== clusterId));
-        setSuggestedList([...suggestedList, { ...item, isJoined: false }]);
-      }
-    } else {
-      // Join cluster
-      const item = suggestedList.find(c => c.id === clusterId);
-      if (item) {
-        setSuggestedList(suggestedList.filter(c => c.id !== clusterId));
-        setClustersList([...clustersList, { ...item, isJoined: true, hasRecentActivity: true }]);
-      }
-    }
+    updateCluster(clusterId, { isJoined: !fromJoined, hasRecentActivity: !fromJoined });
   };
 
   const handleClusterSelect = (clusterId: string) => {
     router.push(`/community/cluster/${clusterId}`);
   };
+
+  const recentPost = posts.length > 0 ? posts[0] : null;
+  const referralCount = userProfile.referralCount || 0;
 
   return (
     <ScreenWrapper scrollable={true} withPadding={true}>
@@ -72,8 +79,8 @@ export default function CommunityHubScreen() {
       <View style={{ gap: Spacing.lg, paddingBottom: Spacing.xl }}>
         {/* Top Local Insight card */}
         <LocalContextCard
-          city="Berlin"
-          insight="Balcony Tomatoes & Herbs success rate has surged by 15% due to unusually warm seasonal weather. Monitor container soil evaporation!"
+          city={city}
+          insight={weatherData ? `Tomato & herb success rate is high at ${weatherData.humidity}% humidity in ${city}. Monitor watering!` : `Urban gardening success rates in ${city} are stable. Check the local grow map!`}
           onPress={() => router.push('/community/local-map')}
         />
 
@@ -102,7 +109,9 @@ export default function CommunityHubScreen() {
             <View style={{ marginTop: Spacing.md }}>
               <SectionHeader title="Recent Local Logs" />
               <CustomText style={{ fontSize: Typography.sizes.sm, color: Colors.text.muted, lineHeight: 18, fontStyle: 'italic' }}>
-                "Just harvested 200g of sweet basil from my hydroponic windowsill tent in Kreuzberg. The leaves are incredibly aromatic!" — green_thumb_berlin
+                {recentPost 
+                  ? `"${recentPost.content}" — ${recentPost.username}`
+                  : '"No local logs shared yet. Be the first to share an update in your cluster!"'}
               </CustomText>
             </View>
           </View>
@@ -150,19 +159,23 @@ export default function CommunityHubScreen() {
               }}
             />
 
-            <SectionHeader title="Featured Winner" />
-            <WinnerSpotlightCard
-              username="green_thumb_berlin"
-              challengeName="Best Apartment Herb Harvest"
-              methodTag="Balcony"
-              prizeLabel="Full Grow Light Kit"
-            />
+            {featuredWinner && (
+              <>
+                <SectionHeader title="Featured Winner" />
+                <WinnerSpotlightCard
+                  username={featuredWinner.username}
+                  challengeName={featuredWinner.challengeName}
+                  methodTag={featuredWinner.methodTag}
+                  prizeLabel={featuredWinner.prizeLabel}
+                />
+              </>
+            )}
           </View>
         )}
 
         {/* Invite Promotion Persistent bottom card */}
         <ReferralBanner
-          invitedCount={2}
+          invitedCount={referralCount}
           totalNeeded={3}
           onShare={() => router.push('/modals/export-share')}
         />

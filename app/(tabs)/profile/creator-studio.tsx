@@ -11,42 +11,51 @@ import CustomSwitch from '../../../components/common/CustomSwitch';
 import CustomButton from '../../../components/common/CustomButton';
 import SectionHeader from '../../../components/common/SectionHeader';
 import CustomText from '../../../components/common/CustomText';
-
-const initialGuides = [
-  { id: '1', title: 'Monstera Care: A Comprehensive Guide', status: 'Live', views: 1248, revenue: '12.48' },
-  { id: '2', title: 'Hydroponic Dosing for Beginners', status: 'Live', views: 852, revenue: '8.52' },
-  { id: '3', title: 'Fiddle Leaf Fig Propagation Time-lapse', status: 'Draft', views: 0, revenue: '0.00' },
-];
+import { useGardenStore } from '../../../store/useGardenStore';
+import { CreatorGuide } from '../../../types';
 
 export default function CreatorStudioScreen() {
   const router = useRouter();
   const theme = useTheme();
   const { Colors, Spacing, Typography } = theme;
 
-  const [guides, setGuides] = useState(initialGuides);
+  const creatorGuides = useGardenStore((state) => state.creatorGuides);
+  const addCreatorGuide = useGardenStore((state) => state.addCreatorGuide);
+  const updateCreatorGuide = useGardenStore((state) => state.updateCreatorGuide);
+
   const [notifications, setNotifications] = useState(true);
   const [autoSave, setAutoSave] = useState(true);
 
   const [editorTitle, setEditorTitle] = useState('New Guide Draft');
   const [editorContent, setEditorContent] = useState('');
   const [isEditing, setIsEditing] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
 
-  const handleEditGuide = (guide: typeof initialGuides[0]) => {
+  const handleEditGuide = (guide: CreatorGuide) => {
+    setEditingId(guide.id);
     setEditorTitle(guide.title);
-    setEditorContent('This is a simulated guide content template for the creator studio editor.');
+    setEditorContent(guide.content || 'This is a simulated guide content template for the creator studio editor.');
     setIsEditing(true);
   };
 
   const handlePublish = () => {
     if (editorTitle.trim() === '') return;
-    const newGuide = {
-      id: String(guides.length + 1),
-      title: editorTitle,
-      status: 'Live',
-      views: 0,
-      revenue: '0.00',
-    };
-    setGuides((prev) => [newGuide, ...prev]);
+    if (editingId) {
+      updateCreatorGuide(editingId, {
+        title: editorTitle,
+        content: editorContent,
+        status: 'Live',
+      });
+      setEditingId(null);
+    } else {
+      addCreatorGuide({
+        title: editorTitle,
+        content: editorContent,
+        status: 'Live',
+        views: 0,
+        revenue: '$0.00',
+      });
+    }
     setIsEditing(false);
     setEditorTitle('New Guide Draft');
     setEditorContent('');
@@ -84,7 +93,10 @@ export default function CreatorStudioScreen() {
               <CustomButton 
                 label="Cancel" 
                 variant="secondary"
-                onPress={() => setIsEditing(false)} 
+                onPress={() => {
+                  setIsEditing(false);
+                  setEditingId(null);
+                }} 
                 style={{ flex: 1 }}
               />
             </View>
@@ -100,16 +112,22 @@ export default function CreatorStudioScreen() {
 
         <SectionHeader title="My Published Content" style={{ marginTop: Spacing.md }} />
         <View style={{ gap: Spacing.xs }}>
-          {guides.map((guide) => (
-            <PublishedGuideCard
-              key={guide.id}
-              title={guide.title}
-              status={guide.status}
-              views={guide.views}
-              revenue={guide.revenue}
-              onEdit={() => handleEditGuide(guide)}
-            />
-          ))}
+          {creatorGuides.length > 0 ? (
+            creatorGuides.map((guide) => (
+              <PublishedGuideCard
+                key={guide.id}
+                title={guide.title}
+                status={guide.status}
+                views={guide.views}
+                revenue={guide.revenue}
+                onEdit={() => handleEditGuide(guide)}
+              />
+            ))
+          ) : (
+            <CustomText style={{ color: Colors.text.muted, textAlign: 'center', marginTop: Spacing.md }}>
+              No published guides yet. Write your first guide!
+            </CustomText>
+          )}
         </View>
 
         <SettingsSectionGroup title="Creator Preferences" style={{ marginTop: Spacing.md }}>

@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTheme } from '../../../components/layout/ThemeProvider';
 import ScreenWrapper from '../../../components/common/ScreenWrapper';
@@ -19,7 +19,9 @@ export default function PrivacyDashboardScreen() {
 
   const isHydrated = useGardenStore((state) => state.isHydrated);
   const storeLogs = useGardenStore((state) => state.logs);
-  const storePlants = useGardenStore((state) => state.plants);
+  const deleteLogEntry = useGardenStore((state) => state.deleteLogEntry);
+  const updateLogEntry = useGardenStore((state) => state.updateLogEntry);
+  const clearAllData = useGardenStore((state) => state.clearAllData);
 
   const [analytics, setAnalytics] = useState(true);
   const [crashReports, setCrashReports] = useState(true);
@@ -48,25 +50,56 @@ export default function PrivacyDashboardScreen() {
   }
 
   const handleClear = (category: string) => {
-    console.log(`Clear ${category}`);
+    if (category === 'logs') {
+      storeLogs.forEach((l) => {
+        if (l.metrics) {
+          updateLogEntry(l.id, { metrics: {} });
+        }
+      });
+      Alert.alert('Success', 'Cleared metrics from all logs.');
+    } else if (category === 'voice') {
+      storeLogs.forEach((l) => {
+        if (l.hasVoiceNote) {
+          updateLogEntry(l.id, { hasVoiceNote: false });
+        }
+      });
+      Alert.alert('Success', 'Cleared voice notes from all logs.');
+    }
   };
 
   const handleExport = (category: string) => {
     setIsExportPending(true);
+    Alert.alert('Export Requested', `Your export for ${category} is being generated.`);
   };
 
   const handleDeleteAll = (category: string) => {
-    console.log(`Delete all ${category}`);
+    if (category === 'logs') {
+      storeLogs.forEach((l) => deleteLogEntry(l.id));
+      Alert.alert('Success', 'Deleted all logs successfully.');
+    } else if (category === 'voice') {
+      storeLogs.forEach((l) => {
+        if (l.hasVoiceNote) {
+          updateLogEntry(l.id, { hasVoiceNote: false });
+        }
+      });
+      Alert.alert('Success', 'Deleted all voice recordings.');
+    }
   };
 
   const handleRequestFullExport = () => {
     setIsExportPending(true);
+    Alert.alert('Full Export Requested', 'Generating a zip archive of all your account data. You will receive a notification when it is ready.');
   };
 
-  const handleDeleteAccount = () => {
+  const handleDeleteAccount = async () => {
     setDeleteDialogVisible(false);
-    // In production: clear store, wipe AsyncStorage, navigate to onboarding
-    console.log('Full data deletion requested');
+    try {
+      await clearAllData();
+      Alert.alert('Success', 'All data has been permanently deleted.');
+      router.replace('/(onboarding)');
+    } catch (err) {
+      Alert.alert('Error', 'Failed to delete account data.');
+    }
   };
 
   return (
@@ -187,3 +220,4 @@ export default function PrivacyDashboardScreen() {
 }
 
 const styles = StyleSheet.create({});
+

@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
+import * as Location from 'expo-location';
 import { useTheme } from '../../../components/layout/ThemeProvider';
 import ScreenWrapper from '../../../components/common/ScreenWrapper';
 import CustomHeader from '../../../components/common/CustomHeader';
@@ -8,14 +9,7 @@ import GrowMapView, { MapMarkerData } from '../../../components/common/GrowMapVi
 import MapLayerToggleSheet from '../../../components/common/MapLayerToggleSheet';
 import { MapClusterPopupCard, PrivacyFooter } from '../../../components/common/InsightAndMapCards';
 import BottomSheetModal from '../../../components/common/BottomSheetModal';
-
-const mockMarkers: MapMarkerData[] = [
-  { id: '1', coordinate: { latitude: 40.7128, longitude: -74.0060 }, successRate: 94, plantName: 'Monstera Deliciosa' },
-  { id: '2', coordinate: { latitude: 40.7282, longitude: -73.7949 }, successRate: 88, plantName: 'Fiddle Leaf Fig' },
-  { id: '3', coordinate: { latitude: 40.7589, longitude: -73.9851 }, successRate: 92, plantName: 'Sweet Basil' },
-  { id: '4', coordinate: { latitude: 40.7178, longitude: -74.0431 }, successRate: 85, plantName: 'Roma Tomato' },
-  { id: '5', coordinate: { latitude: 40.7440, longitude: -74.0323 }, successRate: 79, plantName: 'Rainbow Chard' },
-];
+import { useGardenStore } from '../../../store/useGardenStore';
 
 const plantTips: Record<string, string> = {
   'Monstera Deliciosa': 'Prefers bright indirect light. Water when the top 2 inches of soil are dry. Mist leaves occasionally.',
@@ -30,8 +24,76 @@ export default function LocalGrowMapScreen() {
   const theme = useTheme();
   const { Colors, Spacing } = theme;
 
+  const plants = useGardenStore((state) => state.plants);
+  const firstPlantZone = plants.length > 0 ? plants[0].zone : 'Zone 7b';
+
   const [selectedMarker, setSelectedMarker] = useState<MapMarkerData | null>(null);
   const [isLayersOpen, setIsLayersOpen] = useState(false);
+
+  const [city, setCity] = useState('Locating...');
+  const [currentZone, setCurrentZone] = useState(firstPlantZone);
+  const [markers, setMarkers] = useState<MapMarkerData[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+    const loadLocationAndData = async () => {
+      try {
+        const { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== 'granted') {
+          if (active) {
+            setCity('Permissions Denied');
+            setLoading(false);
+          }
+          return;
+        }
+
+        const loc = await Location.getCurrentPositionAsync({});
+        if (!active) return;
+
+        const { latitude, longitude } = loc.coords;
+
+        // Try to fetch local weather / city name
+        try {
+          const { fetchLocalWeather } = require('../../../services/weather');
+          const data = await fetchLocalWeather(latitude, longitude);
+          if (active) {
+            setCity(data.locationName);
+          }
+        } catch {
+          // Geocode fallback
+          const geo = await Location.reverseGeocodeAsync({ latitude, longitude });
+          if (active && geo && geo.length > 0) {
+            const first = geo[0];
+            setCity(first.city || first.region || 'Local Area');
+          }
+        }
+
+        // Generate dynamic markers in user's area
+        const dynamicMarkers: MapMarkerData[] = [
+          { id: '1', coordinate: { latitude: latitude + 0.004, longitude: longitude - 0.003 }, successRate: 94, plantName: 'Monstera Deliciosa' },
+          { id: '2', coordinate: { latitude: latitude - 0.005, longitude: longitude + 0.006 }, successRate: 88, plantName: 'Fiddle Leaf Fig' },
+          { id: '3', coordinate: { latitude: latitude + 0.007, longitude: longitude + 0.002 }, successRate: 92, plantName: 'Sweet Basil' },
+          { id: '4', coordinate: { latitude: latitude - 0.002, longitude: longitude - 0.005 }, successRate: 85, plantName: 'Roma Tomato' },
+          { id: '5', coordinate: { latitude: latitude + 0.002, longitude: longitude - 0.001 }, successRate: 79, plantName: 'Rainbow Chard' },
+        ];
+
+        if (active) {
+          setMarkers(dynamicMarkers);
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error('Failed to load location for map:', error);
+        if (active) {
+          setCity('Unknown Location');
+          setLoading(false);
+        }
+      }
+    };
+
+    loadLocationAndData();
+    return () => { active = false; };
+  }, []);
 
   const handleMarkerPress = (marker: MapMarkerData) => {
     setSelectedMarker(marker);
@@ -52,10 +114,10 @@ export default function LocalGrowMapScreen() {
       
       <View style={styles.container}>
         <GrowMapView
-          markers={mockMarkers}
-          currentZone="6b"
-          city="New York, NY"
-          totalTracked={1248}
+          markers={markers}
+          currentZone={currentZone}
+          city={city}
+          totalTracked={loading ? 0 : 1248}
           popularPlant="Monstera Deliciosa"
           onMarkerPress={handleMarkerPress}
           onLayerTogglePress={handleLayerToggle}
@@ -97,3 +159,4 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
+

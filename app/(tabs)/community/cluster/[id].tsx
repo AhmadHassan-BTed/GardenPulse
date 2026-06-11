@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text } from 'react-native';
+import React, { useState, useMemo } from 'react';
+import { View, Text, Alert } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useTheme } from '../../../../components/layout/ThemeProvider';
 import ScreenWrapper from '../../../../components/common/ScreenWrapper';
@@ -11,37 +11,7 @@ import { MemberRow, SwapCard } from '../../../../components/common/CommunityExte
 import PostComposeOverlay from '../../../../components/common/PostComposeOverlay';
 import SectionHeader from '../../../../components/common/SectionHeader';
 import FAB from '../../../../components/common/FAB';
-
-const initialPosts = [
-  {
-    id: '1',
-    username: 'Sarah M.',
-    content: 'My Monstera deliciosa has finally fenestrated! 🎉 Watering every 7 days, bright indirect light. Also using the recipe calculator from Tools tab for monthly feeds.',
-    likesCount: 47,
-    commentsCount: 12,
-    methodTag: 'Hydroponics',
-    isLiked: true,
-  },
-  {
-    id: '2',
-    username: 'Mike R.',
-    content: 'Question: My Pothos leaves are curling. The soil feels moist but leaves are limp. Any ideas or suggestions?',
-    likesCount: 8,
-    commentsCount: 15,
-    methodTag: 'Soil',
-  },
-];
-
-const mockMembers = [
-  { name: 'Sarah M.', joinedDate: 'Jan 12, 2024' },
-  { name: 'Mike R.', joinedDate: 'Feb 18, 2024' },
-  { name: 'Alex K.', joinedDate: 'Mar 01, 2024' },
-];
-
-const mockSwaps = [
-  { itemName: 'Golden Pothos Cuttings', type: 'Cutting', location: 'Kreuzberg' },
-  { itemName: 'Organic Fertilizer Pellets', type: 'Nutrient', location: 'Neukölln' },
-];
+import { useGardenStore } from '../../../../store/useGardenStore';
 
 export default function ClusterDetailScreen() {
   const router = useRouter();
@@ -49,21 +19,51 @@ export default function ClusterDetailScreen() {
   const theme = useTheme();
   const { Colors, Spacing } = theme;
 
-  const [isJoined, setIsJoined] = useState(true);
   const [activeTab, setActiveTab] = useState('Posts');
-  const [posts, setPosts] = useState(initialPosts);
   const [isPosting, setIsPosting] = useState(false);
 
+  const clusters = useGardenStore((state) => state.clusters);
+  const updateCluster = useGardenStore((state) => state.updateCluster);
+  const allPosts = useGardenStore((state) => state.posts);
+  const addPost = useGardenStore((state) => state.addPost);
+  const swaps = useGardenStore((state) => state.swaps);
+  const userProfile = useGardenStore((state) => state.userProfile);
+
+  const cluster = useMemo(() => clusters.find((c) => c.id === id), [clusters, id]);
+
+  const clusterPosts = useMemo(() => allPosts.filter((p) => p.clusterId === id), [allPosts, id]);
+  const clusterSwaps = useMemo(() => swaps.filter((s) => s.clusterId === id), [swaps, id]);
+
+  const mockMembers = useMemo(() => [
+    { name: 'Sarah M.', joinedDate: 'Jan 12, 2024' },
+    { name: 'Mike R.', joinedDate: 'Feb 18, 2024' },
+    { name: userProfile.name || 'You', joinedDate: 'Just now' }
+  ], [userProfile]);
+
+  if (!cluster) {
+    return (
+      <ScreenWrapper scrollable={true} withPadding={true}>
+        <CustomHeader
+          title="Collective Details"
+          showBack={true}
+          onBack={() => router.back()}
+        />
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: 100 }}>
+          <Text style={{ color: Colors.text.muted }}>Cluster not found</Text>
+        </View>
+      </ScreenWrapper>
+    );
+  }
+
   const handlePostSubmit = (content: string, hasPhoto: boolean) => {
-    const newPost = {
-      id: String(posts.length + 1),
-      username: 'me',
+    addPost({
+      clusterId: cluster.id,
+      username: userProfile.growerTag || 'green_thumb',
       content: content,
       likesCount: 0,
       commentsCount: 0,
-      methodTag: 'Indoor',
-    };
-    setPosts([newPost, ...posts]);
+      methodTag: cluster.method || 'Indoor',
+    });
     setIsPosting(false);
   };
 
@@ -77,13 +77,13 @@ export default function ClusterDetailScreen() {
 
       {/* Cluster cover header banner */}
       <ClusterCoverHeader
-        name="Urban Jungle Collective"
-        memberCount={1247}
-        location="Berlin Region"
-        createdAt="Est. January 2024"
-        description="A group for indoor plant growers sharing tips for apartment microclimates, humidity challenges, and vertical shelving."
-        isJoined={isJoined}
-        onJoinToggle={() => setIsJoined(!isJoined)}
+        name={cluster.name}
+        memberCount={cluster.members}
+        location={cluster.location || 'Local Region'}
+        createdAt={cluster.createdAt || 'Est. January 2024'}
+        description={cluster.description || 'No description available.'}
+        isJoined={cluster.isJoined}
+        onJoinToggle={() => updateCluster(cluster.id, { isJoined: !cluster.isJoined })}
       />
 
       <View style={{ paddingHorizontal: Spacing.md, gap: Spacing.lg, paddingBottom: Spacing.xl }}>
@@ -106,21 +106,25 @@ export default function ClusterDetailScreen() {
           <View style={{ gap: Spacing.sm }}>
             <SectionHeader title="Recent Activity" />
             <View style={{ gap: Spacing.sm }}>
-              {posts.map((post) => (
-                <PostCard
-                  key={post.id}
-                  username={post.username}
-                  content={post.content}
-                  likesCount={post.likesCount}
-                  commentsCount={post.commentsCount}
-                  isLiked={post.isLiked}
-                  methodTag={post.methodTag}
-                  onLike={() => {}}
-                  onComment={() => {}}
-                  onSave={() => {}}
-                  onReport={() => {}}
-                />
-              ))}
+              {clusterPosts.length > 0 ? (
+                clusterPosts.map((post) => (
+                  <PostCard
+                    key={post.id}
+                    username={post.username}
+                    content={post.content}
+                    likesCount={post.likesCount}
+                    commentsCount={post.commentsCount}
+                    isLiked={post.isLiked}
+                    methodTag={post.methodTag}
+                    onLike={() => {}}
+                    onComment={() => {}}
+                    onSave={() => {}}
+                    onReport={() => {}}
+                  />
+                ))
+              ) : (
+                <Text style={{ color: Colors.text.muted, textAlign: 'center', marginTop: Spacing.md }}>No posts yet in this cluster.</Text>
+              )}
             </View>
           </View>
         )}
@@ -144,15 +148,19 @@ export default function ClusterDetailScreen() {
           <View style={{ gap: Spacing.sm }}>
             <SectionHeader title="Seed & Clipping Swaps" />
             <View style={{ gap: Spacing.sm }}>
-              {mockSwaps.map((swap, idx) => (
-                <SwapCard
-                  key={idx}
-                  itemName={swap.itemName}
-                  type={swap.type}
-                  location={swap.location}
-                  onExpressInterest={() => alert('Interest registered! The owner has been notified.')}
-                />
-              ))}
+              {clusterSwaps.length > 0 ? (
+                clusterSwaps.map((swap) => (
+                  <SwapCard
+                    key={swap.id}
+                    itemName={swap.itemName}
+                    type={swap.type}
+                    location={swap.location}
+                    onExpressInterest={() => Alert.alert('Interest Registered', 'The owner has been notified of your interest.')}
+                  />
+                ))
+              ) : (
+                <Text style={{ color: Colors.text.muted, textAlign: 'center', marginTop: Spacing.md }}>No active swaps in this cluster.</Text>
+              )}
             </View>
           </View>
         )}

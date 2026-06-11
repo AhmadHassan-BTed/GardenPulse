@@ -20,6 +20,7 @@ export interface Plant {
   healthScore: number; // 0-100
   healthStatus: HealthStatus;
   lastLoggedDays: number;
+  lightLevel?: 'Low' | 'Medium' | 'High';
   imageUrl?: string;
   isArchived: boolean;
   archivedDate?: string;
@@ -36,6 +37,7 @@ export interface LogEntry {
     ec?: number;
     moisture?: number;
     temp?: number;
+    uvIndex?: number;
   };
   notes: string;
   hasVoiceNote: boolean;
@@ -62,4 +64,65 @@ export interface UserProfile {
   streakCount: number;
   longestStreak: number;
   challengesWon: number;
+  lastUsedTool?: string;
+  referralCount?: number;
+}
+
+// ─── Community Types ─────────────────────────────────────────────────────────
+
+export interface Cluster {
+  id: string;
+  name: string;
+  members: number;
+  method: string;
+  hasRecentActivity?: boolean;
+  isJoined: boolean;
+  location?: string;
+  createdAt?: string;
+  description?: string;
+}
+
+export interface CommunityPost {
+  id: string;
+  clusterId: string;
+  username: string;
+  content: string;
+  likesCount: number;
+  commentsCount: number;
+  methodTag: string;
+  isLiked?: boolean;
+  timestamp?: string;
+}
+
+export interface SwapItem {
+  id: string;
+  clusterId: string;
+  itemName: string;
+  type: string;
+  location: string;
+}
+
+// ─── Reels Types ─────────────────────────────────────────────────────────────
+
+export interface Reel {
+  id: string;
+  plantId?: string;
+  plantName: string;
+  dateRange: string;
+  duration: string;
+  methodTag: string;
+  views: number;
+  likes: number;
+  videoUrl?: string;
+}
+
+// ─── Creator Studio Types ────────────────────────────────────────────────────
+
+export interface CreatorGuide {
+  id: string;
+  title: string;
+  status: 'Live' | 'Draft';
+  views: number;
+  revenue: string;
+  content?: string;
 }

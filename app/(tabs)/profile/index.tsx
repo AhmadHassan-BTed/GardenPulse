@@ -1,6 +1,7 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
+import * as Location from 'expo-location';
 import { useTheme } from '../../../components/layout/ThemeProvider';
 import ScreenWrapper from '../../../components/common/ScreenWrapper';
 import CustomHeader from '../../../components/common/CustomHeader';
@@ -26,13 +27,6 @@ const badgeDefinitions: any[] = [
   { id: '5', name: 'Rare Collector', icon: 'star' as const, colorKey: 'gold', description: 'Own 5 rare plants', unlockCriteria: 'Add 5 rare classified plant species to your garden.' },
 ];
 
-const mockSkills = [
-  { id: '1', name: 'Water Management', score: 85 },
-  { id: '2', name: 'Pest Detection', score: 60 },
-  { id: '3', name: 'Hydroponics setup', score: 90 },
-  { id: '4', name: 'Pruning & Training', score: 70 },
-];
-
 export default function ProfileScreen() {
   const router = useRouter();
   const theme = useTheme();
@@ -44,6 +38,7 @@ export default function ProfileScreen() {
   const storeLogs = useGardenStore((state) => state.logs);
 
   const [selectedBadge, setSelectedBadge] = useState<any | null>(null);
+  const [humidity, setHumidity] = useState<string>('—');
 
   // Compute live stats from store
   const activePlants = useMemo(() => storePlants.filter((p) => !p.isArchived), [storePlants]);
@@ -52,6 +47,28 @@ export default function ProfileScreen() {
     if (activePlants.length === 0) return 0;
     return Math.round(activePlants.reduce((sum, p) => sum + p.healthScore, 0) / activePlants.length);
   }, [activePlants]);
+
+  // Fetch local weather for relative humidity
+  useEffect(() => {
+    let active = true;
+    const loadWeather = async () => {
+      try {
+        const { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== 'granted') return;
+        const loc = await Location.getCurrentPositionAsync({});
+        if (!active) return;
+        const { fetchLocalWeather } = require('../../../services/weather');
+        const data = await fetchLocalWeather(loc.coords.latitude, loc.coords.longitude);
+        if (active && data) {
+          setHumidity(`${data.humidity}%`);
+        }
+      } catch (err) {
+        console.warn('Failed to load weather for profile:', err);
+      }
+    };
+    loadWeather();
+    return () => { active = false; };
+  }, []);
 
   // Compute average metrics from logs
   const environmentalMetrics: PlantMetric[] = useMemo(() => {
@@ -63,21 +80,24 @@ export default function ProfileScreen() {
       ? (metricsWithData.reduce((s, l) => s + (l.metrics?.ec || 0), 0) / metricsWithData.length).toFixed(1)
       : 'N/A';
     const avgMoisture = metricsWithData.length > 0
-      ? Math.round(metricsWithData.reduce((s, l) => s + (l.metrics?.moisture || 45), 0) / metricsWithData.length)
-      : 45;
+      ? `${Math.round(metricsWithData.reduce((s, l) => s + (l.metrics?.moisture || 0), 0) / metricsWithData.length)}%`
+      : 'N/A';
     const avgTemp = metricsWithData.length > 0
-      ? Math.round(metricsWithData.reduce((s, l) => s + (l.metrics?.temp || 24), 0) / metricsWithData.length)
-      : 24;
+      ? `${Math.round(metricsWithData.reduce((s, l) => s + (l.metrics?.temp || 0), 0) / metricsWithData.length)}°C`
+      : 'N/A';
+    const avgUv = metricsWithData.length > 0
+      ? Math.round(metricsWithData.reduce((s, l) => s + (l.metrics?.uvIndex || 0), 0) / metricsWithData.length)
+      : 'N/A';
 
     return [
-      { id: '1', name: 'Soil Moisture', value: `${avgMoisture}%`, status: avgMoisture > 30 && avgMoisture < 70 ? 'healthy' as const : 'warning' as const, icon: 'droplet' },
-      { id: '2', name: 'Light DLI', value: '14 mol/m²/d', status: 'healthy' as const, icon: 'sun' },
-      { id: '3', name: 'Ambient Temp', value: `${avgTemp}°C`, status: avgTemp > 15 && avgTemp < 35 ? 'healthy' as const : 'warning' as const, icon: 'thermometer' },
-      { id: '4', name: 'Relative Humidity', value: '55%', status: 'warning' as const, icon: 'wind' },
-      { id: '5', name: 'Water pH', value: `${avgPh}`, status: 'healthy' as const, icon: 'sliders' },
-      { id: '6', name: 'Water EC', value: `${avgEc} mS/cm`, status: 'healthy' as const, icon: 'zap' },
+      { id: '1', name: 'Soil Moisture', value: avgMoisture, status: avgMoisture !== 'N/A' && parseInt(avgMoisture) > 30 && parseInt(avgMoisture) < 70 ? 'healthy' as const : 'warning' as const, icon: 'droplet' },
+      { id: '2', name: 'Light UV Index', value: avgUv !== 'N/A' ? `${avgUv}` : '—', status: 'healthy' as const, icon: 'sun' },
+      { id: '3', name: 'Ambient Temp', value: avgTemp, status: avgTemp !== 'N/A' && parseInt(avgTemp) > 15 && parseInt(avgTemp) < 35 ? 'healthy' as const : 'warning' as const, icon: 'thermometer' },
+      { id: '4', name: 'Relative Humidity', value: humidity, status: humidity !== '—' && parseInt(humidity) > 40 && parseInt(humidity) < 80 ? 'healthy' as const : 'warning' as const, icon: 'wind' },
+      { id: '5', name: 'Water pH', value: avgPh, status: 'healthy' as const, icon: 'sliders' },
+      { id: '6', name: 'Water EC', value: avgEc !== 'N/A' ? `${avgEc} mS/cm` : 'N/A', status: 'healthy' as const, icon: 'zap' },
     ];
-  }, [storeLogs]);
+  }, [storeLogs, humidity]);
 
   // Generate 30-day heatmap from actual log timestamps
   const heatmapData = useMemo(() => {
@@ -108,16 +128,36 @@ export default function ProfileScreen() {
     });
   }, [storePlants, storeLogs, Colors]);
 
+  // Compute dynamic mastery skills scores
+  const computedSkills = useMemo(() => {
+    const waterLogsCount = storeLogs.filter(l => l.activities.includes('Water')).length;
+    const pruneLogsCount = storeLogs.filter(l => l.activities.includes('Prune')).length;
+    const checkLogsCount = storeLogs.filter(l => l.activities.includes('Check')).length;
+    const hasHydroPlant = storePlants.some(p => p.method === 'Hydro');
+
+    const waterScore = Math.min(100, 40 + waterLogsCount * 10);
+    const pruneScore = Math.min(100, 30 + pruneLogsCount * 15);
+    const pestScore = Math.min(100, 50 + checkLogsCount * 10);
+    const hydroScore = hasHydroPlant ? 95 : 0;
+
+    return [
+      { id: '1', name: 'Water Management', score: waterScore },
+      { id: '2', name: 'Pest Detection', score: pestScore },
+      { id: '3', name: 'Hydroponics Setup', score: hydroScore },
+      { id: '4', name: 'Pruning & Training', score: pruneScore },
+    ];
+  }, [storeLogs, storePlants]);
+
   if (!isHydrated) {
     return null;
   }
 
   const handleEditProfile = () => {
-    console.log('Edit Profile');
+    router.push('/profile/settings');
   };
 
   const handleAvatarPress = () => {
-    console.log('Change Avatar');
+    router.push('/profile/settings');
   };
 
   const handleUpgrade = () => {
@@ -173,7 +213,7 @@ export default function ProfileScreen() {
         />
 
         <SectionHeader title="Grower Mastery" style={{ marginTop: Spacing.md }} />
-        <ConfidenceScoreChart skills={mockSkills} />
+        <ConfidenceScoreChart skills={computedSkills} />
 
         <SectionHeader title="Quick Links" style={{ marginTop: Spacing.md }} />
         <View style={{ backgroundColor: theme.Colors.surface.base, borderRadius: theme.Radius.md, overflow: 'hidden', borderWidth: 1, borderColor: theme.Colors.border.subtle }}>
@@ -203,3 +243,4 @@ export default function ProfileScreen() {
 }
 
 const styles = StyleSheet.create({});
+

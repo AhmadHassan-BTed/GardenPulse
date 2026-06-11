@@ -20,12 +20,8 @@ import ContextualTipCard from '../../components/common/ContextualTipCard';
 import BloomReportBanner from '../../components/common/BloomReportBanner';
 import FAB from '../../components/common/FAB';
 import ConfettiCelebration from '../../components/common/ConfettiCelebration';
-
-const mockForecast = [
-  { id: '1', dayLabel: 'Thu', icon: 'sun' as const, high: 24, low: 16 },
-  { id: '2', dayLabel: 'Fri', icon: 'cloud' as const, high: 22, low: 14 },
-  { id: '3', dayLabel: 'Sat', icon: 'cloud-rain' as const, high: 19, low: 12 },
-];
+import EmptyStateView from '../../components/common/EmptyStateView';
+import { WeatherData } from '../../services/weather';
 
 export default function DashboardScreen() {
   const router = useRouter();
@@ -40,19 +36,18 @@ export default function DashboardScreen() {
   const userProfile = useGardenStore((state) => state.userProfile);
 
   const [showComeback, setShowComeback] = useState(true);
-  const [weatherData, setWeatherData] = useState<{
-    city: string;
-    temp: number;
-    humidity: number;
-    condition: string;
-  } | null>(null);
+  const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
+  const [weatherError, setWeatherError] = useState(false);
 
   useEffect(() => {
     let active = true;
     const loadWeather = async () => {
       try {
         const { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== 'granted') return;
+        if (status !== 'granted') {
+          if (active) setWeatherError(true);
+          return;
+        }
 
         const loc = await Location.getCurrentPositionAsync({});
         if (!active) return;
@@ -60,15 +55,11 @@ export default function DashboardScreen() {
         const { fetchLocalWeather } = require('../../services/weather');
         const data = await fetchLocalWeather(loc.coords.latitude, loc.coords.longitude);
         if (active) {
-          setWeatherData({
-            city: data.locationName,
-            temp: data.temp,
-            humidity: data.humidity,
-            condition: data.condition,
-          });
+          setWeatherData(data);
         }
       } catch (error) {
         console.error('Failed to load local weather:', error);
+        if (active) setWeatherError(true);
       }
     };
 
@@ -98,22 +89,33 @@ export default function DashboardScreen() {
 
   const avgHealth = activePlants.length > 0 
     ? Math.round(activePlants.reduce((sum, p) => sum + p.healthScore, 0) / activePlants.length)
-    : 100;
+    : null;
 
-  const avgMoisture = logs.map(l => l.metrics?.moisture).filter((m): m is number => typeof m === 'number');
-  const displayMoisture = avgMoisture.length > 0 
-    ? Math.round(avgMoisture.reduce((s, x) => s + x, 0) / avgMoisture.length) 
-    : 68;
+  // Compute moisture from logs — null if no data
+  const moistureValues = logs.map(l => l.metrics?.moisture).filter((m): m is number => typeof m === 'number');
+  const displayMoisture = moistureValues.length > 0 
+    ? Math.round(moistureValues.reduce((s, x) => s + x, 0) / moistureValues.length) 
+    : null;
 
-  const avgPh = logs.map(l => l.metrics?.ph).filter((p): p is number => typeof p === 'number');
-  const displayPh = avgPh.length > 0 
-    ? (avgPh.reduce((s, x) => s + x, 0) / avgPh.length).toFixed(1) 
-    : '6.4';
+  // Compute pH from logs — null if no data
+  const phValues = logs.map(l => l.metrics?.ph).filter((p): p is number => typeof p === 'number');
+  const displayPh = phValues.length > 0 
+    ? (phValues.reduce((s, x) => s + x, 0) / phValues.length).toFixed(1) 
+    : null;
+
+  // Compute light level from plants
+  const lightLevels = activePlants.map((p) => p.lightLevel).filter(Boolean);
+  const displayLight = lightLevels.length > 0 
+    ? lightLevels.sort((a, b) => lightLevels.filter((l) => l === b).length - lightLevels.filter((l) => l === a).length)[0]
+    : null;
 
   const latestLog = logs[0];
   const daysSince = latestLog
     ? Math.max(0, Math.floor((Date.now() - new Date(latestLog.timestamp).getTime()) / (1000 * 60 * 60 * 24)))
-    : 4; // fallback to 4 if no logs
+    : null;
+
+  // Derive zone from first active plant or null
+  const displayZone = activePlants.length > 0 ? activePlants[0].zone : null;
 
   const handleTaskDone = (id: string) => {
     toggleTaskDone(id);
@@ -123,6 +125,11 @@ export default function DashboardScreen() {
     router.push('/modals/quick-log');
   };
 
+  // Build contextual tip from plant data
+  const contextualTip = activePlants.length > 0
+    ? `💡 Care insight: Monitor ${activePlants[0].name} health — currently at ${activePlants[0].healthScore}%`
+    : null;
+
   return (
     <ScreenWrapper scrollable={true} withPadding={true}>
       {allTasksDone && <ConfettiCelebration />}
@@ -131,7 +138,7 @@ export default function DashboardScreen() {
         title="GardenPulse"
         rightNode={
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.sm }}>
-            <NotificationBell unreadCount={2} onPress={() => router.push('/modals/notification-prefs')} />
+            <NotificationBell unreadCount={0} onPress={() => router.push('/modals/notification-prefs')} />
             <IconButton 
               name="settings" 
               size={20} 
@@ -143,25 +150,42 @@ export default function DashboardScreen() {
       />
 
       <View style={{ gap: Spacing.lg, paddingBottom: Spacing.xl + 64 }}>
-        {/* Weather Widget */}
-        <WeatherWidget
-          city={weatherData?.city || 'Berlin'}
-          zone="Zone 7b"
-          currentTemp={weatherData?.temp ?? 22}
-          conditionIcon={conditionIconMap(weatherData?.condition || 'clear')}
-          humidity={weatherData?.humidity ?? 65}
-          uvIndex={5}
-          rainChance={weatherData?.condition.toLowerCase().includes('rain') ? 90 : 10}
-          forecast={mockForecast}
-          alertMessage={
-            weatherData?.condition.toLowerCase().includes('rain')
-              ? 'Rain forecast → skip watering today'
-              : 'Sunny/Clear conditions → monitor soil moisture'
-          }
-        />
+        {/* Weather Widget — live data or loading/error state */}
+        {weatherData ? (
+          <WeatherWidget
+            city={weatherData.locationName}
+            zone={displayZone || '—'}
+            currentTemp={weatherData.temp}
+            conditionIcon={conditionIconMap(weatherData.condition)}
+            humidity={weatherData.humidity}
+            uvIndex={weatherData.uvIndex}
+            rainChance={weatherData.rainChance}
+            forecast={weatherData.forecast}
+            alertMessage={
+              weatherData.condition.toLowerCase().includes('rain')
+                ? 'Rain forecast → skip watering today'
+                : weatherData.uvIndex >= 8
+                  ? 'High UV index → provide shade for sensitive plants'
+                  : undefined
+            }
+          />
+        ) : (
+          <View style={{ 
+            backgroundColor: Colors.surface.glass, 
+            borderRadius: theme.Radius.lg, 
+            padding: Spacing.lg, 
+            alignItems: 'center',
+            borderWidth: 1,
+            borderColor: Colors.surface.glassBorder,
+          }}>
+            <CustomText style={{ color: Colors.text.muted, fontSize: Typography.sizes.sm }}>
+              {weatherError ? '⚠️ Weather data unavailable — check location permissions' : '☁️ Loading weather data...'}
+            </CustomText>
+          </View>
+        )}
 
-        {/* Comeback Banner */}
-        {showComeback && (
+        {/* Comeback Banner — only shown when there are actual days since last log */}
+        {showComeback && daysSince !== null && daysSince > 0 && (
           <ComebackBonusBanner
             daysSince={daysSince}
             ctaLabel="See What Needs Attention →"
@@ -179,17 +203,25 @@ export default function DashboardScreen() {
             actionLabel="See full schedule →"
             onActionPress={() => router.push('/(tabs)/tools/smart-scheduler')}
           />
-          <HorizontalScrollRow>
-            {pendingTasks.map(task => (
-              <TaskCard
-                key={task.id}
-                plantName={task.plantName}
-                taskType={task.taskType}
-                isDone={task.isDone}
-                onDonePress={() => handleTaskDone(task.id)}
-              />
-            ))}
-          </HorizontalScrollRow>
+          {pendingTasks.length > 0 ? (
+            <HorizontalScrollRow>
+              {pendingTasks.map(task => (
+                <TaskCard
+                  key={task.id}
+                  plantName={task.plantName}
+                  taskType={task.taskType}
+                  isDone={task.isDone}
+                  onDonePress={() => handleTaskDone(task.id)}
+                />
+              ))}
+            </HorizontalScrollRow>
+          ) : (
+            <EmptyStateView
+              title="No tasks today"
+              description={activePlants.length > 0 ? "All care tasks are done. Great job!" : "Add your first plant to get started."}
+              iconName="check-circle"
+            />
+          )}
         </View>
 
         {/* Garden Health Score */}
@@ -208,19 +240,25 @@ export default function DashboardScreen() {
             alignItems: 'center', 
             gap: Spacing.md 
           }}>
-            <MetricDial value={avgHealth} size={110} label="Avg Health" />
+            <MetricDial value={avgHealth ?? 0} size={110} label="Avg Health" />
             <View style={{ flexDirection: 'row', justifyContent: 'space-around', width: '100%', marginTop: Spacing.sm }}>
               <View style={{ alignItems: 'center' }}>
                 <CustomText style={{ fontSize: Typography.sizes.base, fontWeight: Typography.weights.bold, color: Colors.text.heading }}>Moisture</CustomText>
-                <CustomText style={{ fontSize: Typography.sizes.sm, color: Colors.green.DEFAULT }}>{displayMoisture}%</CustomText>
+                <CustomText style={{ fontSize: Typography.sizes.sm, color: displayMoisture !== null ? Colors.green.DEFAULT : Colors.text.muted }}>
+                  {displayMoisture !== null ? `${displayMoisture}%` : '—'}
+                </CustomText>
               </View>
               <View style={{ alignItems: 'center' }}>
                 <CustomText style={{ fontSize: Typography.sizes.base, fontWeight: Typography.weights.bold, color: Colors.text.heading }}>Light</CustomText>
-                <CustomText style={{ fontSize: Typography.sizes.sm, color: Colors.warning }}>Medium</CustomText>
+                <CustomText style={{ fontSize: Typography.sizes.sm, color: displayLight ? Colors.warning : Colors.text.muted }}>
+                  {displayLight || '—'}
+                </CustomText>
               </View>
               <View style={{ alignItems: 'center' }}>
                 <CustomText style={{ fontSize: Typography.sizes.base, fontWeight: Typography.weights.bold, color: Colors.text.heading }}>pH Level</CustomText>
-                <CustomText style={{ fontSize: Typography.sizes.sm, color: Colors.green.DEFAULT }}>{displayPh}</CustomText>
+                <CustomText style={{ fontSize: Typography.sizes.sm, color: displayPh !== null ? Colors.green.DEFAULT : Colors.text.muted }}>
+                  {displayPh ?? '—'}
+                </CustomText>
               </View>
             </View>
           </View>
@@ -233,29 +271,41 @@ export default function DashboardScreen() {
             actionLabel="See All →"
             onActionPress={() => router.push('/(tabs)/garden')}
           />
-          <HorizontalScrollRow>
-            {activePlants.map(plant => (
-              <PlantCard
-                key={plant.id}
-                name={plant.name}
-                nickname={plant.nickname}
-                method={plant.method}
-                healthStatus={plant.healthStatus}
-                lastLoggedDays={plant.lastLoggedDays}
-                onPress={() => router.push(`/(tabs)/garden/plant/${plant.id}`)}
-                style={{ width: 220 }}
-              />
-            ))}
-          </HorizontalScrollRow>
+          {activePlants.length > 0 ? (
+            <HorizontalScrollRow>
+              {activePlants.map(plant => (
+                <PlantCard
+                  key={plant.id}
+                  name={plant.name}
+                  nickname={plant.nickname}
+                  method={plant.method}
+                  healthStatus={plant.healthStatus}
+                  lastLoggedDays={plant.lastLoggedDays}
+                  onPress={() => router.push(`/(tabs)/garden/plant/${plant.id}`)}
+                  style={{ width: 220 }}
+                />
+              ))}
+            </HorizontalScrollRow>
+          ) : (
+            <EmptyStateView
+              title="No plants yet"
+              description="Start your garden by adding your first plant!"
+              iconName="plus-circle"
+              actionLabel="Add a Plant"
+              onActionPress={() => router.push('/modals/add-plant')}
+            />
+          )}
         </View>
 
-        {/* Contextual Tip */}
-        <ContextualTipCard
-          title="💡 From your garden expert: Tomato Care: Reducing leaf curl during high heat"
-          method="Soil"
-          readTime="3 min read"
-          onPress={() => router.push(`/modals/tips` as any)}
-        />
+        {/* Contextual Tip — only shown when plants exist */}
+        {contextualTip && (
+          <ContextualTipCard
+            title={contextualTip}
+            method={activePlants[0]?.method}
+            readTime="2 min read"
+            onPress={() => router.push(`/modals/tips` as any)}
+          />
+        )}
 
         {/* Bloom Report */}
         <BloomReportBanner

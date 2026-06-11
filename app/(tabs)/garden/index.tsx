@@ -15,17 +15,7 @@ import Checkbox from '../../../components/common/Checkbox';
 import FAB from '../../../components/common/FAB';
 import BatchModeHeader from '../../../components/common/BatchModeHeader';
 import BatchActionBar from '../../../components/common/BatchActionBar';
-import { HealthStatus } from '../../../components/common/HealthDotIndicator';
-
-interface Plant {
-  id: string;
-  name: string;
-  nickname?: string;
-  method: 'Soil' | 'Container' | 'Hydro' | 'Indoor';
-  healthStatus: HealthStatus;
-  lastLoggedDays: number;
-  imageUrl?: string;
-}
+import { Plant } from '../../../types';
 
 export default function PlantListScreen() {
   const router = useRouter();
