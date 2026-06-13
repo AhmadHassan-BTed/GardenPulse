@@ -238,7 +238,7 @@ export default function ProfileScreen() {
         <ConfidenceScoreChart skills={computedSkills} />
 
         <SectionHeader title="Quick Links" style={{ marginTop: Spacing.md }} />
-        <View style={{ backgroundColor: theme.Colors.surface.base, borderRadius: theme.Radius.md, overflow: 'hidden', borderWidth: 1, borderColor: theme.Colors.border.subtle }}>
+        <View style={{ backgroundColor: theme.Colors.surface.base, borderRadius: theme.Radius.md, overflow: 'hidden', borderWidth: StyleSheet.hairlineWidth, borderColor: theme.Colors.border.subtle }}>
           <NavigationLinkRow label="Progress Reels Gallery" onPress={() => router.push(`/garden/reels` as any)} />
           <NavigationLinkRow label="Cemetery Log" onPress={() => router.push('/profile/cemetery')} />
           <NavigationLinkRow label="Creator Studio" onPress={() => router.push('/profile/creator-studio')} />

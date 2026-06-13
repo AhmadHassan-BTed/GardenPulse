@@ -14,11 +14,11 @@ const Spacing = {
 
 const Radius = {
   none: 0,
-  xs:   4,
-  sm:   8,
-  md:   12,
-  lg:   16,
-  xl:   24,
+  xs:   2,
+  sm:   4,
+  md:   8,
+  lg:   12,
+  xl:   16,
   full: 9999,
 } as const;
 
@@ -80,8 +80,8 @@ const lightColors = {
     base:        '#FFFFFF',  // app background
     subtle:      '#F9FAFB',  // alternating rows / grouped content
     elevated:    '#F9FAFB',  // explicit opaque field surface (CustomInput)
-    glass:       'rgba(0, 0, 0, 0.04)',       // very subtle panel fill
-    glassBorder: 'rgba(0, 0, 0, 0.08)',       // hairline border on panels
+    glass:       'rgba(0, 0, 0, 0.04)',       // subtle panel fill (borderless cards)
+    glassBorder: 'rgba(0, 0, 0, 0.05)',       // hairline border on panels
     overlay:     'rgba(0, 0, 0, 0.45)',        // modal backdrop
   },
 
@@ -97,8 +97,8 @@ const lightColors = {
 
   // Borders
   border: {
-    subtle: 'rgba(0, 0, 0, 0.08)',
-    muted:  'rgba(0, 0, 0, 0.16)',
+    subtle: 'rgba(0, 0, 0, 0.05)',
+    muted:  'rgba(0, 0, 0, 0.12)',
     focus:  '#16A34A',
     error:  '#DC2626',
   },
@@ -138,8 +138,8 @@ const darkColors = {
     base:        '#0A0F0D',  // app background
     subtle:      '#101715',  // slight elevation above base
     elevated:    '#141414',  // explicit opaque field surface (CustomInput)
-    glass:       'rgba(255, 255, 255, 0.06)',  // glassmorphism panels
-    glassBorder: 'rgba(255, 255, 255, 0.10)',  // hairline border on glass
+    glass:       'rgba(255, 255, 255, 0.08)',  // glassmorphism panels (borderless cards)
+    glassBorder: 'rgba(255, 255, 255, 0.06)',  // hairline border on glass
     overlay:     'rgba(0, 0, 0, 0.62)',         // modal backdrop
   },
 
@@ -155,8 +155,8 @@ const darkColors = {
 
   // Borders
   border: {
-    subtle: 'rgba(255, 255, 255, 0.10)',
-    muted:  'rgba(255, 255, 255, 0.18)',
+    subtle: 'rgba(255, 255, 255, 0.07)',
+    muted:  'rgba(255, 255, 255, 0.14)',
     focus:  '#34D399',
     error:  '#F87171',
   },
