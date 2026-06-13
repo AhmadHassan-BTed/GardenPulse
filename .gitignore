@@ -53,3 +53,6 @@ skills-lock.json
 # generated native folders
 /ios
 /android
+
+# Temporary files
+responce.md
