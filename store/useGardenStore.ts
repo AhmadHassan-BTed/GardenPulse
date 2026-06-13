@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from 'react-native';
+import Constants from 'expo-constants';
 import { Plant, LogEntry, Task, UserProfile, Cluster, CommunityPost, SwapItem, Reel, CreatorGuide } from '../types';
 
 interface GardenStoreState {
@@ -10,6 +11,7 @@ interface GardenStoreState {
   tasks: Task[];
   userProfile: UserProfile;
   isHydrated: boolean;
+  populateDemoData: () => void;
 
   // Community
   clusters: Cluster[];
@@ -683,6 +685,36 @@ export const useGardenStore = create<GardenStoreState>()(
             console.error('Failed to delete user document from Firestore:', err);
           }
         }
+      },
+
+      // ─── Demo Action ──────────────────────────────────────────────────
+      populateDemoData: () => {
+        const {
+          demoUserProfile,
+          demoPlants,
+          demoLogs,
+          demoTasks,
+          demoClusters,
+          demoPosts,
+          demoSwaps,
+          demoSuccessStats,
+          demoFeaturedWinner,
+          demoReels,
+          demoCreatorGuides,
+        } = require('./demoData');
+        set({
+          plants: demoPlants,
+          logs: demoLogs,
+          tasks: demoTasks,
+          userProfile: demoUserProfile,
+          clusters: demoClusters,
+          posts: demoPosts,
+          swaps: demoSwaps,
+          successStats: demoSuccessStats,
+          featuredWinner: demoFeaturedWinner,
+          reels: demoReels,
+          creatorGuides: demoCreatorGuides,
+        });
       }
     }),
     {
@@ -691,9 +723,19 @@ export const useGardenStore = create<GardenStoreState>()(
       onRehydrateStorage: () => (state) => {
         if (state) {
           state.setHydrated(true);
-          
-          // Trigger Firebase anonymous authentication if no userId is set
-          if (!state.userProfile.userId) {
+
+          const isDemoApp =
+            process.env.EXPO_PUBLIC_DEMO_APP === 'true' ||
+            process.env.EXPO_PUBLIC_DEMO_APP === '1' ||
+            Constants.expoConfig?.extra?.DEMO_APP === true ||
+            Constants.expoConfig?.extra?.DEMO_APP === 'true';
+
+          if (isDemoApp) {
+            if (state.plants.length === 0) {
+              state.populateDemoData();
+            }
+          } else if (!state.userProfile.userId) {
+            // Trigger Firebase anonymous authentication if no userId is set
             try {
               const { signInAnonymously, isFirebaseConfigured } = require('../services/firebase');
               if (isFirebaseConfigured) {

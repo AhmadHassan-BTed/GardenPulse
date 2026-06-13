@@ -89,7 +89,8 @@
       "router": {},
       "eas": {
         "projectId": "0c72fc92-c183-43e3-87f0-720b8d730133"
-      }
+      },
+      "DEMO_APP": true
     }
   },
   "react-native-google-mobile-ads": {

@@ -87,24 +87,26 @@ const RewardedVideoPrompt: React.FC<RewardedVideoPromptProps> = ({
   );
 
   return (
-    <CustomCard variant="default" padding={0} style={[styles.container, style]}>
-      <View style={styles.iconWrapper}>
-        <Feather name="play" size={36} color={Colors.green.DEFAULT} style={{ marginLeft: 6 }} />
-      </View>
+    <CustomCard variant="default" padding={0} style={style}>
+      <View style={styles.container}>
+        <View style={styles.iconWrapper}>
+          <Feather name="play" size={36} color={Colors.green.DEFAULT} style={{ marginLeft: 6 }} />
+        </View>
 
-      <Text style={styles.title}>Unlock {featureName}</Text>
-      <Text style={styles.description}>
-        Watch a short sponsor video to support GardenPulse and unlock this feature instantly.
-      </Text>
+        <Text style={styles.title}>Unlock {featureName}</Text>
+        <Text style={styles.description}>
+          Watch a short sponsor video to support GardenPulse and unlock this feature instantly.
+        </Text>
 
-      <View style={styles.metaRow}>
-        <Feather name="clock" size={14} color={Colors.text.muted} />
-        <Text style={styles.metaText}>{durationLabel}</Text>
-      </View>
+        <View style={styles.metaRow}>
+          <Feather name="clock" size={14} color={Colors.text.muted} />
+          <Text style={styles.metaText}>{durationLabel}</Text>
+        </View>
 
-      <View style={styles.actions}>
-        <CustomButton label="Watch Video" onPress={onWatchPress} fullWidth />
-        <TextLink label="No Thanks" onPress={onDismiss} variant="muted" style={{ alignSelf: 'center' }} />
+        <View style={styles.actions}>
+          <CustomButton label="Watch Video" onPress={onWatchPress} fullWidth />
+          <TextLink label="No Thanks" onPress={onDismiss} variant="muted" style={{ alignSelf: 'center' }} />
+        </View>
       </View>
     </CustomCard>
   );

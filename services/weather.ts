@@ -1,3 +1,5 @@
+import Constants from 'expo-constants';
+
 export interface ForecastDay {
   id: string;
   dayLabel: string;
@@ -40,6 +42,30 @@ function formatUnixTime(unix: number, timezoneOffset: number): string {
  * Fetches current weather + 3-day forecast from the OpenWeather API.
  */
 export async function fetchLocalWeather(lat: number, lon: number): Promise<WeatherData> {
+  const isDemoApp =
+    process.env.EXPO_PUBLIC_DEMO_APP === 'true' ||
+    process.env.EXPO_PUBLIC_DEMO_APP === '1' ||
+    Constants.expoConfig?.extra?.DEMO_APP === true ||
+    Constants.expoConfig?.extra?.DEMO_APP === 'true';
+
+  if (isDemoApp) {
+    return {
+      temp: 24,
+      condition: 'Partly Cloudy',
+      humidity: 62,
+      locationName: 'Greenfield City',
+      uvIndex: 5,
+      rainChance: 20,
+      sunrise: '05:42 AM',
+      sunset: '08:15 PM',
+      forecast: [
+        { id: '1', dayLabel: 'Sun', icon: 'sun', high: 26, low: 18 },
+        { id: '2', dayLabel: 'Mon', icon: 'cloud', high: 24, low: 17 },
+        { id: '3', dayLabel: 'Tue', icon: 'cloud-rain', high: 22, low: 15 },
+      ],
+    };
+  }
+
   const apiKey = process.env.EXPO_PUBLIC_OPENWEATHER_API_KEY;
   if (!apiKey || apiKey === 'your_openweather_api_key_here') {
     throw new Error('OpenWeather API key is not configured.');

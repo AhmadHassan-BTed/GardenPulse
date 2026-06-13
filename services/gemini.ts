@@ -1,4 +1,5 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import Constants from 'expo-constants';
 
 const apiKey = process.env.EXPO_PUBLIC_GEMINI_API_KEY || '';
 const genAI = new GoogleGenerativeAI(apiKey);
@@ -18,6 +19,28 @@ export interface DiagnosisResult {
  * @returns Parsed DiagnosisResult object matching the required schema
  */
 export async function analyzeLeafDisease(base64Image: string): Promise<DiagnosisResult> {
+  const isDemoApp =
+    process.env.EXPO_PUBLIC_DEMO_APP === 'true' ||
+    process.env.EXPO_PUBLIC_DEMO_APP === '1' ||
+    Constants.expoConfig?.extra?.DEMO_APP === true ||
+    Constants.expoConfig?.extra?.DEMO_APP === 'true';
+
+  if (isDemoApp) {
+    // Artificial delay to simulate scanning
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    return {
+      issue: 'Early Blight (Alternaria solani)',
+      confidence: 0.88,
+      severity: 'medium',
+      explanation: 'Concentric rings with halo patterns detected on the lower leaves of the plant. This is characteristic of Early Blight fungal infection, which spreads in warm, humid conditions.',
+      treatmentSteps: [
+        'Prune affected lower leaves immediately to prevent fungal spore spread.',
+        'Apply an organic copper-based fungicide to the remaining foliage.',
+        'Water the plant at the base/soil level rather than wetting the leaves.'
+      ]
+    };
+  }
+
   if (!apiKey) {
     throw new Error('Gemini API key is not configured. Please set EXPO_PUBLIC_GEMINI_API_KEY.');
   }
