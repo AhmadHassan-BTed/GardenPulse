@@ -1,13 +1,16 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // BottomNavigationBar.tsx — GardenPulse
-// Theme-aware, floating custom tab bar designed for Expo Router.
-// Plugs directly into the <Tabs tabBar={(props) => <BottomNavigationBar {...props} />} />
+// Glassmorphic floating tab bar.
+// • iOS 26+  → @callstack/liquid-glass (real Apple Liquid Glass)
+// • Android / older iOS → expo-blur BlurView fallback
 // ─────────────────────────────────────────────────────────────────────────────
 
 import React, { useMemo } from 'react';
 import { View, Pressable, StyleSheet, Platform, Text } from 'react-native';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { BlurView } from 'expo-blur';
+import { LiquidGlassView, isLiquidGlassSupported } from '@callstack/liquid-glass';
 import { Feather } from '@expo/vector-icons';
 import { useTheme } from '../layout/ThemeProvider';
 
@@ -15,26 +18,51 @@ export default function BottomNavigationBar({ state, descriptors, navigation }: 
   const theme = useTheme();
   const insets = useSafeAreaInsets();
   const { Colors, Spacing, Radius, Typography } = theme;
+  const isDark = theme.scheme === 'dark';
 
   const styles = useMemo(
     () =>
       StyleSheet.create({
-        container: {
+        outer: {
           position: 'absolute',
           bottom: Platform.OS === 'ios' ? insets.bottom : Spacing.md,
           left: Spacing.lg,
           right: Spacing.lg,
           height: 64,
-          flexDirection: 'row',
-          backgroundColor: Colors.surface.glass,
           borderRadius: Radius.full,
-          borderWidth: 1,
-          borderColor: Colors.surface.glassBorder,
-          elevation: 8,
+          overflow: 'hidden',
+          // Subtle shadow for depth
+          elevation: 4,
           shadowColor: '#000',
-          shadowOffset: { width: 0, height: 4 },
-          shadowOpacity: 0.15,
-          shadowRadius: 12,
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.10,
+          shadowRadius: 10,
+        },
+        liquidGlass: {
+          flex: 1,
+          borderRadius: Radius.full,
+          overflow: 'hidden',
+        },
+        blur: {
+          ...StyleSheet.absoluteFillObject,
+        },
+        tintOverlay: {
+          ...StyleSheet.absoluteFillObject,
+          backgroundColor: isDark
+            ? 'rgba(10, 15, 13, 0.55)'
+            : 'rgba(255, 255, 255, 0.45)',
+        },
+        borderOverlay: {
+          ...StyleSheet.absoluteFillObject,
+          borderRadius: Radius.full,
+          borderWidth: StyleSheet.hairlineWidth,
+          borderColor: isDark
+            ? 'rgba(255, 255, 255, 0.12)'
+            : 'rgba(255, 255, 255, 0.6)',
+        },
+        content: {
+          flex: 1,
+          flexDirection: 'row',
           paddingHorizontal: Spacing.sm,
           alignItems: 'center',
           justifyContent: 'space-between',
@@ -44,7 +72,7 @@ export default function BottomNavigationBar({ state, descriptors, navigation }: 
           alignItems: 'center',
           justifyContent: 'center',
           height: '100%',
-          position: 'relative', // Necessary for absolute positioning of the indicator
+          position: 'relative',
         },
         iconWrapper: {
           marginBottom: 2,
@@ -58,7 +86,7 @@ export default function BottomNavigationBar({ state, descriptors, navigation }: 
         },
         activeIndicator: {
           position: 'absolute',
-          top: -1, // Rests exactly on the top border of the tab bar
+          top: -1,
           width: '35%',
           height: 3,
           backgroundColor: Colors.green.DEFAULT,
@@ -66,7 +94,7 @@ export default function BottomNavigationBar({ state, descriptors, navigation }: 
           borderBottomRightRadius: 3,
         },
       }),
-    [Colors, Spacing, Radius, Typography, insets.bottom]
+    [Colors, Spacing, Radius, Typography, insets.bottom, isDark]
   );
 
   // Fallback map guarantees an icon renders even if _layout.tsx is missing the tabBarIcon prop
@@ -80,8 +108,9 @@ export default function BottomNavigationBar({ state, descriptors, navigation }: 
     return 'circle';
   };
 
-  return (
-    <View style={styles.container}>
+  // ── Tab content (shared between both glass backends) ──────────────────────
+  const tabContent = (
+    <View style={styles.content}>
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
         const label =
@@ -99,22 +128,17 @@ export default function BottomNavigationBar({ state, descriptors, navigation }: 
             target: route.key,
             canPreventDefault: true,
           });
-
           if (!isFocused && !event.defaultPrevented) {
             navigation.navigate(route.name, route.params);
           }
         };
 
         const onLongPress = () => {
-          navigation.emit({
-            type: 'tabLongPress',
-            target: route.key,
-          });
+          navigation.emit({ type: 'tabLongPress', target: route.key });
         };
 
         const iconColor = isFocused ? Colors.green.DEFAULT : Colors.text.muted;
 
-        // Robust render function catches missing/malformed options
         const renderIcon = () => {
           if (typeof options.tabBarIcon === 'function') {
             return options.tabBarIcon({ focused: isFocused, color: iconColor, size: 22 });
@@ -133,18 +157,10 @@ export default function BottomNavigationBar({ state, descriptors, navigation }: 
             style={styles.tabButton}
             hitSlop={10}
           >
-            {/* Replaced the confusing dot with a sleek top-bar line indicator */}
             {isFocused && <View style={styles.activeIndicator} />}
-            
-            <View style={styles.iconWrapper}>
-              {renderIcon()}
-            </View>
-            
-            <Text 
-              style={[
-                styles.label, 
-                { color: iconColor, opacity: isFocused ? 1 : 0.7 }
-              ]}
+            <View style={styles.iconWrapper}>{renderIcon()}</View>
+            <Text
+              style={[styles.label, { color: iconColor, opacity: isFocused ? 1 : 0.7 }]}
               numberOfLines={1}
             >
               {label as string}
@@ -152,6 +168,31 @@ export default function BottomNavigationBar({ state, descriptors, navigation }: 
           </Pressable>
         );
       })}
+    </View>
+  );
+
+  // ── Render: Liquid Glass on iOS 26+, BlurView fallback elsewhere ──────────
+  if (isLiquidGlassSupported) {
+    return (
+      <View style={styles.outer}>
+        <LiquidGlassView
+          style={styles.liquidGlass}
+          effect="regular"
+          colorScheme={isDark ? 'dark' : 'light'}
+        >
+          {tabContent}
+        </LiquidGlassView>
+      </View>
+    );
+  }
+
+  // Fallback: expo-blur
+  return (
+    <View style={styles.outer}>
+      <BlurView intensity={60} tint={isDark ? 'dark' : 'light'} style={styles.blur} />
+      <View style={styles.tintOverlay} />
+      <View style={styles.borderOverlay} />
+      {tabContent}
     </View>
   );
 }
