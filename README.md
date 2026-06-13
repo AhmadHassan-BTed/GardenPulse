@@ -3,9 +3,9 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Expo-54.0.8-000020?style=for-the-badge&logo=expo&logoColor=white" alt="Expo SDK 54" />
-  <img src="https://img.shields.io/badge/React_Native-0.81.0-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React Native" />
-  <img src="https://img.shields.io/badge/TypeScript-5.7-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/Expo-54.0.35-000020?style=for-the-badge&logo=expo&logoColor=white" alt="Expo SDK 54" />
+  <img src="https://img.shields.io/badge/React_Native-0.81.5-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React Native" />
+  <img src="https://img.shields.io/badge/TypeScript-5.9.2-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
   <img src="https://img.shields.io/badge/Firebase-12.x-FFCA28?style=for-the-badge&logo=firebase&logoColor=black" alt="Firebase" />
   <img src="https://img.shields.io/badge/Gemini_AI-Multimodal-4285F4?style=for-the-badge&logo=google&logoColor=white" alt="Gemini AI" />
   <img src="https://img.shields.io/badge/License-MIT-22C55E?style=for-the-badge" alt="License MIT" />
@@ -80,9 +80,10 @@ Unlike generic plant apps, GardenPulse is **method-agnostic**: the entire UI, ca
 
 | Layer | Technology | Version |
 |:---|:---|:---|
-| **Mobile Framework** | React Native + Expo | SDK `54.0.8` |
-| **Language** | TypeScript | `~5.7.3` |
+| **Mobile Framework** | React Native + Expo | SDK `54.0.35` (RN `0.81.5`) |
+| **Language** | TypeScript | `~5.9.2` |
 | **UI Components** | React Native Paper (Material Design) | `^5.15.3` |
+| **Glassmorphic UI** | @callstack/liquid-glass + expo-blur | `^0.8.0` / `~15.0.8` |
 | **Icons** | @expo/vector-icons | `^15.0.3` |
 | **Backend & Auth** | Firebase Auth, Firestore, Storage | `^12.14.0` |
 | **AI Engine** | Google AI Studio - Gemini Multimodal & Vision | `^0.24.1` |
@@ -93,6 +94,7 @@ Unlike generic plant apps, GardenPulse is **method-agnostic**: the entire UI, ca
 | **Media** | expo-image-picker, expo-media-library | - |
 | **Audio** | expo-av | `~16.0.8` |
 | **Offline Storage** | @react-native-async-storage/async-storage | `2.2.0` |
+| **State Management** | Zustand | `^5.0.14` |
 | **Monetization** | Google AdMob (react-native-google-mobile-ads) | `^16.3.3` |
 | **Vector Graphics** | react-native-svg | `15.12.1` |
 
@@ -236,8 +238,9 @@ For full deployment instructions including iOS App Store builds, keystore manage
 
 - **Method-First Onboarding** - *"How do you grow?"* → app adapts its entire UI to soil / container / hydro / indoor
 - **Instant Open** - Zero required registration; opens directly to the dashboard or calculator
-- **Card-Based Interface** - Max 3 taps to log any action; advanced options progressively disclosed
-- **Adaptive Themes** - *"Balcony Bright"* (light) and *"Grow Tent Dark"* (low-light optimized)
+- **Sleek, Borderless Layout** - Reduced visual noise using borderless card components, hairlineWidth accent borders, and optimized radius tokens
+- **Glassmorphic Navigation** - A premium frosted bottom tab bar using `@callstack/liquid-glass` (Apple Liquid Glass) on iOS and `expo-blur` on Android
+- **Adaptive Themes** - *"Balcony Bright"* (light) and *"Grow Tent Dark"* (low-light optimized) with matching glass tints and border values
 - **Accessibility** - Full VoiceOver/TalkBack support, dyslexia-friendly font toggle, color-blind mode, metric/imperial auto-detect
 
 ---

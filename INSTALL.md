@@ -6,7 +6,7 @@ Welcome to the **GardenPulse** repository. This document outlines the installati
 
 ## 1. Primary Technology Stack
 The application is built on the following technologies:
-- **Frontend Framework**: React Native + Expo (v56.0.x) + TypeScript
+- **Frontend Framework**: React Native (0.81.x) + Expo (SDK 54.0.x) + TypeScript
 - **Backend & Database**: Google Firebase (Authentication, Firestore, Storage)
 - **AI Engine**: Google AI Studio (Gemini Multimodal & Vision models)
 - **Location Services**: Google Maps Platform & Google Geolocation APIs
@@ -45,7 +45,7 @@ Ensure you have the following installed on your development machine:
 ## 4. Installed Dependencies Overview
 All dependencies are pre-configured in `package.json` and resolved:
 
-### Expo Native Modules (SDK 56 Compatible)
+### Expo Native Modules (SDK 54 Compatible)
 - **`expo-location`**: GPS & Network-based location detection (USDA planting zone auto-detection).
 - **`expo-camera`**: Leaf diagnostics camera and QR/bar-code scanning.
 - **`expo-av`**: Microphone recording for hands-free voice logging.
@@ -54,6 +54,9 @@ All dependencies are pre-configured in `package.json` and resolved:
 - **`react-native-maps`**: Google Maps integration for local community grow maps.
 - **`react-native-svg`**: Render vector icons and visual metrics graphs.
 - **`@react-native-async-storage/async-storage`**: Offline-first caching for content libraries, articles, and logs.
+- **`expo-blur`**: Frosted glassmorphism background fallback for Android and older iOS.
+- **`@callstack/liquid-glass`**: Apple-style Liquid Glass navigation container for iOS.
+- **`zustand`**: State management store with persistence integration.
 
 ### Backend & AI Libraries
 - **`firebase`**: Connects the app to Google Firebase Auth, Firestore, and Cloud Storage.
