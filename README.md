@@ -8,7 +8,7 @@
   <img src="https://img.shields.io/badge/TypeScript-5.9.2-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
   <img src="https://img.shields.io/badge/Firebase-12.x-FFCA28?style=for-the-badge&logo=firebase&logoColor=black" alt="Firebase" />
   <img src="https://img.shields.io/badge/Gemini_AI-Multimodal-4285F4?style=for-the-badge&logo=google&logoColor=white" alt="Gemini AI" />
-  <img src="https://img.shields.io/badge/License-MIT-22C55E?style=for-the-badge" alt="License MIT" />
+  <img src="https://img.shields.io/badge/License-Proprietary-red?style=for-the-badge" alt="License Proprietary" />
 </p>
 
 <h3 align="center">The first method-agnostic garden assistant - soil, hydro, container, or indoor - with location-aware intelligence, on-device AI diagnostics, and privacy-first automation.</h3>
@@ -128,7 +128,7 @@ GardenPulse/
 ├── GARDENPULSE.md            # Product blueprint (markdown mirror)
 ├── AGENTS.md                 # Agent / AI assistant guidelines
 ├── CLAUDE.md                 # Claude assistant context
-└── LICENSE                   # MIT License
+└── LICENSE                   # Proprietary License
 ```
 
 ---
@@ -282,7 +282,7 @@ GardenPulse is designed with a **privacy-first** architecture:
 
 ## 📄 License
 
-This project is licensed under the **MIT License** - see the [LICENSE](./LICENSE) file for details.
+This project is proprietary and confidential. All rights are reserved. See the [LICENSE](./LICENSE) file for details.
 
 ---
 
