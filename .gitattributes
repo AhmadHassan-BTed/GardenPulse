@@ -1,0 +1,5 @@
+# Exclude HTML files from GitHub language statistics since this is a React Native (TypeScript) project
+*.html linguist-detectable=false
+
+# Alternatively, mark the .docs directory as documentation so it is excluded
+.docs/* linguist-documentation
