@@ -163,7 +163,7 @@ const ReelGeneratorFlow: React.FC<ReelGeneratorFlowProps> = ({ onClose, onComple
         )}
 
         <CustomButton 
-          label={step === 1 ? "Next Step" : "Generate Reel ✨"} 
+          label={step === 1 ? "Next Step" : "Generate Reel  [SUCCESS] "} 
           onPress={handleNext} 
           fullWidth 
           style={{ marginTop: Spacing.xl }}

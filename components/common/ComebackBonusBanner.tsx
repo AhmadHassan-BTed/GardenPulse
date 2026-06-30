@@ -83,7 +83,7 @@ const ComebackBonusBanner: React.FC<ComebackBonusBannerProps> = ({
       <View style={styles.iconCircle}>
         <Feather name="sun" size={28} color={Colors.green.DEFAULT} />
       </View>
-      <Text style={styles.title}>Welcome back! 🌱</Text>
+      <Text style={styles.title}>Welcome back! </Text>
       <Text style={styles.subtitle}>
         Your garden missed you. It's been {daysSince} days —{' '}
         let's check in on your plants.

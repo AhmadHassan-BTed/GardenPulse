@@ -52,7 +52,7 @@ We collapsed redundant screen-specific UI components into 17 global design token
 | `UI-GLB-BACK-BTN` | Back Navigation Button | Reusable navigation button to return. | back arrow, back link, back button |
 | `UI-GLB-SETTINGS-ICON` | Settings Header Icon | Reusable settings header access button. | settings icon, settings button |
 | `UI-GLB-BELL-ICON` | Notification Bell Icon | Reusable notification access icon with badge. | notification bell, bell icon |
-| `UI-GLB-CLOSE-BTN` | Dismiss/Close Button | Universal dismiss or close button. | close, dismiss, ✕ |
+| `UI-GLB-CLOSE-BTN` | Dismiss/Close Button | Universal dismiss or close button. | close, dismiss,  |
 | `UI-GLB-BOTTOM-NAV` | App Bottom Navigation Bar | Standard 5-tab application shell bar. | bottom navigation, bottom bar |
 | `UI-GLB-FAB` | Floating Action Button | Universal button for creating/logging. | floating action button, fab, + button |
 | `UI-GLB-SEARCH-BAR` | Input Search Field | Text field with search icon for list filter. | search field, search box, search bar |

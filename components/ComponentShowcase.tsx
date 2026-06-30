@@ -768,9 +768,9 @@ export default function ComponentShowcase() {
           }
           footer={
             <View style={styles.footerRow}>
-              <Text style={styles.footerStat}>💧 3 days ago</Text>
-              <Text style={styles.footerStat}>🌡 22 °C</Text>
-              <Text style={styles.footerStat}>☀️  Medium</Text>
+              <Text style={styles.footerStat}> 3 days ago</Text>
+              <Text style={styles.footerStat}> 22 °C</Text>
+              <Text style={styles.footerStat}>  Medium</Text>
             </View>
           }
         >
@@ -788,7 +788,7 @@ export default function ComponentShowcase() {
           onPress={() => {}}
         >
           <Text style={styles.cardBody}>
-            OpenWeatherMap shows 14 mm of rain expected. Your outdoor beds are covered — enjoy a day off! 🌧
+            OpenWeatherMap shows 14 mm of rain expected. Your outdoor beds are covered — enjoy a day off! 
           </Text>
         </CustomCard>
 
@@ -930,28 +930,28 @@ export default function ComponentShowcase() {
         >
           <View style={styles.sheetActions}>
             <CustomButton
-              label="💧  Log Watering"
+              label="  Log Watering"
               variant="primary"
               fullWidth
               onPress={() => setSheetVisible(false)}
             />
             <View style={styles.spacer} />
             <CustomButton
-              label="📸  Scan Leaf"
+              label="  Scan Leaf"
               variant="secondary"
               fullWidth
               onPress={() => setSheetVisible(false)}
             />
             <View style={styles.spacer} />
             <CustomButton
-              label="📊  View Analytics"
+              label="  View Analytics"
               variant="ghost"
               fullWidth
               onPress={() => setSheetVisible(false)}
             />
             <View style={styles.spacer} />
             <CustomButton
-              label="🗑  Remove Plant"
+              label="  Remove Plant"
               variant="ghost"
               fullWidth
               onPress={() => setSheetVisible(false)}
@@ -983,7 +983,7 @@ export default function ComponentShowcase() {
             />
           }
           primaryAction={{
-            label: accepted ? 'Enabled ✓' : 'Enable',
+            label: accepted ? 'Enabled ' : 'Enable',
             onPress: () => {
               setAccepted(true);
               setDialogVisible(false);
@@ -1104,7 +1104,7 @@ export default function ComponentShowcase() {
 
         <PostCard 
           username="GreenThumb99" 
-          content="Just transplanted my seedlings! They are loving the new LED setup. 🌱" 
+          content="Just transplanted my seedlings! They are loving the new LED setup. " 
           methodTag="Hydroponics" 
           likesCount={24} 
           commentsCount={3} 

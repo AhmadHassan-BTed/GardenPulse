@@ -99,7 +99,7 @@ const ReferralBanner: React.FC<ReferralBannerProps> = ({
       </View>
       <View style={styles.textContainer}>
         <Text style={styles.title}>
-          {isComplete ? 'Multi-Zone unlocked! 🎉' : `Invite ${totalNeeded - invitedCount} more friends → unlock Multi-Zone`}
+          {isComplete ? 'Multi-Zone unlocked!  [SUCCESS] ' : `Invite ${totalNeeded - invitedCount} more friends → unlock Multi-Zone`}
         </Text>
         <View style={styles.progressRow}>
           {Array.from({ length: totalNeeded }).map((_, i) => (

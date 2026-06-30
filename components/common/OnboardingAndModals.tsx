@@ -95,7 +95,7 @@ export const SelectedPlantPreviewCard = ({ name, scientific, methodBadge, imageU
       <View style={{ flex: 1 }}>
         <Text style={{ fontSize: 16, fontWeight: 'bold', color: Colors.text.heading }}>{name}</Text>
         <Text style={{ fontSize: 12, color: Colors.text.muted, fontStyle: 'italic', marginBottom: 4 }}>{scientific}</Text>
-        <Text style={{ fontSize: 10, color: Colors.green.DEFAULT, fontWeight: 'bold', textTransform: 'uppercase' }}>✓ {methodBadge} Compatible</Text>
+        <Text style={{ fontSize: 10, color: Colors.green.DEFAULT, fontWeight: 'bold', textTransform: 'uppercase' }}> {methodBadge} Compatible</Text>
       </View>
     </CustomCard>
   );

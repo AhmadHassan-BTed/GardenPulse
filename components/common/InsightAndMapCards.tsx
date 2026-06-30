@@ -52,7 +52,7 @@ export const MapClusterPopupCard = ({ cropName, stats, tip, onGrow }: any) => {
       <Text style={{ fontSize: Typography.sizes.lg, fontWeight: 'bold', color: Colors.text.heading, marginBottom: 2 }}>{cropName}</Text>
       <Text style={{ fontSize: Typography.sizes.sm, color: Colors.green.DEFAULT, fontWeight: 'bold', marginBottom: Spacing.sm }}>{stats}</Text>
       <View style={{ backgroundColor: Colors.surface.elevated, padding: Spacing.sm, borderRadius: 8, marginBottom: Spacing.md }}>
-        <Text style={{ fontSize: 12, color: Colors.text.body }}>💡 <Text style={{ fontWeight: 'bold' }}>Top Tip: </Text>{tip}</Text>
+        <Text style={{ fontSize: 12, color: Colors.text.body }}> [TIP]  <Text style={{ fontWeight: 'bold' }}>Top Tip: </Text>{tip}</Text>
       </View>
       <CustomButton label="Grow This Plant" onPress={onGrow} />
     </CustomCard>

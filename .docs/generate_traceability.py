@@ -42,7 +42,7 @@ def map_to_global_ui(text):
         return "UI-GLB-SETTINGS-ICON"
     if "notification bell" in text_lower or "bell icon" in text_lower:
         return "UI-GLB-BELL-ICON"
-    if "close (✕)" in text_lower or "close button" in text_lower or "close link" in text_lower or "✕ close" in text_lower or "dismiss button" in text_lower or "dismiss link" in text_lower or "dismiss icon" in text_lower:
+    if "close ()" in text_lower or "close button" in text_lower or "close link" in text_lower or " close" in text_lower or "dismiss button" in text_lower or "dismiss link" in text_lower or "dismiss icon" in text_lower:
         return "UI-GLB-CLOSE-BTN"
     if "bottom navigation bar" in text_lower or "bottom navigation" in text_lower or "bottom bar" in text_lower:
         return "UI-GLB-BOTTOM-NAV"
@@ -1072,7 +1072,7 @@ def write_html_viewer(features, reqs, screens, ui_elements, relations):
         }}
 
         .search-box::before {{
-            content: "🔍";
+            content: "";
             position: absolute;
             left: 14px;
             top: 14px;
@@ -1225,7 +1225,7 @@ def write_html_viewer(features, reqs, screens, ui_elements, relations):
         </div>
         <div class="filter-group">
             <button class="btn active" id="btnAll" onclick="setFilter('all')">Show All Rows</button>
-            <button class="btn" id="btnGaps" onclick="setFilter('gaps')" style="border-color: var(--orphan-border); color: var(--orphan-text);">⚠️ Show Gaps/Orphans Only</button>
+            <button class="btn" id="btnGaps" onclick="setFilter('gaps')" style="border-color: var(--orphan-border); color: var(--orphan-text);"> [WARNING]  Show Gaps/Orphans Only</button>
         </div>
     </div>
 

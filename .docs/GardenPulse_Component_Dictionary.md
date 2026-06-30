@@ -1,4 +1,4 @@
-# 🌿 GardenPulse: Component Dictionary & AI Builder Guide
+#  GardenPulse: Component Dictionary & AI Builder Guide
 
 **Welcome to the GardenPulse Design System!** \* **For the User:** Use this dictionary to browse available UI elements, find the exact component you need, and conceptualize your screens without writing code.
 
@@ -6,7 +6,7 @@
 
 ---
 
-## 🏗️ Core Architecture (The Rules)
+##  Core Architecture (The Rules)
 
 1. **Screen Root:** Every top-level screen MUST be wrapped in `<ScreenWrapper scrollable={boolean} withPadding={boolean}>`.
 2. **Theming:** Always import `useTheme` from `../components/layout/ThemeProvider`. Extract colors via `const { Colors, Spacing, Radius, Typography } = useTheme();`.
@@ -15,7 +15,7 @@
 
 ---
 
-## 📚 The Component Dictionary (124 Components)
+##  The Component Dictionary (124 Components)
 
 _(Props marked with `?` are optional. Standard props like `style` and `onPress` apply everywhere)._
 
@@ -193,7 +193,7 @@ _(Props marked with `?` are optional. Standard props like `style` and `onPress` 
 
 ---
 
-## 🛠️ Composition Strategy (How to build screens)
+##  Composition Strategy (How to build screens)
 
 1. **Build the Skeleton:** Start with `<ScreenWrapper scrollable>`. Add a `<CustomHeader>`.
 2. **Select the primary UI pattern:**

@@ -245,7 +245,7 @@
 
 **FR-ONB4-001** — The system shall navigate to ONB-4 after ONB-3's Continue action or Skip action completes.
 
-**FR-ONB4-002** — When the user taps "Start Growing 🌱," the system shall mark onboarding as complete, persist this flag to local storage, and navigate to SCR-01 Dashboard.
+**FR-ONB4-002** — When the user taps "Start Growing ," the system shall mark onboarding as complete, persist this flag to local storage, and navigate to SCR-01 Dashboard.
 
 **FR-ONB4-003** — The system shall display a Back arrow that returns the user to ONB-3 without losing the plant data entered.
 
@@ -311,9 +311,9 @@
 
 **FR-S01-012** — Each task card shall display: the plant's thumbnail photo, plant name, and task type chip (Water / Feed / Prune / Check / Harvest). The task type shall be determined by the plant's care schedule in SCR-07.
 
-**FR-S01-013** — Each task card shall include a "Done ✓" button. When tapped, the system shall mark the task as complete for the current day, update the plant's log, dismiss the card from the today list, and animate the card out.
+**FR-S01-013** — Each task card shall include a "Done " button. When tapped, the system shall mark the task as complete for the current day, update the plant's log, dismiss the card from the today list, and animate the card out.
 
-**FR-S01-014** — When all tasks for the day are marked complete, the system shall display an animated celebration state ("All done today! 🎉") in place of the task list for the remainder of the day.
+**FR-S01-014** — When all tasks for the day are marked complete, the system shall display an animated celebration state ("All done today! ") in place of the task list for the remainder of the day.
 
 **FR-S01-015** — The system shall display a "See full schedule →" link in this section that navigates to SCR-07 Smart Scheduler.
 
@@ -349,7 +349,7 @@
 
 #### Weekly Bloom Report Banner
 
-**FR-S01-028** — On Monday mornings, or when the user opens the app for the first time after a lapse with at least one week of log data, the system shall display the Weekly Bloom Report banner with a "Your weekly report is ready 📊" label and a "View Report" button.
+**FR-S01-028** — On Monday mornings, or when the user opens the app for the first time after a lapse with at least one week of log data, the system shall display the Weekly Bloom Report banner with a "Your weekly report is ready " label and a "View Report" button.
 
 **FR-S01-029** — Tapping "View Report" on the banner shall open MOD-11 Weekly Bloom Report Sheet.
 
@@ -469,7 +469,7 @@
 
 #### Today's Care Section
 
-**FR-S03-019** — The system shall display the plant's care tasks due today as cards with "Done ✓" checkboxes. Checking a task shall mark it complete in the schedule and update the Garden Health Score accordingly.
+**FR-S03-019** — The system shall display the plant's care tasks due today as cards with "Done " checkboxes. Checking a task shall mark it complete in the schedule and update the Garden Health Score accordingly.
 
 **FR-S03-020** — Each task shall offer a "Reschedule" link. Tapping it shall open a date/time picker to move the task to a future date.
 
@@ -719,7 +719,7 @@
 
 #### Task List
 
-**FR-S07-009** — The system shall display the task list for the selected day. Each task row shall show: the plant thumbnail, plant name, task type chip, and a "Done ✓" checkbox.
+**FR-S07-009** — The system shall display the task list for the selected day. Each task row shall show: the plant thumbnail, plant name, task type chip, and a "Done " checkbox.
 
 **FR-S07-010** — Marking a task as done shall update the plant's log and remove the task from the overdue list.
 
@@ -761,7 +761,7 @@
 
 #### Top Banner
 
-**FR-S08-002** — The system shall display a local context banner at the top of the Community Hub showing the heading "What's thriving in [City] right now 🌱" and one anonymized aggregate insight (e.g., "Cherry tomatoes: 87% success in Berlin balconies"). The city name shall match the user's detected or manually entered location.
+**FR-S08-002** — The system shall display a local context banner at the top of the Community Hub showing the heading "What's thriving in [City] right now " and one anonymized aggregate insight (e.g., "Cherry tomatoes: 87% success in Berlin balconies"). The city name shall match the user's detected or manually entered location.
 
 **FR-S08-003** — The banner shall include a "View Map →" link that navigates to SCR-10 Local Grow Map.
 
@@ -829,7 +829,7 @@
 
 **FR-S09-006** — The Posts tab shall display a reverse-chronological feed of posts from cluster members. Each post shall show: anonymized avatar, anonymized username handle, post text with optional method tag chip, and optionally a plant photo.
 
-**FR-S09-007** — Each post shall provide: a Like count with Like button, a Comment count with Comment button, a bookmark icon ("Save Plant" to add the discussed plant to the user's watchlist), and a Report (⚑) icon for content moderation.
+**FR-S09-007** — Each post shall provide: a Like count with Like button, a Comment count with Comment button, a bookmark icon ("Save Plant" to add the discussed plant to the user's watchlist), and a Report () icon for content moderation.
 
 **FR-S09-008** — Tapping a photo on a post shall open a full-screen image viewer with a "Log this plant →" CTA that opens MOD-02 Add / Edit Plant Sheet pre-filled with the plant shown.
 
@@ -957,13 +957,13 @@
 
 **FR-S11-016** — The system shall display a referral banner showing: "Invite 3 friends → unlock Multi-Zone Management," a progress bar (X / 3 friends referred), and a "Share Invite Link" button that opens MOD-12 with the referral link as the shared content.
 
-**FR-S11-017** — When a user has successfully referred 3 friends (verified by the referral link being used to install the app), the system shall unlock Multi-Zone Management and replace the referral banner with a "Multi-Zone Management unlocked ✓" confirmation card.
+**FR-S11-017** — When a user has successfully referred 3 friends (verified by the referral link being used to install the app), the system shall unlock Multi-Zone Management and replace the referral banner with a "Multi-Zone Management unlocked " confirmation card.
 
 #### Supporter Banner
 
 **FR-S11-018** — If the user has not purchased the Supporter Badge, the system shall display a subtle banner at the bottom of the Profile screen: "$2.99 · Remove interstitial ads" with a "Learn More" button that opens MOD-07 Supporter Badge Dialog.
 
-**FR-S11-019** — If the user has purchased the Supporter Badge, the banner shall be replaced by a "Supporter ✓" badge on their profile header card.
+**FR-S11-019** — If the user has purchased the Supporter Badge, the banner shall be replaced by a "Supporter " badge on their profile header card.
 
 ---
 
@@ -1105,7 +1105,7 @@
 
 #### Display
 
-**FR-S14-005** — When the Cemetery Log is empty, the system shall display an empty state with an illustrated gravestone graphic and the label "No failures recorded yet — keep growing! 🌱."
+**FR-S14-005** — When the Cemetery Log is empty, the system shall display an empty state with an illustrated gravestone graphic and the label "No failures recorded yet — keep growing! ."
 
 **FR-S14-006** — Each archived plant entry shall display: plant thumbnail, plant name, growing method badge, date archived, and a "cause of death" label.
 
@@ -1215,7 +1215,7 @@
 
 #### Rating
 
-**FR-M01-009** — The sheet shall display a single emoji-scale slider from 1 (😟) to 5 (😄) labelled "How did it go?" The slider shall default to the midpoint (3). Rating is optional.
+**FR-M01-009** — The sheet shall display a single emoji-scale slider from 1 () to 5 () labelled "How did it go?" The slider shall default to the midpoint (3). Rating is optional.
 
 #### Notes
 
@@ -1237,7 +1237,7 @@
 
 #### Submit
 
-**FR-M01-015** — The "Log It ✓" button shall be enabled only when at least one plant and one activity type are selected. Tapping it shall save the log entry, update the selected plant's last logged timestamp, and update the Garden Health Score based on the logged activity. The sheet shall close with a brief success animation.
+**FR-M01-015** — The "Log It " button shall be enabled only when at least one plant and one activity type are selected. Tapping it shall save the log entry, update the selected plant's last logged timestamp, and update the Garden Health Score based on the logged activity. The sheet shall close with a brief success animation.
 
 ---
 
@@ -1289,7 +1289,7 @@
 
 **FR-M03-001** — The QR Scanner Overlay shall be triggered by: the "QR / Label Scanner" card on SCR-04 Tools Hub, and the "Scan label" button on SCR-05 Nutrient / Recipe Calculator.
 
-**FR-M03-002** — A "✕ Close" button in the top-left shall dismiss the overlay and return the user to the triggering screen without any data change.
+**FR-M03-002** — A " Close" button in the top-left shall dismiss the overlay and return the user to the triggering screen without any data change.
 
 #### Camera & Scanning
 
@@ -1391,7 +1391,7 @@
 
 **FR-M06-003** — The system shall display the AdMob interstitial unit full-screen with an attribution label "Ad · Powered by AdMob."
 
-**FR-M06-004** — A "✕ Close" button shall appear after a minimum of 5 seconds, complying with AdMob interstitial policy. Tapping it shall dismiss the ad and display the calculator results.
+**FR-M06-004** — A " Close" button shall appear after a minimum of 5 seconds, complying with AdMob interstitial policy. Tapping it shall dismiss the ad and display the calculator results.
 
 #### Supporter Badge Suppression
 
@@ -1407,7 +1407,7 @@
 
 #### Display
 
-**FR-M07-002** — The dialog shall display the Supporter Badge graphic with an animated shimmer, the heading "Support GardenPulse 🌿," and the price label "$2.99 · One-time · No subscription."
+**FR-M07-002** — The dialog shall display the Supporter Badge graphic with an animated shimmer, the heading "Support GardenPulse ," and the price label "$2.99 · One-time · No subscription."
 
 **FR-M07-003** — The dialog shall display a "What you get" list: Remove interstitial ads forever, Supporter badge on your profile, GardenPulse watermark removal on exports.
 
@@ -1435,7 +1435,7 @@
 
 #### Controls
 
-**FR-M08-003** — The system shall replace the SCR-02 header with a batch mode header showing: a "Batch Mode" label, a selected count badge (e.g., "3 selected"), a "Select All" button, and a "✕ Cancel" button.
+**FR-M08-003** — The system shall replace the SCR-02 header with a batch mode header showing: a "Batch Mode" label, a selected count badge (e.g., "3 selected"), a "Select All" button, and a " Cancel" button.
 
 **FR-M08-004** — Tapping "Select All" shall select all plants currently visible in the list (respecting any active method filter).
 
@@ -1453,7 +1453,7 @@
 
 #### Exit
 
-**FR-M08-010** — Tapping "✕ Cancel" or tapping the batch mode toggle again shall exit batch mode, restore the standard plant card view, and deselect all plants without performing any action.
+**FR-M08-010** — Tapping " Cancel" or tapping the batch mode toggle again shall exit batch mode, restore the standard plant card view, and deselect all plants without performing any action.
 
 ---
 
@@ -1483,7 +1483,7 @@
 
 **FR-M09-009** — The sheet shall provide a Share icon that opens MOD-12 Export / Share Sheet with the article title and a deep link as the shared content.
 
-**FR-M09-010** — The sheet shall provide a "Mark as Read ✓" button. Tapping it shall mark the article as read so it does not re-appear as a suggestion until the content is updated.
+**FR-M09-010** — The sheet shall provide a "Mark as Read " button. Tapping it shall mark the article as read so it does not re-appear as a suggestion until the content is updated.
 
 ---
 
@@ -1539,7 +1539,7 @@
 
 **FR-M11-006** — The sheet shall display a weather correlation insight derived from the week's weather data and log entries (e.g., "Your tomatoes logged their best growth rate on the 3 sunniest days this week").
 
-**FR-M11-007** — When the user archived at least one plant during the week, the sheet shall display a conditional alert row: "⚠ [N] plant(s) archived this week → See Cemetery Log" with a tappable link to SCR-14.
+**FR-M11-007** — When the user archived at least one plant during the week, the sheet shall display a conditional alert row: " [N] plant(s) archived this week → See Cemetery Log" with a tappable link to SCR-14.
 
 **FR-M11-008** — The sheet shall display a "Next week tip" card containing a contextual tip based on the upcoming week's forecast for the user's zone (e.g., "Frost risk on Friday → bring indoor plants in by Thursday"). This tip shall come from the Smart Tips Library, not auto-generated text.
 

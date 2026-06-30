@@ -45,7 +45,7 @@ export default function PlantDetailScreen() {
   useEffect(() => {
     if (!plant) return;
     if (plant.method === 'Indoor') {
-      setWeatherAlert('☀️ Stable indoor environment — no weather impact expected');
+      setWeatherAlert(' Stable indoor environment — no weather impact expected');
       return;
     }
 
@@ -63,13 +63,13 @@ export default function PlantDetailScreen() {
         if (!active) return;
 
         if (data.condition.toLowerCase().includes('rain')) {
-          setWeatherAlert(`🌧 Rain expected in ${data.locationName} — reduce watering for ${plant.name}`);
+          setWeatherAlert(` Rain expected in ${data.locationName} — reduce watering for ${plant.name}`);
         } else if (data.humidity > 80) {
-          setWeatherAlert(`💧 High humidity (${data.humidity}%) — monitor ${plant.name} for fungal issues`);
+          setWeatherAlert(` High humidity (${data.humidity}%) — monitor ${plant.name} for fungal issues`);
         } else if (data.temp > 35) {
-          setWeatherAlert(`🔥 Extreme heat (${data.temp}°C) — provide shade for ${plant.name}`);
+          setWeatherAlert(` [HOT]  Extreme heat (${data.temp}°C) — provide shade for ${plant.name}`);
         } else if (data.uvIndex >= 8) {
-          setWeatherAlert(`☀️ High UV (${data.uvIndex}) — consider shade cloth for ${plant.name}`);
+          setWeatherAlert(` High UV (${data.uvIndex}) — consider shade cloth for ${plant.name}`);
         } else {
           setWeatherAlert(null);
         }
@@ -180,10 +180,10 @@ export default function PlantDetailScreen() {
 
   // Dynamic tip based on plant health
   const tipTitle = plant.healthScore < 50
-    ? `⚠️ ${plant.name} needs attention — health score at ${plant.healthScore}%`
+    ? ` [WARNING]  ${plant.name} needs attention — health score at ${plant.healthScore}%`
     : plant.healthScore < 75
-      ? `💡 Boost ${plant.name} health with consistent care routines`
-      : `🌱 ${plant.name} is thriving — keep up the great work!`;
+      ? ` [TIP]  Boost ${plant.name} health with consistent care routines`
+      : ` ${plant.name} is thriving — keep up the great work!`;
 
   return (
     <ScreenWrapper scrollable={true} withPadding={false}>

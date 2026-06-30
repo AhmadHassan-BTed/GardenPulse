@@ -24,11 +24,11 @@
 ```mermaid
 flowchart TD
 
-    START([🚀 App Launch]) --> GATE{First\nLaunch?}
+    START([ App Launch]) --> GATE{First\nLaunch?}
     GATE -->|Yes| ONB1
     GATE -->|No| BOTNAV
 
-    subgraph OB["  🌱 ONBOARDING  ·  one-time  "]
+    subgraph OB["   ONBOARDING  ·  one-time  "]
         direction LR
         ONB1["ONB-1\nSplash Screen"]
         ONB2["ONB-2\nWelcome + Method Selection"]
@@ -42,14 +42,14 @@ flowchart TD
     ONB3 -.->|camera pre-prompt| PERM
     ONB4 -.->|notification pre-prompt| PERM
 
-    BOTNAV{{"📱 BOTTOM NAVIGATION\nHome · Garden · Tools · Community · Profile"}}
+    BOTNAV{{" BOTTOM NAVIGATION\nHome · Garden · Tools · Community · Profile"}}
     BOTNAV --> DASH & PLIST & THUB & CHUB & PROFB
 
-    subgraph T1["  🏠 HOME  "]
+    subgraph T1["   HOME  "]
         DASH["SCR-01\nDashboard / Home"]
     end
 
-    subgraph T2["  🌿 GARDEN  "]
+    subgraph T2["   GARDEN  "]
         PLIST["SCR-02\nPlant List"]
         PDETAIL["SCR-03\nPlant Detail"]
         REEL["SCR-15\nProgress Reels Gallery"]
@@ -57,7 +57,7 @@ flowchart TD
         PDETAIL --> REEL
     end
 
-    subgraph T3["  🔧 TOOLS  "]
+    subgraph T3["   TOOLS  "]
         THUB["SCR-04\nTools Hub"]
         NCALC["SCR-05\nNutrient / Recipe Calculator"]
         LDIAG["SCR-06\nLeaf Diagnostics"]
@@ -67,7 +67,7 @@ flowchart TD
         THUB --> SSCHED
     end
 
-    subgraph T4["  👥 COMMUNITY  "]
+    subgraph T4["   COMMUNITY  "]
         CHUB["SCR-08\nCommunity Hub"]
         CDET["SCR-09\nGarden Cluster Detail"]
         GMAP["SCR-10\nLocal Grow Map"]
@@ -75,7 +75,7 @@ flowchart TD
         CHUB --> GMAP
     end
 
-    subgraph T5["  👤 PROFILE  "]
+    subgraph T5["   PROFILE  "]
         PROFB["SCR-11\nProfile & Badges"]
         SETT["SCR-12\nSettings"]
         PRIV["SCR-13\nPrivacy Dashboard"]

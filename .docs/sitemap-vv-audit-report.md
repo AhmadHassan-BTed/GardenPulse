@@ -11,7 +11,7 @@
 | Status | Count | Percentage |
 |--------|-------|------------|
 | ✅ Fully Implemented (screen + layout + navigation) | 38 | 100% |
-| ⚠️ File Missing (registered in layout, no file) | 0 | 0% |
+|  File Missing (registered in layout, no file) | 0 | 0% |
 | ❌ Missing (not registered, no file) | 0 | 0% |
 | **Total Sitemap Items** | **38** | **100%** |
 
@@ -78,7 +78,7 @@
 | Arrow | Target | Status | Evidence |
 |-------|--------|--------|----------|
 | PLIST `-.->` APS | Add/Edit Plant Sheet `/modals/add-plant` | ✅ | Add (+) button links to `/modals/add-plant` |
-| PLIST `-.->` BATCH | Batch Mode Overlay `/modals/batch-mode` | ⚠️ **Route registered** in `modals/_layout.tsx` but **file missing**: `app/modals/batch-mode.tsx` does NOT exist |
+| PLIST `-.->` BATCH | Batch Mode Overlay `/modals/batch-mode` |  **Route registered** in `modals/_layout.tsx` but **file missing**: `app/modals/batch-mode.tsx` does NOT exist |
 | PLIST `-.->` QLS | Quick Log Sheet `/modals/quick-log` | ❌ **No link found** in `garden/index.tsx` for Quick Log |
 | PDETAIL `-->` LDIAG | Leaf Diagnostics `/tools/leaf-diagnostics` | ✅ | "Diagnose" quick action button links |
 | PDETAIL `-->` CLOG | Cemetery Log `/profile/cemetery` | ❌ **No link found** in `plant/[id].tsx` |
@@ -160,11 +160,11 @@
 | MOD-05 | Rewarded Video Prompt | ✅ | ✅ `app/modals/rewarded-video.tsx` | ✅ |
 | MOD-06 | Interstitial Ad | ✅ | ✅ `app/modals/interstitial-ad.tsx` | ✅ |
 | MOD-07 | Supporter Badge Dialog | ✅ | ✅ `app/modals/supporter-badge.tsx` | ✅ |
-| MOD-08 | Batch Mode Overlay | ✅ *(layout line 21)* | ❌ **FILE MISSING** | ⚠️ |
-| MOD-09 | Tip Article Reader Sheet | ✅ (`tips`, `tip/[id]`) | ❌ **FILE MISSING** | ⚠️ |
-| MOD-10 | Notification Prefs Sheet | ✅ | ❌ **FILE MISSING** | ⚠️ |
-| MOD-11 | Weekly Bloom Report Sheet | ✅ | ❌ **FILE MISSING** | ⚠️ |
-| MOD-12 | Export / Share Sheet | ✅ | ❌ **FILE MISSING** | ⚠️ |
+| MOD-08 | Batch Mode Overlay | ✅ *(layout line 21)* | ❌ **FILE MISSING** |  |
+| MOD-09 | Tip Article Reader Sheet | ✅ (`tips`, `tip/[id]`) | ❌ **FILE MISSING** |  |
+| MOD-10 | Notification Prefs Sheet | ✅ | ❌ **FILE MISSING** |  |
+| MOD-11 | Weekly Bloom Report Sheet | ✅ | ❌ **FILE MISSING** |  |
+| MOD-12 | Export / Share Sheet | ✅ | ❌ **FILE MISSING** |  |
 
 ### Bonus Modals (Registered in layout, NOT in sitemap spec)
 The following modals are registered in `app/modals/_layout.tsx` but are **not** listed in the sitemap's MOD-01→MOD-12. These are "bonus" over-implementation or extended features:

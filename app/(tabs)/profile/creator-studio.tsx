@@ -83,7 +83,7 @@ export default function CreatorStudioScreen() {
               initialValue={editorContent}
               onChange={setEditorContent}
               onInsertTemplate={() => setEditorContent(prev => prev + '\n[Care Requirements Template]')}
-              onInsertTip={() => setEditorContent(prev => prev + '\n💡 Grower Tip: Keep humidity above 55%.')}
+              onInsertTip={() => setEditorContent(prev => prev + '\n [TIP]  Grower Tip: Keep humidity above 55%.')}
             />
             <View style={{ flexDirection: 'row', gap: Spacing.md, marginTop: Spacing.sm }}>
               <CustomButton 

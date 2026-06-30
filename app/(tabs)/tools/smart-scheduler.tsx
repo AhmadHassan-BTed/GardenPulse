@@ -201,13 +201,13 @@ export default function SmartSchedulerScreen() {
         {weatherData ? (
           <CustomCard padding={Spacing.md} style={{ backgroundColor: `${Colors.green.DEFAULT}10`, marginBottom: Spacing.sm, alignItems: 'center' }}>
             <CustomText style={{ fontSize: Typography.sizes.sm, color: Colors.text.body, fontWeight: 'bold' }}>
-              📍 {weatherData.city} — {weatherData.condition}, {weatherData.temp}°C ({weatherData.humidity}% humidity)
+               {weatherData.city} — {weatherData.condition}, {weatherData.temp}°C ({weatherData.humidity}% humidity)
             </CustomText>
           </CustomCard>
         ) : (
           <CustomCard padding={Spacing.md} style={{ backgroundColor: `${Colors.text.error}10`, marginBottom: Spacing.sm, alignItems: 'center' }}>
             <CustomText style={{ fontSize: Typography.sizes.sm, color: Colors.text.body, fontWeight: 'bold' }}>
-              ⚠️ Weather-aware alerts and insights are unavailable. Please enable location access.
+               [WARNING]  Weather-aware alerts and insights are unavailable. Please enable location access.
             </CustomText>
           </CustomCard>
         )}

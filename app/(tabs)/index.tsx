@@ -147,7 +147,7 @@ export default function DashboardScreen() {
 
   // Build contextual tip from plant data
   const contextualTip = activePlants.length > 0
-    ? `💡 Care insight: Monitor ${activePlants[0].name} health — currently at ${activePlants[0].healthScore}%`
+    ? ` [TIP]  Care insight: Monitor ${activePlants[0].name} health — currently at ${activePlants[0].healthScore}%`
     : null;
 
   return (
@@ -199,7 +199,7 @@ export default function DashboardScreen() {
             borderColor: Colors.surface.glassBorder,
           }}>
             <CustomText style={{ color: Colors.text.muted, fontSize: Typography.sizes.sm }}>
-              {weatherError ? '⚠️ Weather data unavailable — check location permissions' : '☁️ Loading weather data...'}
+              {weatherError ? ' [WARNING]  Weather data unavailable — check location permissions' : ' Loading weather data...'}
             </CustomText>
           </View>
         )}

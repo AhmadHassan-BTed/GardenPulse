@@ -4,7 +4,7 @@ import { useTheme } from '../layout/ThemeProvider';
 
 export const MoodEmojiSlider = ({ value, onChange }: { value: number, onChange: (v: number) => void }) => {
   const { Colors, Spacing, Radius, Typography } = useTheme();
-  const emojis = ['😟', '😕', '😐', '🙂', '😄'];
+  const emojis = ['', '', '', '', ''];
   
   return (
     <View style={{ marginVertical: Spacing.sm }}>

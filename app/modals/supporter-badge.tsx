@@ -59,7 +59,7 @@ export default function SupporterBadgeModal() {
 
       <View style={{ gap: Spacing.md, marginTop: Spacing.lg, alignItems: 'center' }}>
         <View style={styles.badgeRing}>
-          <CustomText size="xxxl">💝</CustomText>
+          <CustomText size="xxxl"></CustomText>
         </View>
  
         <CustomText variant="heading" size="xl" style={styles.title}>

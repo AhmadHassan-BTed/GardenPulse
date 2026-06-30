@@ -1,6 +1,6 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // BloomReportBanner.tsx — GardenPulse
-// "Your weekly report is ready 📊" label + View Report button.
+// "Your weekly report is ready " label + View Report button.
 // Conditional Monday banner shown on SCR-01.
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -85,7 +85,7 @@ const BloomReportBanner: React.FC<BloomReportBannerProps> = ({
         <Feather name="bar-chart-2" size={18} color="#FFFFFF" />
       </View>
       <View style={styles.textContainer}>
-        <Text style={styles.title}>Your weekly report is ready 📊</Text>
+        <Text style={styles.title}>Your weekly report is ready </Text>
         <Text style={styles.subtitle}>See how your garden performed this week</Text>
       </View>
       <View style={styles.ctaBadge}>

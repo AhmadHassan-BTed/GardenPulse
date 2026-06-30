@@ -138,7 +138,7 @@ const WinnerSpotlightCard: React.FC<WinnerSpotlightCardProps> = ({
           <Text style={styles.featuredText}>Featured Winner</Text>
         </View>
         <View style={styles.prizeBadge}>
-          <Text style={styles.prizeText}>🏆 {prizeLabel}</Text>
+          <Text style={styles.prizeText}> {prizeLabel}</Text>
         </View>
       </View>
 

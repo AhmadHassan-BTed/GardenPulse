@@ -64,20 +64,20 @@ const SmartControlsPanel: React.FC<SmartControlsPanelProps> = ({ style }) => {
         <CustomSwitch
           value={weatherSync}
           onValueChange={setWeatherSync}
-          label="☁ Weather sync"
+          label=" Weather sync"
           description="Auto-adjust tasks for rain forecast"
         />
         
         <CustomSwitch
           value={skipWeekends}
           onValueChange={setSkipWeekends}
-          label="🌙 Skip weekends"
+          label=" Skip weekends"
         />
         
         <CustomSwitch
           value={travelMode}
           onValueChange={setTravelMode}
-          label="✈ Travel Mode"
+          label=" Travel Mode"
           description="Pause all reminders while away"
         />
 

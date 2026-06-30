@@ -8,7 +8,7 @@ This update summarizes our completed work and highlights the structural assets w
 
 ---
 
-## 🚀 Completed Phases (Phases 1 - 5)
+##  Completed Phases (Phases 1 - 5)
 
 We have successfully completed all core user interface phases (Phases 1-5), compiling a robust, modern, and adaptive UI shell.
 
@@ -42,16 +42,16 @@ We have successfully completed all core user interface phases (Phases 1-5), comp
 
 ---
 
-## 📸 Component Showcase Screenshots
+##  Component Showcase Screenshots
 
 To document this milestone, we have captured component showcase previews. These screenshots have been organized into the repository's documentation directory under `.docs/screenshots/`:
 
-- 🎨 **Light Version:** `file:///p:/GardenPulse/.docs/screenshots/component-showcase-light.png`
-- 🌙 **Dark Version:** `file:///p:/GardenPulse/.docs/screenshots/component-showcase-dark.png`
+-  **Light Version:** `file:///p:/GardenPulse/.docs/screenshots/component-showcase-light.png`
+-  **Dark Version:** `file:///p:/GardenPulse/.docs/screenshots/component-showcase-dark.png`
 
 ---
 
-## 🎯 Next Steps
+##  Next Steps
 
 We are waiting for your response with the required API keys so we can move forward with **Phase 6: Integration and Core Logic**. Once received, we will begin:
 

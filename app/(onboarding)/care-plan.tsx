@@ -150,7 +150,7 @@ export default function CarePlanScreen() {
 
         <View style={{ gap: Spacing.md, marginTop: Spacing.md, alignItems: 'center' }}>
           <CustomButton
-            label="Start Growing 🌱"
+            label="Start Growing "
             fullWidth={true}
             onPress={handleStartGrowing}
           />

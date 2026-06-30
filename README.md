@@ -15,7 +15,7 @@
 
 ---
 
-## 🌿 What is GardenPulse?
+##  What is GardenPulse?
 
 **GardenPulse** is a smart urban garden companion that eliminates the guesswork out of growing. Whether you're tending windowsill herbs, managing a balcony container garden, running a hydroponic setup, or maintaining 50+ houseplants - GardenPulse adapts every recommendation to your specific growing method, your local climate, and your live weather conditions.
 
@@ -25,9 +25,9 @@ Unlike generic plant apps, GardenPulse is **method-agnostic**: the entire UI, ca
 
 ---
 
-## ✨ Key Features
+##  Key Features
 
-### 🧠 AI-Powered Intelligence
+###  AI-Powered Intelligence
 | Feature | Description |
 |---|---|
 | **Method-Agnostic Plant ID** | Snap a leaf → AI detects plant species, growing method, and likely issues (deficiency, pest, overwatering) |
@@ -35,7 +35,7 @@ Unlike generic plant apps, GardenPulse is **method-agnostic**: the entire UI, ca
 | **Smart Weather Integration** | Auto-adjusts care schedules based on live forecast (e.g., *"Rain tomorrow → skip watering today"*) |
 | **Gemini Vision Diagnostics** | All leaf-scan diagnostics run on-device - photos are never uploaded to the cloud |
 
-### 📍 Location & Context Intelligence
+###  Location & Context Intelligence
 | Feature | Description |
 |---|---|
 | **GPS / Network Location** | Enables hyper-local plant recommendations and regional pest/disease alerts |
@@ -43,24 +43,24 @@ Unlike generic plant apps, GardenPulse is **method-agnostic**: the entire UI, ca
 | **Live Weather API** | OpenWeatherMap One Call API 3.0 for real-time temp, humidity, precipitation, and UV index |
 | **Local Community Maps** | Opt-in anonymized data shows what's thriving in your ZIP code right now |
 
-### 📅 Smart Scheduling & Automation
+###  Smart Scheduling & Automation
 - **Adaptive Reminders** - Adjusts timing based on user behavior, live weather forecasts, and seasonal changes
 - **Sunrise/Sunset Tracking** - Schedules grow-tent light cycles and outdoor watering relative to solar events
 - **Timezone-Aware Engine** - Daylight saving auto-adjust included; travel-friendly reminder controls
 
-### 📸 Camera & Media Tools
+###  Camera & Media Tools
 - **Leaf Diagnostics Camera** - On-device AI analyzes discoloration without any cloud upload
 - **Progress Timelapse Generator** - Auto-compiles photos into shareable growth reels with method-specific overlays
 - **QR / Label Scanner** - Scan nutrient bottles, seed packets, or Bluetooth sensor IDs for auto-logging
 - **Voice Logging** - Hands-free operation via microphone for users with mobility challenges
 
-### 📊 Analytics & Personalization
+###  Analytics & Personalization
 - **Garden Health Score™** - Tracks 8 metrics (soil moisture, light exposure, pH stability, growth rate) with plain-English insights
 - **Adaptive Growing Profiles** - Toggle between *"Low-Light Apartment"*, *"Sunny Balcony"*, *"Hydro Tent"*, *"Raised Bed"*
 - **Cross-Method Insights** - e.g., *"Your hydro basil grew 20% faster than soil → try adjusting nutrient strength"*
 - **Cemetery Log** - Historical log of failed grows to identify root causes (pH spikes, root rot) over time
 
-### 💰 Monetization (AdMob Optimized)
+###  Monetization (AdMob Optimized)
 | Ad Type | Trigger | Target eCPM |
 |---|---|---|
 | High-Intent Interstitial | Triggered at dosing calculation / export moments | $25–45 (Tier 1) |
@@ -68,7 +68,7 @@ Unlike generic plant apps, GardenPulse is **method-agnostic**: the entire UI, ca
 | Rewarded Videos | Unlock PDF garden plans, compliance logs, advanced calculators | - |
 | Supporter Badge | $2.99 one-time to remove interstitials only | - |
 
-### 🌍 Community & Viral Features
+###  Community & Viral Features
 - **Garden Clusters** - Join location or interest-based groups; share tips, swap seeds, compare progress
 - **Growth Streaks + Method Badges** - Unlock *"Hydro Master"*, *"Balcony Boss"*, *"Zero-Waste Gardener"*
 - **Shareable Progress Reels** - Auto-generated before/after timelapses and *"My Garden Setup"* infographics for Instagram/TikTok
@@ -76,7 +76,7 @@ Unlike generic plant apps, GardenPulse is **method-agnostic**: the entire UI, ca
 
 ---
 
-## 🛠️ Technology Stack
+##  Technology Stack
 
 | Layer | Technology | Version |
 |:---|:---|:---|
@@ -100,7 +100,7 @@ Unlike generic plant apps, GardenPulse is **method-agnostic**: the entire UI, ca
 
 ---
 
-## 📁 Project Structure
+##  Project Structure
 
 ```text
 GardenPulse/
@@ -133,7 +133,7 @@ GardenPulse/
 
 ---
 
-## ⚙️ Quick Start
+##  Quick Start
 
 ### Prerequisites
 
@@ -198,7 +198,7 @@ Scan the QR code in the terminal with the **Expo Go** app on your physical devic
 
 ---
 
-## 🔑 API Keys & Service Setup
+##  API Keys & Service Setup
 
 | Service | Where to Get It | Docs |
 |---|---|---|
@@ -212,7 +212,7 @@ Scan the QR code in the terminal with the **Expo Go** app on your physical devic
 
 ---
 
-## 🚀 Production Build (Google Play Store)
+##  Production Build (Google Play Store)
 
 ```bash
 # 1. Install EAS CLI
@@ -234,7 +234,7 @@ For full deployment instructions including iOS App Store builds, keystore manage
 
 ---
 
-## 🎨 UX & Design Philosophy
+##  UX & Design Philosophy
 
 - **Method-First Onboarding** - *"How do you grow?"* → app adapts its entire UI to soil / container / hydro / indoor
 - **Instant Open** - Zero required registration; opens directly to the dashboard or calculator
@@ -245,7 +245,7 @@ For full deployment instructions including iOS App Store builds, keystore manage
 
 ---
 
-## 🔒 Privacy & Compliance
+##  Privacy & Compliance
 
 GardenPulse is designed with a **privacy-first** architecture:
 
@@ -258,7 +258,7 @@ GardenPulse is designed with a **privacy-first** architecture:
 
 ---
 
-## 🗺️ Roadmap
+##  Roadmap
 
 | Phase | Feature |
 |---|---|
@@ -270,7 +270,7 @@ GardenPulse is designed with a **privacy-first** architecture:
 
 ---
 
-## 📖 Documentation
+##  Documentation
 
 | Document | Description |
 |---|---|
@@ -280,12 +280,12 @@ GardenPulse is designed with a **privacy-first** architecture:
 
 ---
 
-## 📄 License
+##  License
 
 This project is proprietary and confidential. All rights are reserved. See the [LICENSE](./LICENSE) file for details.
 
 ---
 
 <p align="center">
-  Built with 🌱 by the GardenPulse team &nbsp;·&nbsp; <em>Grow Smarter, Anywhere.</em>
+  Built with  by the GardenPulse team &nbsp;·&nbsp; <em>Grow Smarter, Anywhere.</em>
 </p>

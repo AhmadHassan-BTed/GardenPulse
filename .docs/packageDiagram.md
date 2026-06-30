@@ -6,7 +6,7 @@ graph TB
 %% Three sections: Enums · DTOs · Service Interfaces
 %% ─────────────────────────────────────────────────────────────────────────────
 
-    subgraph SK["📦 SharedKernel — DTOs · Enums · Interfaces"]
+    subgraph SK[" SharedKernel — DTOs · Enums · Interfaces"]
         direction TB
 
         subgraph SK_EN["Enums"]
@@ -126,7 +126,7 @@ graph TB
 %% Bootstrap · Routing · Session · Connectivity · Accessibility · Locale
 %% ─────────────────────────────────────────────────────────────────────────────
 
-    subgraph AS["📦 AppShell — Bootstrap · Routing · Session · Connectivity"]
+    subgraph AS[" AppShell — Bootstrap · Routing · Session · Connectivity"]
         direction TB
         AS1["AppBootstrapper\n+boot(): void\n+resolveFirstRoute(): Route\n— reads SessionDTO\n— routes to Dashboard or Onboarding"]
         AS2["AppRouter\n+navigateTo(route): void\n+resolveDeepLink(url): Route\n+resolveTabRoute(tab): Route\n+goBack(): void"]
@@ -142,7 +142,7 @@ graph TB
 %% First-launch flow only. Self-contained. Hands off to AppShell on complete.
 %% ─────────────────────────────────────────────────────────────────────────────
 
-    subgraph ONB["📦 Onboarding — First-Launch Flow  ONB-1 → ONB-4"]
+    subgraph ONB[" Onboarding — First-Launch Flow  ONB-1 → ONB-4"]
         direction TB
         ONB1["OnboardingCoordinator\n+start(): void\n+advance(step: OnboardingStep): void\n+skip(step: OnboardingStep): void\n+complete(): void\n— orchestrates steps 1-3\n— calls SessionManager.markOnboardingComplete()"]
         ONB2["SplashScreen  [ONB-1]\n+render(): void\n— logo + tagline + loading pulse\n— no ads, no sign-in, no permissions"]
@@ -156,7 +156,7 @@ graph TB
 %% Dashboard only. Single screen — has enough complexity to warrant own package.
 %% ─────────────────────────────────────────────────────────────────────────────
 
-    subgraph HM["📦 Home — Dashboard  SCR-01"]
+    subgraph HM[" Home — Dashboard  SCR-01"]
         direction TB
         HM1["DashboardScreen  [SCR-01]\n+render(tasks: TaskDTO[], weather: WeatherDTO,\n  score: HealthScoreDTO, plants: PlantDTO[]): void\n— today's tasks · weather widget\n— health score card · my plants row\n— contextual tip card · bloom report banner\n— comeback bonus banner (on lapse)\n— native ad slot · quick log FAB"]
         HM2["BloomReportBuilder\n+build(logs: LogEntryDTO[],\n  weather: WeatherDTO,\n  range: DateRangeDTO): BloomReportDTO\n— assembles weekly stats · best plant\n— weather correlation · next week tip\n— conditional cemetery alert"]
@@ -169,7 +169,7 @@ graph TB
 %% Plants · Logs · Health Score · Cross-Method Insights · Reels · Batch
 %% ─────────────────────────────────────────────────────────────────────────────
 
-    subgraph GD["📦 Garden — Plants · Logs · Health · Reels  SCR-02, 03, 15"]
+    subgraph GD[" Garden — Plants · Logs · Health · Reels  SCR-02, 03, 15"]
         direction TB
 
         subgraph GD_SVC["Domain Services"]
@@ -194,7 +194,7 @@ graph TB
 %% Calculator · Diagnostics · Scheduler · QR Scanner
 %% ─────────────────────────────────────────────────────────────────────────────
 
-    subgraph TL["📦 Tools — Calculator · Diagnostics · Scheduler · QR  SCR-04 → 07"]
+    subgraph TL[" Tools — Calculator · Diagnostics · Scheduler · QR  SCR-04 → 07"]
         direction TB
 
         subgraph TL_SVC["Domain Services"]
@@ -218,7 +218,7 @@ graph TB
 %% Clusters · Posts · Comments · Swaps · Map · Challenges · Referrals
 %% ─────────────────────────────────────────────────────────────────────────────
 
-    subgraph CM["📦 Community — Clusters · Map · Challenges · Referrals  SCR-08 → 10"]
+    subgraph CM[" Community — Clusters · Map · Challenges · Referrals  SCR-08 → 10"]
         direction TB
 
         subgraph CM_SVC["Domain Services"]
@@ -243,7 +243,7 @@ graph TB
 %% Badges · Streaks · Skills · Settings · Privacy · Cemetery · Creator Studio
 %% ─────────────────────────────────────────────────────────────────────────────
 
-    subgraph PR["📦 Profile — Badges · Settings · Privacy · Cemetery · Creator  SCR-11 → 14, 16"]
+    subgraph PR[" Profile — Badges · Settings · Privacy · Cemetery · Creator  SCR-11 → 14, 16"]
         direction TB
 
         subgraph PR_SVC["Domain Services"]
@@ -271,7 +271,7 @@ graph TB
 %% Domain packages never import AdMob or IAP directly.
 %% ─────────────────────────────────────────────────────────────────────────────
 
-    subgraph MN["📦 Monetisation — Ads · Rewarded Video · Supporter Badge  MOD-05, 06, 07"]
+    subgraph MN[" Monetisation — Ads · Rewarded Video · Supporter Badge  MOD-05, 06, 07"]
         direction TB
         MN1["AdOrchestrator\n+canShowInterstitial(): boolean\n+canShowNative(): boolean\n+requestInterstitial(trigger: AdTrigger): void\n+requestNative(slot): NativeAdDTO\n— gate 1: SupporterBadge active? skip interstitial\n— gate 2: onboarding / permission screen? block all ads\n— gate 3: geoFence check before load"]
         MN2["RewardedVideoService\n+request(unlock: UnlockType): void\n+onComplete(cb: Callback): void\n+onDecline(cb: Callback): void\n— always optional, always labelled\n— unlock types: PDF · HD video · compliance log"]
@@ -287,7 +287,7 @@ graph TB
 %% They receive DTOs, fire callbacks, own zero domain logic.
 %% ─────────────────────────────────────────────────────────────────────────────
 
-    subgraph SM["📦 SharedModals — Cross-Domain Overlays  MOD-01, 02, 03, 04, 08, 09, 10, 11, 12"]
+    subgraph SM[" SharedModals — Cross-Domain Overlays  MOD-01, 02, 03, 04, 08, 09, 10, 11, 12"]
         direction TB
         SM1["QuickLogSheet  [MOD-01]\n+open(plantId?: string): void\n+onSubmit(cb: LogEntryDTO): void\n— plant selector · photo · activity chips\n— mood slider · notes + voice\n— location tag · add-to-reel toggle\n— optional metrics (pH · EC · moisture · temp)\n— camera / mic → PermissionContextModal"]
         SM2["AddEditPlantSheet  [MOD-02]\n+open(plant?: PlantDTO): void\n+onSave(cb: PlantDTO): void\n— name search + autocomplete (3000+ species)\n— scan to identify → PermissionContextModal\n— browse by type · photo · nickname\n— method · container size · zone · dates\n— reminders toggle"]
@@ -306,7 +306,7 @@ graph TB
 %% Domain packages depend on SK interfaces, not on these adapters directly.
 %% ─────────────────────────────────────────────────────────────────────────────
 
-    subgraph INF["📦 Infrastructure — External Service Adapters"]
+    subgraph INF[" Infrastructure — External Service Adapters"]
         direction TB
 
         subgraph INF_FB["Firebase"]

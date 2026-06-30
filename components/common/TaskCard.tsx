@@ -109,7 +109,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
           </View>
         </View>
         <CustomButton
-          label={isDone ? 'Done' : 'Done ✓'}
+          label={isDone ? 'Done' : 'Done '}
           variant={isDone ? 'secondary' : 'primary'}
           onPress={onDonePress}
           isDisabled={isDone}

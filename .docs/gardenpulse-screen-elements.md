@@ -82,7 +82,7 @@ Every screen, modal, sheet, and overlay — with all UI components documented.
 
 - Heading: "Add your first plant"
 - Plant name search field + autocomplete dropdown (plant database)
-- `📷 Scan a leaf or seed packet` camera button → triggers MOD-04 (camera permission pre-prompt) if camera not yet granted, then opens inline camera for on-device plant ID
+- ` Scan a leaf or seed packet` camera button → triggers MOD-04 (camera permission pre-prompt) if camera not yet granted, then opens inline camera for on-device plant ID
 - OR divider
 - Browse by category: grid of plant type chips (Herb · Vegetable · Fruit · Flower · Houseplant · Microgreen)
 - Selected plant preview card: photo thumbnail, common name, scientific name, method compatibility badge
@@ -124,7 +124,7 @@ Every screen, modal, sheet, and overlay — with all UI components documented.
 
 **Actions**
 
-- `Start Growing 🌱` primary CTA button → enters main app at SCR-01 Dashboard
+- `Start Growing ` primary CTA button → enters main app at SCR-01 Dashboard
 - `Remind me later` text link (below CTA, skips notification permission)
 
 **Modal Triggered**
@@ -159,7 +159,7 @@ Every screen, modal, sheet, and overlay — with all UI components documented.
 
 2. **Comeback Bonus Banner** (conditional — shown only when user returns after a lapse)
    - Animated welcome-back illustration
-   - "Welcome back! Your [plant name] missed you 🌱" label
+   - "Welcome back! Your [plant name] missed you " label
    - `See What Needs Attention →` button → SCR-02 Plant List, sorted by last-logged date
 
 3. **Today's Tasks Section**
@@ -167,7 +167,7 @@ Every screen, modal, sheet, and overlay — with all UI components documented.
    - Horizontal scrollable task cards, per plant:
      - Plant thumbnail + name
      - Task type chip (Water / Feed / Prune / Check / Harvest)
-     - `Done ✓` button (tap to complete)
+     - `Done ` button (tap to complete)
    - "All done today!" celebration state (animated confetti, hidden by default)
    - "See full schedule →" link (→ SCR-07 Smart Scheduler)
 
@@ -183,13 +183,13 @@ Every screen, modal, sheet, and overlay — with all UI components documented.
      - Tap → SCR-03 Plant Detail
 
 6. **Contextual Tip Card** (styled as native ad content card)
-   - "💡 From your garden expert" header label
+   - " From your garden expert" header label
    - Article title + method tag
    - Estimated read time label
    - Tap → MOD-09 Tip Article Reader Sheet
 
 7. **Weekly Bloom Report Banner** (conditional — shown Monday mornings, or after returning from lapse)
-   - "Your weekly report is ready 📊" label
+   - "Your weekly report is ready " label
    - `View Report` button → MOD-11 Weekly Bloom Report Sheet
 
 8. **Native Ad Slot** (between sections, styled as a content card — not on permission or error states)
@@ -279,14 +279,14 @@ Every screen, modal, sheet, and overlay — with all UI components documented.
 
 - Full-width plant photo (tappable → SCR-15 Progress Reels Gallery)
 - Photo count badge (e.g., "12 photos")
-- `📷 Add Photo` button overlay
+- ` Add Photo` button overlay
 
 **Action Pill Row** (horizontal, always visible below hero)
 
-- `📝 Log` → MOD-01 Quick Log Sheet
-- `🔬 Diagnose` → SCR-06 Leaf Diagnostics
-- `📤 Share` → MOD-12 Export / Share Sheet
-- `💀 Archive` → SCR-14 Cemetery Log (with confirm dialog)
+- ` Log` → MOD-01 Quick Log Sheet
+- ` Diagnose` → SCR-06 Leaf Diagnostics
+- ` Share` → MOD-12 Export / Share Sheet
+- ` Archive` → SCR-14 Cemetery Log (with confirm dialog)
 
 **Plant Info Card**
 
@@ -306,11 +306,11 @@ Every screen, modal, sheet, and overlay — with all UI components documented.
 
 **Weather Impact Banner** (conditional — shown when weather affects this plant's care)
 
-- Smart alert chip, e.g., "🌧 Rain in 2 days → skip next watering"
+- Smart alert chip, e.g., " Rain in 2 days → skip next watering"
 
 **Today's Care Section**
 
-- Task cards with `✓ Done` checkbox: Water · Feed · Prune · Check
+- Task cards with ` Done` checkbox: Water · Feed · Prune · Check
 - Reschedule link per task
 - "View full schedule →" link → SCR-07 Smart Scheduler
 
@@ -333,11 +333,11 @@ Every screen, modal, sheet, and overlay — with all UI components documented.
 **Notes Field**
 
 - Freeform text area "Quick note…"
-- `🎤` Mic icon (voice input) → triggers MOD-04 Permission Context Modal (mic) if microphone not yet granted, then starts recording; shows recording indicator and easy delete option after grant
+- `` Mic icon (voice input) → triggers MOD-04 Permission Context Modal (mic) if microphone not yet granted, then starts recording; shows recording indicator and easy delete option after grant
 
 **Actions / FAB**
 
-- `📝 Log` FAB (bottom-right, always visible) → MOD-01 Quick Log Sheet
+- ` Log` FAB (bottom-right, always visible) → MOD-01 Quick Log Sheet
 
 **Modals Triggered**
 
@@ -514,8 +514,8 @@ Every screen, modal, sheet, and overlay — with all UI components documented.
 - Full-card camera viewfinder
 - Alignment overlay: leaf-shaped guide frame with animated pulse border
 - "Centre the leaf in frame" instruction label
-- `📷 Capture` button (large circle, bottom-centre)
-- `🖼 Choose from Gallery` link (import existing photo as fallback — no cloud upload; analysis still on-device)
+- ` Capture` button (large circle, bottom-centre)
+- ` Choose from Gallery` link (import existing photo as fallback — no cloud upload; analysis still on-device)
 - Flash toggle icon (top-right of viewfinder)
 
 **Scanning State** (post-capture, while AI processes on-device)
@@ -537,7 +537,7 @@ Every screen, modal, sheet, and overlay — with all UI components documented.
 - Contextual tip link: "Read: [related article title]" → MOD-09 Tip Article Reader Sheet
 - `Log This Diagnosis` button → creates a log entry linked to the relevant plant in SCR-03
 - `Try Again / Retake` button
-- `📤 Share Results` button → MOD-12 Export / Share Sheet
+- ` Share Results` button → MOD-12 Export / Share Sheet
 
 **Past Diagnoses Section** (below results card, or on `History` icon tap)
 
@@ -586,15 +586,15 @@ Every screen, modal, sheet, and overlay — with all UI components documented.
 - Per-task rows:
   - Plant thumbnail + plant name
   - Task type chip (Water / Feed / Prune / Check / Harvest)
-  - `✓ Done` checkbox (tap to complete)
+  - ` Done` checkbox (tap to complete)
   - Swipe-left actions: Reschedule (shows date picker) · Skip
 - `Mark All Done` bulk button (day-level)
 
 **Smart Controls Panel**
 
-- `☁ Weather sync` toggle: "Auto-adjust tasks for rain forecast" — on/off; when on, watering tasks suppressed on rain-forecast days
-- `🌙 Skip weekends` toggle
-- `✈ Travel Mode` toggle + date range picker (start → end date, pauses all reminders during range)
+- ` Weather sync` toggle: "Auto-adjust tasks for rain forecast" — on/off; when on, watering tasks suppressed on rain-forecast days
+- ` Skip weekends` toggle
+- ` Travel Mode` toggle + date range picker (start → end date, pauses all reminders during range)
 - "I prefer reminders in the:" radio selector: Morning (7–9 AM) · Afternoon (12–2 PM) · Evening (6–8 PM)
 
 **Add Custom Reminder Section**
@@ -631,7 +631,7 @@ Every screen, modal, sheet, and overlay — with all UI components documented.
 
 **Top Banner**
 
-- Local context card: "What's thriving in [City] right now 🌱"
+- Local context card: "What's thriving in [City] right now "
 - Anonymous insight label (e.g., "Cherry tomatoes: 87% success rate in Berlin balconies")
 - `View Map →` link → SCR-10 Local Grow Map
 
@@ -709,9 +709,9 @@ Every screen, modal, sheet, and overlay — with all UI components documented.
   - Post text (method-tagged)
   - Optional plant photo (tap to expand full-screen)
   - Method badge chip
-  - `👍 Like` button + `💬 Comment` button (comment count label)
-  - `🔖 Save Plant` bookmark icon (saves the plant species to user's plant database for adding later)
-  - `⚑ Report` icon (per post, for moderation)
+  - ` Like` button + ` Comment` button (comment count label)
+  - ` Save Plant` bookmark icon (saves the plant species to user's plant database for adding later)
+  - ` Report` icon (per post, for moderation)
 - Full-screen photo viewer (on photo tap): `Log this plant →` CTA → MOD-02 Add / Edit Plant Sheet pre-filled with species
 - Comment thread (inline, expandable)
 
@@ -731,7 +731,7 @@ Every screen, modal, sheet, and overlay — with all UI components documented.
 
 **FAB**
 
-- `✏ Post` FAB (bottom-right) → inline compose overlay:
+- ` Post` FAB (bottom-right) → inline compose overlay:
   - Text field: "Share with the cluster…"
   - Camera icon (attach photo) → triggers MOD-04 Permission Context Modal (camera) if not yet granted, then opens camera
   - `@ Tag plants` button (links post to a plant in user's garden)
@@ -1006,7 +1006,7 @@ Every screen, modal, sheet, and overlay — with all UI components documented.
 
 **Pattern Insight Card** (conditional — shown after 2 or more entries)
 
-- "🔍 Pattern detected: You've lost [N] plants to [cause]. Check your schedule."
+- " Pattern detected: You've lost [N] plants to [cause]. Check your schedule."
 - `View Schedule →` link → SCR-07 Smart Scheduler
 
 **Filter Bar**
@@ -1016,7 +1016,7 @@ Every screen, modal, sheet, and overlay — with all UI components documented.
 **Empty State**
 
 - Illustrated gravestone graphic
-- "No failures recorded yet — keep growing! 🌱" label
+- "No failures recorded yet — keep growing! " label
 
 **Archived Plant Entries** (vertical list)
 
@@ -1026,7 +1026,7 @@ Every screen, modal, sheet, and overlay — with all UI components documented.
   - Date archived label
   - **Cause of death** selector (tap to edit):
     Options: pH spike · Root rot · Overwatering · Underwatering · Nutrient burn · Pest · Light stress · Temperature shock · Unknown
-  - "What I learned:" text field (editable, includes `🎤` voice input icon — requests mic permission via MOD-04 if needed)
+  - "What I learned:" text field (editable, includes `` voice input icon — requests mic permission via MOD-04 if needed)
   - `Restore to Garden` button (moves plant back to SCR-02 Plant List if recovered)
   - `Delete Entry` icon (destructive, with confirm dialog)
 
@@ -1054,7 +1054,7 @@ Every screen, modal, sheet, and overlay — with all UI components documented.
 
 **Revenue Info Banner**
 
-- "✍ Write guides → earn AdMob revenue share" label
+- " Write guides → earn AdMob revenue share" label
 - Moderation notice: "All guides reviewed before going live (24–48 h)"
 - `Learn How It Works` link (inline info sheet)
 
@@ -1108,13 +1108,13 @@ Every screen, modal, sheet, and overlay — with all UI components documented.
 - **Plant selector**: horizontal scroll of plant cards (thumbnails + names); pre-filled if opened from SCR-03 Plant Detail; "All plants" option for multi-plant mode (used in Batch logging)
 - **Photo area**: large tap-to-capture zone with camera icon; gallery import icon (bottom-left of area)
 - **Activity type chips** (multi-select): Water · Feed · Prune · Check · Harvest · Repot · Transplant · Note
-- **"How did it go?"** emoji slider (1 = 😟 → 5 = 😄)
-- **Notes field**: "Add a quick note…" freeform text + `🎤` mic icon (voice input — requests MOD-04 mic permission if not yet granted)
+- **"How did it go?"** emoji slider (1 =  → 5 = )
+- **Notes field**: "Add a quick note…" freeform text + `` mic icon (voice input — requests MOD-04 mic permission if not yet granted)
 - **Location tag row**: auto-location chip (e.g., "Berlin · Zone 7b") + `Remove` × icon (user can remove before logging)
 - **"Add to Reel" toggle**: adds this photo to the plant's timelapse sequence for SCR-15 Reels
 - **Metric quick-entry** (expandable optional row, collapsed by default):
   - pH slider · EC / PPM field · Moisture % field · Temperature field
-- **`Log It ✓`** primary CTA button (full-width, green)
+- **`Log It `** primary CTA button (full-width, green)
 - **Cancel** text link (below CTA)
 
 ---
@@ -1130,7 +1130,7 @@ Every screen, modal, sheet, and overlay — with all UI components documented.
 - Sheet drag handle bar
 - "Add Plant" or "Edit Plant" heading (dynamic, based on context)
 - **Plant name search field**: text input + autocomplete dropdown (plant database, 3000+ species)
-- **`📷 Scan to identify`** button: triggers MOD-04 Permission Context Modal (camera) if camera not yet granted, then opens inline camera briefly for on-device species recognition → auto-fills plant name field on recognition
+- **` Scan to identify`** button: triggers MOD-04 Permission Context Modal (camera) if camera not yet granted, then opens inline camera briefly for on-device species recognition → auto-fills plant name field on recognition
 - **OR divider**
 - **Browse by type** grid: Herb · Vegetable · Fruit · Flower · Houseplant · Microgreen chips
 - **Plant photo**: tap-to-capture thumbnail area + gallery import link
@@ -1162,7 +1162,7 @@ Every screen, modal, sheet, and overlay — with all UI components documented.
 - Animated scan frame (QR / barcode detection rectangle, pulsing border)
 - "Point at a QR code or barcode" instruction label
 - Flash / torch toggle icon (top-right)
-- `✕ Close` button (top-left)
+- ` Close` button (top-left)
 - `Enter code manually` fallback text link (bottom of screen)
 - **Success state** (slides up as bottom card on scan detection):
   - Product thumbnail (if found in database)
@@ -1182,9 +1182,9 @@ Every screen, modal, sheet, and overlay — with all UI components documented.
 - ONB-3: camera — fires on camera scan button tap, before OS camera dialog
 - ONB-4: notifications — fires on `Enable` toggle tap, before OS notification dialog
 - SCR-06 Leaf Diagnostics: camera — fires on screen entry if camera not granted
-- SCR-03 Plant Detail notes field: mic — fires on first `🎤` mic icon tap if mic not granted
+- SCR-03 Plant Detail notes field: mic — fires on first `` mic icon tap if mic not granted
 - SCR-09 Cluster Detail post compose: camera — fires on photo attach tap if camera not granted
-- MOD-01 Quick Log Sheet: mic — fires on `🎤` mic icon tap if mic not granted
+- MOD-01 Quick Log Sheet: mic — fires on `` mic icon tap if mic not granted
 - MOD-02 Add / Edit Plant Sheet: camera — fires on `Scan to identify` tap if camera not granted
 
 **Purpose:** Contextual pre-prompt shown BEFORE the OS permission dialog — explains the value and privacy stance so users can make an informed decision
@@ -1256,7 +1256,7 @@ Every screen, modal, sheet, and overlay — with all UI components documented.
 **Elements**
 
 - Full-screen AdMob interstitial unit
-- `✕ Close` button (appears after 5 s minimum — AdMob policy requirement)
+- ` Close` button (appears after 5 s minimum — AdMob policy requirement)
 - "Ad · Powered by AdMob" attribution label (footer)
 
 **Rules (per brief)**
@@ -1275,12 +1275,12 @@ Every screen, modal, sheet, and overlay — with all UI components documented.
 **Elements**
 
 - Supporter leaf badge graphic (animated shimmer)
-- **Heading**: "Support GardenPulse 🌿"
+- **Heading**: "Support GardenPulse "
 - **Price label**: "$2.99 · One-time · No subscription"
 - **What you get list**:
-  - ✓ Interstitial ads removed forever
-  - ✓ Supporter Badge displayed on your profile
-  - ✓ GardenPulse watermark removal on exports
+  -  Interstitial ads removed forever
+  -  Supporter Badge displayed on your profile
+  -  GardenPulse watermark removal on exports
 - **"What stays" note** (grey text): "Tips and native content remain — they help us improve the app"
 - `Support GardenPulse — $2.99` primary CTA button → App Store / Play Store in-app purchase flow
 - `Restore Purchase` text link (for users who reinstalled or switched devices)
@@ -1299,13 +1299,13 @@ Every screen, modal, sheet, and overlay — with all UI components documented.
 - **Top action bar** (replaces normal header):
   - "Batch Mode" label + selected count badge (e.g., "3 selected")
   - `Select All` button
-  - `✕ Cancel` button (exits batch mode, restores normal header)
+  - ` Cancel` button (exits batch mode, restores normal header)
 - **Plant list transforms**: each plant card gains a checkbox overlay (multi-select)
 - **Bottom action bar** (appears when 1 or more plants are selected):
-  - `💧 Water All` button
-  - `🧪 Feed All` button
-  - `📝 Log Entry` button → opens MOD-01 Quick Log Sheet in multi-plant mode (Plant selector pre-filled with selected plants)
-  - `💀 Archive` button
+  - ` Water All` button
+  - ` Feed All` button
+  - ` Log Entry` button → opens MOD-01 Quick Log Sheet in multi-plant mode (Plant selector pre-filled with selected plants)
+  - ` Archive` button
 - **Confirmation dialog** (before any batch action executes): "Apply [action] to [N] plants?" with `Confirm` + `Cancel` buttons
 
 ---
@@ -1319,15 +1319,15 @@ Every screen, modal, sheet, and overlay — with all UI components documented.
 **Elements**
 
 - Sheet drag handle bar
-- `✕ Close` button (top-right)
-- `🔖 Bookmark` icon (top-left, saves article for later reading offline)
+- ` Close` button (top-right)
+- ` Bookmark` icon (top-left, saves article for later reading offline)
 - **Article header image** (offline-cached, lazy-loaded from Wi-Fi download)
 - **Article title** (H1)
 - **Meta row**: method tag chip · estimated read time label · author name (if Creator Studio guide) · published date
 - **Article body**: rich text content (offline-cached), headings, bulleted lists, inline images
 - **Native ad block** (mid-article position, styled as "Recommended Tool" card — non-intrusive, does not interrupt reading)
 - **Related articles** row (bottom): 2 suggested articles with thumbnails + titles
-- `Mark as Read ✓` button (footer)
+- `Mark as Read ` button (footer)
 - `Share Article` icon → MOD-12 Export / Share Sheet
 
 ---
@@ -1344,12 +1344,12 @@ Every screen, modal, sheet, and overlay — with all UI components documented.
 - "Notification Preferences" heading
 - **Master toggle**: "Enable all reminders" on/off (disabling this greys out all category rows below)
 - **Per-category toggles** (each row: icon + label + on/off toggle):
-  - 💧 Watering reminders
-  - 🧪 Feeding reminders
-  - 🐛 Pest and disease alerts
-  - 🌦 Weather-based care updates
-  - 👥 Community activity (clusters, challenges)
-  - 📊 Weekly Bloom Report
+  -  Watering reminders
+  -  Feeding reminders
+  -  Pest and disease alerts
+  -  Weather-based care updates
+  -  Community activity (clusters, challenges)
+  -  Weekly Bloom Report
 - **Timing preference section**:
   - "I prefer reminders in the:" radio selector: Morning (7–9 AM) · Afternoon (12–2 PM) · Evening (6–8 PM)
 - **Skip weekends toggle**
@@ -1370,17 +1370,17 @@ Every screen, modal, sheet, and overlay — with all UI components documented.
 **Elements**
 
 - Sheet drag handle bar
-- `✕ Close` button (top-right)
-- "Your Week in Review 📊" heading
+- ` Close` button (top-right)
+- "Your Week in Review " heading
 - Date range label (e.g., "May 26 – Jun 1, 2026")
 - **Summary stats row** (4 pill cards, horizontal):
   - Plants logged count (this week)
   - Log entries total (this week)
   - Health Score change (e.g., "+7 pts")
-  - Streak status (e.g., "🔥 14 days")
+  - Streak status (e.g., " 14 days")
 - **Star performer card**: "Best performing plant this week" — plant thumbnail, plant name, method badge, health improvement label
 - **Weather correlation insight**: e.g., "Your tomatoes thrived during the 3 sunny days this week — more sun exposure correlates with better growth"
-- **Cemetery alert** (conditional — shown if a plant was archived this week): "⚠ 1 plant archived this week → See Cemetery Log" link → SCR-14
+- **Cemetery alert** (conditional — shown if a plant was archived this week): " 1 plant archived this week → See Cemetery Log" link → SCR-14
 - **Next week tip card**: contextual tip based on upcoming forecast and planting zone (e.g., "Frost risk Friday → bring indoor plants in by Thursday night")
 - `Share Report` icon button → MOD-12 Export / Share Sheet
 - `View Full Garden →` CTA button → SCR-02 Plant List
@@ -1398,9 +1398,9 @@ Every screen, modal, sheet, and overlay — with all UI components documented.
 
 - Content preview thumbnail (photo / PDF preview / reel frame, contextually appropriate)
 - **Format options** (shown contextually per content type):
-  - `📷 Share as Image (PNG)` — always available
-  - `📄 Export PDF` — available after rewarded video unlock (MOD-05); greys out and shows "Watch video to unlock" if not yet unlocked
-  - `📋 Copy Text Summary` — plain text version
+  - ` Share as Image (PNG)` — always available
+  - ` Export PDF` — available after rewarded video unlock (MOD-05); greys out and shows "Watch video to unlock" if not yet unlocked
+  - ` Copy Text Summary` — plain text version
 - **Watermark toggle**: "Include GardenPulse branding" on/off (off state available only to Supporter Badge holders)
 - `Continue to Share →` button → fires native OS share sheet
 

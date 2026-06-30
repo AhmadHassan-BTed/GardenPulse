@@ -155,7 +155,7 @@ const ClusterCoverHeader: React.FC<ClusterCoverHeaderProps> = ({
               { color: isJoined ? '#FFFFFF' : Colors.green.DEFAULT },
             ]}
           >
-            {isJoined ? 'Joined ✓' : 'Join Cluster'}
+            {isJoined ? 'Joined ' : 'Join Cluster'}
           </Text>
         </Pressable>
       </View>
